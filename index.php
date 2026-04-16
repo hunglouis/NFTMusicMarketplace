@@ -7,7 +7,7 @@ $test = callSupabase("music_collection?select=*&limit=1");
 print_r($test);
 
 session_start();
-require 'db.php';
+require 'supabase_config.php';
 if (!isset($_SESSION['user'])) { header("Location: dangnhap.php"); exit(); }
 
 $user = $_SESSION['user'];
