@@ -7,11 +7,9 @@ $error = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user = $_POST['username'];
     $pass = $_POST['password'];
-
     // Tìm xem có tên đăng nhập này trong DB không
     $result = mysqli_query($conn, "SELECT * FROM users WHERE username='$user'");
     $row = mysqli_fetch_assoc($result);
-
     // Kiểm tra mật khẩu (giải mã so với mật khẩu đã mã hóa trong DB)
     if ($row && password_verify($pass, $row['password'])) {
         $_SESSION['user'] = $row['username']; // Lưu tên vào Session

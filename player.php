@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'supabase_config.php';
+require 'db.php';
 require 'finance_logic.php'; 
 
 if (!isset($_SESSION['user'])) { header("Location: dangnhap.php"); exit(); }
@@ -8,13 +8,13 @@ if (!isset($_SESSION['user'])) { header("Location: dangnhap.php"); exit(); }
 $user = $_SESSION['user'];
 $song_id = isset($_GET['id']) ? $_GET['id'] : 1; 
 // 1. Lấy thông tin bài hát từ kho
-$res_song = mysqli_query($conn, "SELECT * FROM music_collection WHERE id='$song_id'");
+$res_song = mysqli_query($conn, "SELECT * FROM hunglouis WHERE id='$song_id'");
 $song = mysqli_fetch_assoc($res_song);
 if (!$song) {
     die("Không tìm thấy bài hát này trong hệ thống!");
 }
 // Tăng số lượt nghe lên 1 mỗi khi trang này được tải
-mysqli_query($conn, "UPDATE music_collection SET views = views + 1 WHERE id = '$song_id'");
+mysqli_query($conn, "UPDATE hunglouis SET views = views + 1 WHERE id = '$song_id'");
 
 // 2. KIỂM TRA QUYỀN SỞ HỮU (Dòng 18 quan trọng ở đây)
 // Chúng ta tìm xem có khối nào mà bạn là người gửi tiền với nội dung là tên bài hát này không

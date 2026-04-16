@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'supabase_config.php';
+require 'db.php';
 require 'finance_logic.php';
 
 if (!isset($_SESSION['user'])) { header("Location: dangnhap.php"); exit(); }
@@ -81,9 +81,9 @@ $songs = mysqli_query($conn, "SELECT * FROM music_collection");
 <div style="height:200px;background:#333;display:flex;align-items:center;justify-content:center;">No Image</div>
 <?php endif; ?>
 
-<h3><?php echo $s['title']; ?></h3>
+<h3><?php echo $s['name']; ?></h3> <!-- Dùng 'name' thay vì 'title' -->
 <p class="price"><?php echo number_format($s['price']); ?> PHP</p>
-
+<img src="<?php echo $s['image_url']; ?>">
 <button onclick="playLocal('<?php echo $s['audio_url']; ?>','<?php echo $s['title']; ?>')">
 ▶ Nghe thử
 </button>
