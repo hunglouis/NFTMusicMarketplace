@@ -1,4 +1,14 @@
 <?php
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+// Thử in ra dữ liệu xem có gì không
+require 'supabase_config.php';
+$test = callSupabase("music_collection?select=*&limit=1");
+print_r($test);
+?>
+
+
 session_start();
 require 'db.php';
 if (!isset($_SESSION['user'])) { header("Location: dangnhap.php"); exit(); }
