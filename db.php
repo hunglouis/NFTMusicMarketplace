@@ -4,11 +4,10 @@ $supabaseUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
 $supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw";
 
 
-
- * $path: Tên bảng (vd: 'music_collection')
- * $method: GET (lấy dữ liệu), POST (thêm mới), PATCH (sửa)
- * $data: Mảng dữ liệu gửi đi (nếu có)
- */
+  $path: Tên bảng (vd: 'hunglouis')
+  $method: GET (lấy dữ liệu), POST (thêm mới), PATCH (sửa)
+  $data: Mảng dữ liệu gửi đi (nếu có)
+ 
 function callSupabase($path, $method = 'GET', $data = null) {
     global $supabaseUrl, $supabaseKey;
     
