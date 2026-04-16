@@ -1,13 +1,13 @@
 FROM php:8.2-cli
 
-# Thư mục làm việc trong container
 WORKDIR /app
 
-# Copy toàn bộ code vào container
 COPY . .
 
-# Mở cổng web
+# 🔥 CÀI DRIVER POSTGRESQL
+RUN apt-get update && apt-get install -y libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql
+
 EXPOSE 10000
 
-# Chạy server PHP
 CMD ["php", "-S", "0.0.0.0:10000"]
