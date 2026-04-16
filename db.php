@@ -1,16 +1,22 @@
 <?php
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "hethong_user";
+$host = "db.hmvvjjiiaelcsfqgxbxv.supabase.co";
+$port = "5432";
+$dbname = "hunglouis";
+$user = "hunglouis";
+$pass = "sb_publishable__5FJJ7E8LE8I1rhFXS2Z5A_SdiVSdYS";
 
-// Kết nối tới MySQL
-$conn = mysqli_connect($host, $user, $pass, $dbname);
+try {
+    $conn = new PDO(
+        "pgsql:host=$host;port=$port;dbname=$dbname",
+        $user,
+        $pass
+    );
 
-// Kiểm tra kết nối
-if (!$conn) {
-    die("Kết nối thất bại: " . mysqli_connect_error());
-} else {
-    
+    // bật lỗi để debug
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+} catch (PDOException $e) {
+    die("Kết nối thất bại: " . $e->getMessage());
 }
 ?>
+
