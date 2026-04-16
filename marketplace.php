@@ -223,7 +223,7 @@ async function buyNFT(nft) {
 }
 
 // 🔥 LOAD NFT
-fetch("https://unaddressed-yaretzi-nonneural.ngrok-free.dev/web_cua_toi/api_nft.php", {
+fetch("/api_nft.php", {
     headers: { "ngrok-skip-browser-warning": "true" }
 })
 .then(res => res.json())
