@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-# 🔥 CÀI DRIVER POSTGRESQL
+# 🔥 CÀI POSTGRES DRIVER
 RUN apt-get update && apt-get install -y libpq-dev \
     && docker-php-ext-install pdo pdo_pgsql
 
