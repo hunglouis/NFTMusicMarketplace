@@ -15,6 +15,6 @@ if (isset($check['error']) || isset($check['code'])) {
     echo "<p>=> Anh hãy kiểm tra lại URL và API Key trong file db.php nhé.</p>";
 } else {
     echo "<h3 style='color:lime;'>✅ KẾT NỐI THÀNH CÔNG!</h3>";
-    echo "Dữ liệu tìm thấy: " . $check[0]['title'];
+    echo "Dữ liệu tìm thấy: " . $check[0]['name'];
 }
 ?>
