@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 require 'db.php'; 
 echo "<h1>🛠 Đang kiểm tra hệ thống trên Localhost...</h1>";
 // Kiểm tra thử kết nối Supabase
-$check = callSupabase("music_collection?select=*");
+$check = callSupabase("hunglouis?select=*");
 echo "<h2>Đang kết nối hệ thống nhạc Mạnh Hùng...</h2>";
 if (isset($check['error']) || isset($check['code'])) {
     echo "<h3 style='color:red;'>❌ LỖI KẾT NỐI SUPABASE:</h3>";
