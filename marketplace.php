@@ -38,7 +38,7 @@ if (isset($_POST['buy_nft'])) {
 }
 
 // Lấy danh sách nhạc từ kho
-$songs = mysqli_query($conn, "SELECT * FROM music_collection");
+$songs = callSupabase($conn, "SELECT * FROM hunglouis");
 ?>
 
 <!DOCTYPE html>
