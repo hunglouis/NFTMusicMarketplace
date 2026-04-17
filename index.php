@@ -1,20 +1,26 @@
 <?php
 session_start();
-// Bật chế độ "Soi lỗi" mức cao nhất
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-// Gọi file chứa hàm kết nối (Chỉ chọn 1 trong 2 file)
-require 'db.php'; 
-echo "<h1>🛠 Đang kiểm tra hệ thống trên Localhost...</h1>";
-// Kiểm tra thử kết nối Supabase
-$check = callSupabase("music_collection?select=*");
-echo "<h2>Đang kết nối hệ thống nhạc Mạnh Hùng...</h2>";
-if (isset($check['error']) || isset($check['code'])) {
-    echo "<h3 style='color:red;'>❌ LỖI KẾT NỐI SUPABASE:</h3>";
-    echo "<pre>"; print_r($check); echo "</pre>";
-    echo "<p>=> Anh hãy kiểm tra lại URL và API Key trong file db.php nhé.</p>";
-} else {
-    echo "<h3 style='color:lime;'>✅ KẾT NỐI THÀNH CÔNG!</h3>";
-    echo "Dữ liệu tìm thấy: " . $check[0]['title'];
+require 'db.php';
+
+// 1. Lấy dữ liệu bài hát và đặt tên là $songs
+$songs = callSupabase("hunglouis?select=*");
+
+// 2. Kiểm tra nếu có lỗi kết nối Supabase
+if (isset($songs['error']) || isset($songs['code'])) {
+    echo "<h3 style='color:red;'>❌ LỖI KẾT NỐI SUPABASE. Vui lòng kiểm tra lại Key!</h3>";
+    exit; // Dừng lại nếu lỗi thật sự
 }
+
+// KHÔNG DÙNG ECHO HAY PRINT_R Ở ĐÂY NỮA ĐỂ TRANG WEB TIẾP TỤC CHẠY XUỐNG DƯỚI
 ?>
+
+<div class="grid">
+    <?php if (is_array($songs)): ?>
+        <?php foreach($songs as $s): ?>
+            <div class="card">
+                <h3><?php echo $s['name']; ?></h3> <!-- Dựa vào ảnh, cột của bạn tên là 'name' -->
+                <img src="https://supabase.co<?php echo $s['image_path']; ?>">
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
