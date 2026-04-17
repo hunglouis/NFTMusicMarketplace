@@ -1,5 +1,5 @@
 <?php
-require 'db.php'; // Gọi file kết nối database
+require_once 'db.php'; // Gọi file kết nối database
 
 $thongbao = "";
 

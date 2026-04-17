@@ -1,5 +1,5 @@
 <?php
-require 'db.php';
+require_once 'db.php';
 require 'blockchain_logic.php';
 
 function verifyBlockchain($conn) {

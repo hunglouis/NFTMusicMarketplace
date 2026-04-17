@@ -1,5 +1,5 @@
 <?php
-require 'db.php';
+require_once 'db.php';
 require 'finance_logic.php';
 
 // 1. Lấy danh sách tất cả người dùng hiện có
