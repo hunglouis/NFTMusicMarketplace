@@ -23,6 +23,8 @@ if (isset($songs['error']) || isset($songs['code'])) {
                 <h3><?php echo $s['name']; ?></h3> <!-- Dựa vào ảnh, cột của bạn tên là 'name' -->
                 <img src="<?php echo $storageUrl . $s['image_path']; ?>" class="w-full h-48 object-cover rounded-2xl" alt="Hoa Quỳnh">
 
+
+
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
