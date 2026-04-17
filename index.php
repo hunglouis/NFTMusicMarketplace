@@ -1,11 +1,19 @@
 <?php
 session_start();
-// Bật chế độ "Soi lỗi" mức cao nhất
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-// Gọi file chứa hàm kết nối (Chỉ chọn 1 trong 2 file)
-require 'db.php'; 
+require 'db.php';
+
+// 1. Lấy dữ liệu bài hát và đặt tên là $songs
+$songs = callSupabase("hunglouis?select=*");
+
+// 2. Kiểm tra nếu có lỗi kết nối Supabase
+if (isset($songs['error']) || isset($songs['code'])) {
+    echo "<h3 style='color:red;'>❌ LỖI KẾT NỐI SUPABASE. Vui lòng kiểm tra lại Key!</h3>";
+    exit; // Dừng lại nếu lỗi thật sự
+}
+
+// KHÔNG DÙNG ECHO HAY PRINT_R Ở ĐÂY NỮA ĐỂ TRANG WEB TIẾP TỤC CHẠY XUỐNG DƯỚI
 ?>
+
 <div class="grid">
     <?php if (is_array($songs)): ?>
         <?php foreach($songs as $s): ?>
