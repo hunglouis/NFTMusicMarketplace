@@ -29,19 +29,21 @@ $file_to_play = $is_owner ? $song['full_file'] : $song['demo_file'];
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>Studio Nhạc Mạnh Hùng</title>
+    <meta charset="UTF-8">
+    <title>Quỳnh Hương - Genesis Edition</title>
+    <!-- Link làm đẹp giao diện -->
+    <script src="https://tailwindcss.com"></script>
+    <link href="https://cloudflare.com" rel="stylesheet">
     <style>
-        body { background: #121212; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
-        .player-card { background: #1e1e1e; width: 450px; margin: auto; padding: 30px; border-radius: 15px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .status-badge { padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: bold; display: inline-block; margin-bottom: 20px; }
-        .owned { background: #238636; color: white; } 
-        .guest { background: #f2e711; color: black; }
-        audio { width: 100%; margin-top: 20px; filter: invert(100%); }
+        body { background: radial-gradient(circle at top right, #0891b2, #064e3b, #020617); min-height: 100vh; color: white; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(6, 182, 212, 0.2); }
     </style>
 </head>
-<body>
+<body class="p-10">
+    <!-- Toàn bộ phần vòng lặp foreach của bạn nằm ở đây -->
+>
     <?php include 'navbar.php'; ?>
 
     <div class="player-card">

@@ -5,17 +5,21 @@ if (!isset($_SESSION['user'])) { header("Location: dangnhap.php"); exit(); }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>Blockchain Wallet & Mining</title>
+    <meta charset="UTF-8">
+    <title>Quỳnh Hương - Genesis Edition</title>
+    <!-- Link làm đẹp giao diện -->
+    <script src="https://tailwindcss.com"></script>
+    <link href="https://cloudflare.com" rel="stylesheet">
     <style>
-        body { background: #000; color: #0f0; font-family: monospace; margin: 0; }
-        .container { padding: 20px; }
-        .wallet-card { border: 2px solid #0f0; padding: 20px; max-width: 500px; background: #0a0a0a; }
-        .reward-info { color: #8957e5; font-size: 12px; }
+        body { background: radial-gradient(circle at top right, #0891b2, #064e3b, #020617); min-height: 100vh; color: white; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(6, 182, 212, 0.2); }
     </style>
 </head>
-<body>
+<body class="p-10">
+    <!-- Toàn bộ phần vòng lặp foreach của bạn nằm ở đây -->
+
     <?php include 'navbar.php'; ?> <!-- Chèn thanh điều hướng -->
 
     <div class="container">

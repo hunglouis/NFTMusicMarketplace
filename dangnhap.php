@@ -22,18 +22,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>Đăng Nhập</title>
+    <meta charset="UTF-8">
+    <title>Quỳnh Hương - Genesis Edition</title>
+    <!-- Link làm đẹp giao diện -->
+    <script src="https://tailwindcss.com"></script>
+    <link href="https://cloudflare.com" rel="stylesheet">
     <style>
-        body { font-family: Arial; display: flex; justify-content: center; padding-top: 50px; background: #e9ecef; }
-        .login-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
-        .error { color: red; font-size: 14px; }
+        body { background: radial-gradient(circle at top right, #0891b2, #064e3b, #020617); min-height: 100vh; color: white; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(6, 182, 212, 0.2); }
     </style>
 </head>
-<body>
+<body class="p-10">
+    <!-- Toàn bộ phần vòng lặp foreach của bạn nằm ở đây -->
+
     <?php include 'navbar.php'; ?> <!-- Chèn thanh điều hướng -->
     <div class="login-box">
         <h2>Đăng Nhập</h2>

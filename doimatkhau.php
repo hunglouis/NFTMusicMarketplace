@@ -25,19 +25,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <!DOCTYPE html>
-<html>
-<head><title>Đổi mật khẩu</title></head>
-<body style="font-family: Arial; text-align: center; padding-top: 50px;">
-    <?php include 'navbar.php'; ?> <!-- Chèn thanh điều hướng -->
-    <div style="width: 300px; margin: auto; padding: 20px; border: 1px solid #ddd;">
-        <h2>Đổi mật khẩu</h2>
-        <?php echo $thongbao; ?>
-        <form method="POST">
-            <input type="password" name="old_password" placeholder="Mật khẩu cũ" required style="width:100%; margin-bottom:10px; padding:8px;">
-            <input type="password" name="new_password" placeholder="Mật khẩu mới" required style="width:100%; margin-bottom:10px; padding:8px;">
-            <button type="submit" style="width:100%; padding:10px; background: #ffc107; border:none; cursor:pointer;">Cập nhật</button>
-        </form>
-        <br><a href="index.php">Quay lại trang chủ</a>
-    </div>
-</body>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quỳnh Hương - Genesis Edition</title>
+    <!-- Link làm đẹp giao diện -->
+    <script src="https://tailwindcss.com"></script>
+    <link href="https://cloudflare.com" rel="stylesheet">
+    <style>
+        body { background: radial-gradient(circle at top right, #0891b2, #064e3b, #020617); min-height: 100vh; color: white; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(6, 182, 212, 0.2); }
+    </style>
+</head>
+<body class="p-10">
+    <!-- Toàn bộ phần vòng lặp foreach của bạn nằm ở đây -->
+
 </html>

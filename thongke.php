@@ -25,21 +25,21 @@ $block_count = mysqli_fetch_assoc($total_blocks)['total'];
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>Blockchain Stats</title>
+    <meta charset="UTF-8">
+    <title>Quỳnh Hương - Genesis Edition</title>
+    <!-- Link làm đẹp giao diện -->
+    <script src="https://tailwindcss.com"></script>
+    <link href="https://cloudflare.com" rel="stylesheet">
     <style>
-        body { background: #0b0f19; color: #fff; font-family: 'Segoe UI', sans-serif; padding: 40px; }
-        .stats-container { max-width: 600px; margin: auto; background: #161b22; padding: 20px; border-radius: 10px; border: 1px solid #30363d; }
-        h1 { color: #58a6ff; text-align: center; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; border-bottom: 1px solid #30363d; text-align: left; }
-        th { color: #8b949e; }
-        .rank-1 { color: #f2e711; font-weight: bold; } /* Màu vàng cho đại gia số 1 */
-        .badge { background: #238636; padding: 5px 10px; border-radius: 20px; font-size: 12px; }
+        body { background: radial-gradient(circle at top right, #0891b2, #064e3b, #020617); min-height: 100vh; color: white; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(6, 182, 212, 0.2); }
     </style>
 </head>
-<body>
+<body class="p-10">
+    <!-- Toàn bộ phần vòng lặp foreach của bạn nằm ở đây -->
+
         <?php include 'navbar.php'; ?> <!-- Chèn thanh điều hướng -->
 
 <div class="stats-container">

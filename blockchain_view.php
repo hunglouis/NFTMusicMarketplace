@@ -43,18 +43,21 @@ if (isset($_POST['verify_all'])) {
 
 <!-- --- 2. PHẦN GIAO DIỆN --- -->
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>Blockchain Pro</title>
+    <meta charset="UTF-8">
+    <title>Quỳnh Hương - Genesis Edition</title>
+    <!-- Link làm đẹp giao diện -->
+    <script src="https://tailwindcss.com"></script>
+    <link href="https://cloudflare.com" rel="stylesheet">
     <style>
-        body { background: #121212; color: #0f0; font-family: 'Courier New', Courier, monospace; padding: 20px; }
-        .block { border: 1px solid #333; padding: 15px; margin: 15px 0; border-radius: 5px; background: #1e1e1e; }
-        .error { border-color: red !important; color: red; }
-        input, button { padding: 10px; font-family: monospace; }
-        .hash-text { font-size: 0.8em; color: #888; word-break: break-all; }
+        body { background: radial-gradient(circle at top right, #0891b2, #064e3b, #020617); min-height: 100vh; color: white; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(6, 182, 212, 0.2); }
     </style>
 </head>
-<body>
+<body class="p-10">
+    <!-- Toàn bộ phần vòng lặp foreach của bạn nằm ở đây -->
+
         <?php include 'navbar.php'; ?> <!-- Chèn thanh điều hướng -->
 
     <h1>🔗 HỆ THỐNG BLOCKCHAIN CỦA BẠN</h1>
