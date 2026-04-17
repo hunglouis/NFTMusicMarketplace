@@ -4,9 +4,8 @@ require_once 'db.php';
 require 'finance_logic.php';
 
 // Bảo mật: Chỉ anh (Admin) mới vào được trang này
-if (!isset($_SESSION['user']) || $_SESSION['user'] !== 'hunglouis_manhhung') {
-    die("Truy cập bị từ chối! Trang này chỉ dành cho Nhạc sĩ Mạnh Hùng.");
-}
+//if (!isset($_SESSION['user']) || $_SESSION['user'] !== 'hunglouis_manhhung') {
+    //die("Truy cập bị từ chối! Trang này chỉ dành cho Nhạc sĩ Mạnh Hùng.")}
 
 // 1. Lấy thống kê tổng quan
 $res_total = mysqli_query($conn, "SELECT COUNT(*) as total FROM music_collection");
