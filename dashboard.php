@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'supabase_config.php';
+require 'db.php';
 require 'finance_logic.php';
 
 // Bảo mật: Chỉ anh (Admin) mới vào được trang này
