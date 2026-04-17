@@ -1,6 +1,6 @@
 <?php
 include 'db.php';
-$storageUrl = "https://supabase.co";
+$storageUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
 $songs = callSupabase('hunglouis?select=*', 'GET');
 ?>
 
