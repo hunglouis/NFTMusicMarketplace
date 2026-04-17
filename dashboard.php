@@ -19,22 +19,21 @@ $songs = mysqli_query($conn, "SELECT * FROM music_collection ORDER BY id DESC");
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>Quản trị Studio - Mạnh Hùng</title>
+    <meta charset="UTF-8">
+    <title>Quỳnh Hương - Genesis Edition</title>
+    <!-- Link làm đẹp giao diện -->
+    <script src="https://tailwindcss.com"></script>
+    <link href="https://cloudflare.com" rel="stylesheet">
     <style>
-        body { background: #010409; color: #c9d1d9; font-family: sans-serif; margin: 0; }
-        .sidebar { width: 200px; background: #0d1117; height: 100vh; position: fixed; padding: 20px; border-right: 1px solid #30363d; }
-        .main-content { margin-left: 240px; padding: 30px; }
-        .stat-card { background: #161b22; border: 1px solid #30363d; padding: 20px; border-radius: 10px; display: inline-block; min-width: 200px; margin-right: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #30363d; }
-        th { color: #8b949e; }
-        .btn-edit { color: #58a6ff; text-decoration: none; cursor: pointer; }
-        .badge-active { background: #238636; color: white; padding: 3px 8px; border-radius: 10px; font-size: 11px; }
+        body { background: radial-gradient(circle at top right, #0891b2, #064e3b, #020617); min-height: 100vh; color: white; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(6, 182, 212, 0.2); }
     </style>
 </head>
-<body>
+<body class="p-10">
+    <!-- Toàn bộ phần vòng lặp foreach của bạn nằm ở đây -->
+>
     <?php include 'navbar.php'; ?> <!-- Chèn thanh điều hướng -->
     <div class="sidebar">
         <h3>MENU ADMIN</h3>

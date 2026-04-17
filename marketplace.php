@@ -42,21 +42,21 @@ $songs = callSupabase($conn, "SELECT * FROM hunglouis");
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <link rel="stylesheet" href="assets/style.css">
-    <title>Chợ Nhạc NFT Mạnh Hùng</title>
-
+    <meta charset="UTF-8">
+    <title>Quỳnh Hương - Genesis Edition</title>
+    <!-- Link làm đẹp giao diện -->
+    <script src="https://tailwindcss.com"></script>
+    <link href="https://cloudflare.com" rel="stylesheet">
     <style>
-        body { background: #0d1117; color: #c9d1d9; font-family: 'Segoe UI', sans-serif; margin: 0; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
-        .card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 15px; text-align: center; }
-        .price { color: #f2e711; font-size: 18px; }
-        button { padding:8px; border:none; border-radius:5px; cursor:pointer; margin-top:5px; }
+        body { background: radial-gradient(circle at top right, #0891b2, #064e3b, #020617); min-height: 100vh; color: white; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(6, 182, 212, 0.2); }
     </style>
 </head>
+<body class="p-10">
+    <!-- Toàn bộ phần vòng lặp foreach của bạn nằm ở đây -->
 
-<body>
 
 <?php include 'navbar.php'; ?>
 
