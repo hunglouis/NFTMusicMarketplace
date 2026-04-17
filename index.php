@@ -21,21 +21,28 @@ $songs = callSupabase('hunglouis?select=*', 'GET');
 <body class="p-0">
 
     <!-- 1. THANH MENU (NAVBAR) -->
-    <nav class="glass sticky top-0 z-50 px-10 py-4 flex justify-between items-center mb-10">
-        <div class="flex items-center gap-3">
-            <i class="fas fa-compact-disc text-3xl text-cyan-400 fa-spin"></i>
-            <span class="text-2xl font-black tracking-tighter">LOUIS<span class="text-cyan-400">MUSIC</span></span>
+    <!-- THANH MENU (NAVBAR) CẢI TIẾN -->
+<nav class="glass sticky top-0 z-50 px-6 md:px-10 py-4 flex justify-between items-center mb-10 shadow-2xl border-b border-cyan-500/30">
+    <div class="flex items-center gap-3">
+        <div class="bg-cyan-500 p-2 rounded-lg shadow-lg shadow-cyan-500/50">
+            <i class="fas fa-compact-disc text-2xl text-white fa-spin"></i>
         </div>
-        <div class="hidden md:flex gap-8 font-medium">
-            <a href="index.php" class="nav-link text-cyan-400">Trang chủ</a>
-            <a href="marketplace.php" class="nav-link">Chợ NFT</a>
-            <a href="dashboard.php" class="nav-link">Bảng điều khiển</a>
-            <a href="#" class="nav-link">Bộ sưu tập</a>
-        </div>
-        <button class="bg-cyan-500 hover:bg-cyan-400 px-6 py-2 rounded-xl font-bold transition shadow-lg shadow-cyan-500/30">
-            Kết nối ví
-        </button>
-    </nav>
+        <span class="text-2xl font-black tracking-tighter text-white">LOUIS<span class="text-cyan-400">MUSIC</span></span>
+    </div>
+    
+    <!-- Các nút bấm đã có link để sử dụng được -->
+    <div class="hidden md:flex gap-8 font-bold">
+        <a href="index.php" class="text-cyan-400 border-b-2 border-cyan-400 pb-1">TRANG CHỦ</a>
+        <a href="marketplace.php" class="text-white hover:text-cyan-400 transition">CHỢ NFT</a>
+        <a href="dashboard.php" class="text-white hover:text-cyan-400 transition">BẢNG ĐIỀU KHIỂN</a>
+        <a href="collection.php" class="text-white hover:text-cyan-400 transition">BỘ SƯU TẬP</a>
+    </div>
+
+    <button class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-6 py-2 rounded-xl font-bold transition transform hover:scale-105 shadow-lg shadow-cyan-500/40">
+        <i class="fas fa-wallet mr-2"></i>KẾT NỐI VÍ
+    </button>
+</nav>
+
 
     <!-- 2. NỘI DUNG CHÍNH (HOA QUỲNH) -->
     <div class="container mx-auto px-6">
