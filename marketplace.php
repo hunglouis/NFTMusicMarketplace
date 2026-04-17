@@ -273,6 +273,40 @@ fetch("/api_nft.php", {
 });
 
 </script>
+<script>
+// Hàm này sẽ tự động chạy khi trang web tải xong
+document.addEventListener('DOMContentLoaded', function() {
+    const songContainer = document.querySelector('#song-grid'); // Nơi chứa hoa Quỳnh
+    const storageUrl = "https://supabase.co";
+
+    // Gọi đến file API Backend
+    fetch('api/marketplace.php')
+        .then(response => response.json())
+        .then(data => {
+            if (Array.isArray(data)) {
+                songContainer.innerHTML = ''; // Xóa thông báo "Đang tải"
+                
+                data.forEach(s => {
+                    // Tạo giao diện cho từng bông hoa
+                    const card = `
+                        <div class="glass p-5 rounded-[2rem] hover:scale-105 transition duration-500">
+                            <img src="${storageUrl + s.image_path}" class="w-full h-56 object-cover rounded-2xl mb-4">
+                            <h3 class="font-bold text-lg">${s.name || 'Hoa Quỳnh'}</h3>
+                            <audio controls class="w-full h-8 mt-4 brightness-110">
+                                <source src="${storageUrl + s.audio_path}" type="audio/mpeg">
+                            </audio>
+                        </div>
+                    `;
+                    songContainer.innerHTML += card;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Lỗi lấy dữ liệu:', error);
+            songContainer.innerHTML = '<p class="text-red-400">Không thể kết nối với API Backend.</p>';
+        });
+});
+</script>
 
 </body>
 </html>
