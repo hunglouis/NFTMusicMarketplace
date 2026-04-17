@@ -22,23 +22,23 @@ $songs = callSupabase('hunglouis?select=*', 'GET');
 
     <!-- 1. THANH MENU (NAVBAR) -->
     <!-- THANH MENU (NAVBAR) CẢI TIẾN -->
-<nav class="glass sticky top-0 z-50 px-6 md:px-10 py-4 flex justify-between items-center mb-10 shadow-2xl border-b border-cyan-500/30">
+<nav class="glass sticky top-0 z-50 px-6 md:px-10 py-4 flex justify-between items-center mb-10 shadow-2xl border-b border-green-500/30">
     <div class="flex items-center gap-3">
-        <div class="bg-cyan-500 p-2 rounded-lg shadow-lg shadow-cyan-500/50">
+        <div class="bg-green-500 p-2 rounded-lg shadow-lg shadow-green-500/50">
             <i class="fas fa-compact-disc text-2xl text-white fa-spin"></i>
         </div>
-        <span class="text-2xl font-black tracking-tighter text-white">LOUIS<span class="text-cyan-400">MUSIC</span></span>
+        <span class="text-2xl font-black tracking-tighter text-white">LOUIS<span class="text-green-400">MUSIC</span></span>
     </div>
     
     <!-- Các nút bấm đã có link để sử dụng được -->
     <div class="hidden md:flex gap-8 font-bold">
-        <a href="index.php" class="text-cyan-400 border-b-2 border-cyan-400 pb-1">TRANG CHỦ</a>
-        <a href="marketplace.php" class="text-white hover:text-cyan-400 transition">CHỢ NFT</a>
-        <a href="dashboard.php" class="text-white hover:text-cyan-400 transition">BẢNG ĐIỀU KHIỂN</a>
-        <a href="collection.php" class="text-white hover:text-cyan-400 transition">BỘ SƯU TẬP</a>
+        <a href="index.php" class="text-green-400 border-b-2 border-green-400 pb-1">TRANG CHỦ</a>
+        <a href="marketplace.php" class="text-white hover:text-green-400 transition">CHỢ NFT</a>
+        <a href="dashboard.php" class="text-white hover:text-green-400 transition">BẢNG ĐIỀU KHIỂN</a>
+        <a href="collection.php" class="text-white hover:text-green-400 transition">BỘ SƯU TẬP</a>
     </div>
 
-    <button class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-6 py-2 rounded-xl font-bold transition transform hover:scale-105 shadow-lg shadow-cyan-500/40">
+    <button class="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-400 hover:to-blue-500 text-white px-6 py-2 rounded-xl font-bold transition transform hover:scale-105 shadow-lg shadow-green-500/40">
         <i class="fas fa-wallet mr-2"></i>KẾT NỐI VÍ
     </button>
 </nav>
@@ -61,7 +61,7 @@ $songs = callSupabase('hunglouis?select=*', 'GET');
                     
                     <!-- Thông tin -->
                     <h3 class="font-bold text-lg mb-1 truncate"><?= $s['name'] ?? 'Tuyệt phẩm' ?></h3>
-                    <p class="text-cyan-400/70 text-xs mb-4 uppercase tracking-widest">Digital Art NFT</p>
+                    <p class="text-green-400/70 text-xs mb-4 uppercase tracking-widest">Digital Art NFT</p>
                     
                     <!-- Trình phát nhạc -->
                     <audio controls class="w-full h-8 brightness-125 hue-rotate-180">
