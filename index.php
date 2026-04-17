@@ -1,5 +1,5 @@
 <?php
-include 'db.php';
+require_once 'db.php';
 $storageUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
 $songs = callSupabase('hunglouis?select=*', 'GET');
 ?>

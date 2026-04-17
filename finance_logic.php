@@ -1,5 +1,5 @@
 <?php
-require 'db.php';
+require_once 'db.php';
 
 // 1. Hàm tính toán mã Hash cho giao dịch
 function calculateFinanceHash($index, $prevHash, $sender, $receiver, $amount) {

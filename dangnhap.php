@@ -1,6 +1,6 @@
 <?php
 session_start(); // Bắt đầu phiên làm việc
-require 'db.php';
+require_once 'db.php';
 
 $error = "";
 

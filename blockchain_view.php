@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'db.php';
+require_once 'db.php';
 
 // --- 1. PHẦN LOGIC (TÍNH TOÁN) ---
 function calculateHash($index, $prevHash, $username, $content) {

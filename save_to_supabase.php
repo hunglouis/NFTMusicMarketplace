@@ -1,5 +1,5 @@
 <?php
-require 'supabase_config.php';
+require_once 'db.php';
 $data = json_decode(file_get_contents('php://input'), true);
 if ($data) {
     callSupabase("music_collection", "POST", [

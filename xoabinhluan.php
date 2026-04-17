@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'db.php';
+require_once 'db.php';
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
