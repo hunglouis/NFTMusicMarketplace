@@ -4,6 +4,8 @@ require 'db.php';
 
 // 1. Lấy dữ liệu bài hát và đặt tên là $songs
 $songs = callSupabase("hunglouis?select=*");
+// Thay 'music' bằng tên Bucket thật của bạn trên Supabase nếu nó khác nhé
+$storageUrl = "https://supabase.co"; 
 
 // 2. Kiểm tra nếu có lỗi kết nối Supabase
 if (isset($songs['error']) || isset($songs['code'])) {
