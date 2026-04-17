@@ -2,33 +2,43 @@
 session_start();
 require 'db.php';
 
-// 1. Lấy dữ liệu bài hát và đặt tên là $songs
+// 1. Lấy dữ liệu bài hát
 $songs = callSupabase("hunglouis?select=*");
-// Thay 'music' bằng tên Bucket thật của bạn trên Supabase nếu nó khác nhé
-$storageUrl = "https://supabase.co"; 
 
-// 2. Kiểm tra nếu có lỗi kết nối Supabase
-if (isset($songs['error']) || isset($songs['code'])) {
-    echo "<h3 style='color:red;'>❌ LỖI KẾT NỐI SUPABASE. Vui lòng kiểm tra lại Key!</h3>";
-    exit; // Dừng lại nếu lỗi thật sự
-}
+// 2. KHAI BÁO LINK BUCKET (Quan trọng nhất - bạn đang thiếu dòng này)
+$storageUrl = "https://supabase.co";
 
-// KHÔNG DÙNG ECHO HAY PRINT_R Ở ĐÂY NỮA ĐỂ TRANG WEB TIẾP TỤC CHẠY XUỐNG DƯỚI
+// KHÔNG DÙNG ECHO HAY PRINT_R Ở ĐÂY NỮA
 ?>
 
-<div class="grid">
-    <?php if (is_array($songs)): ?>
+<!-- Phần hiển thị giao diện -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-10">
+    <?php if (is_array($songs) && !isset($songs['error'])): ?>
         <?php foreach($songs as $s): ?>
-            <div class="card">
-                <h3><?php echo $s['name']; ?></h3> <!-- Dựa vào ảnh, cột của bạn tên là 'name' -->
-                <img src="<?php echo $storageUrl . $s['image_path']; ?>" class="w-full h-48 object-cover rounded-2xl" alt="Hoa Quỳnh">
+            <div class="card glass p-5 rounded-[2rem] hover:scale-105 transition duration-300 shadow-xl">
+                
+                <!-- Tên hoa/bài hát -->
+                <h3 class="font-bold text-xl mb-3 text-cyan-400">
+                    <?php echo $s['name'] ?? $s['title'] ?? 'Tuyệt phẩm Hoa Quỳnh'; ?>
+                </h3>
 
+                <!-- Hình ảnh hoa Quỳnh lung linh -->
+                <img src="<?php echo $storageUrl . ($s['image_path'] ?? ''); ?>" 
+                     class="w-full h-64 object-cover rounded-2xl shadow-lg border-2 border-cyan-500/30" 
+                     alt="Hoa Quỳnh">
 
+                <!-- Nếu bạn có file nhạc, hãy thêm dòng này bên dưới ảnh -->
+                <audio controls class="w-full mt-4 h-8 brightness-110">
+                    <source src="<?php echo $storageUrl . ($s['audio_path'] ?? ''); ?>" type="audio/mpeg">
+                </audio>
 
             </div>
         <?php endforeach; ?>
+    <?php else: ?>
+        <p class="text-white text-center col-span-full">Đang kết nối dữ liệu hoặc bảng đang trống...</p>
     <?php endif; ?>
 </div>
+
 <style>
     .grid {
         display: grid;
