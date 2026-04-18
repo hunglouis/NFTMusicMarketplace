@@ -3,8 +3,6 @@ session_start();
 require_once 'db.php';
 require 'finance_logic.php';
 
-if (!isset($_SESSION['user'])) { header("Location: dangnhap.php"); exit(); }
-
 $user = $_SESSION['user'];
 $thongbao = "";
 
@@ -20,8 +18,8 @@ if (isset($_POST['buy_nft'])) {
     if ($balance >= $price) {
         // 2. Tạo khối giao dịch (Blockchain)
         $prevHash = getLatestHash($conn);
-        $res_id = mysqli_query($conn, "SELECT id FROM blockchain ORDER BY id DESC LIMIT 1");
-        $next_id = (mysqli_fetch_assoc($res_id)['id'] ?? 0) + 1;
+        $res_id = callsupabase($conn, "SELECT id FROM blockchain ORDER BY id DESC LIMIT 1");
+        $next_id = (($res_id)['id'] ?? 0) + 1;
         
         // Nội dung khối lưu tên bài hát để xác nhận quyền sở hữu
         $hash = calculateFinanceHash($next_id, $prevHash, $user, 'Hệ thống Music NFT', $price);
@@ -29,7 +27,7 @@ if (isset($_POST['buy_nft'])) {
         $sql = "INSERT INTO blockchain (sender, receiver, amount, content, prev_hash, hash) 
                 VALUES ('$user', 'Nhạc sĩ Mạnh Hùng', '$price', '$song_title', '$prevHash', '$hash')";
         
-        if (mysqli_query($conn, $sql)) {
+        if (callsupabase($conn, $sql)) {
             $thongbao = "<div style='color:lime; background:#1b331b; padding:10px;'>✔️ Chúc mừng! Bạn đã sở hữu tác phẩm: $song_title</div>";
         }
     } else {
@@ -38,7 +36,7 @@ if (isset($_POST['buy_nft'])) {
 }
 
 // Lấy danh sách nhạc từ kho
-$songs = callSupabase("hunglouis?order_by=id.desc");
+$songs = callSupabase("hunglouis");
 ?>
 
 <!DOCTYPE html>
@@ -81,10 +79,10 @@ $songs = callSupabase("hunglouis?order_by=id.desc");
 <div style="height:200px;background:#333;display:flex;align-items:center;justify-content:center;">No Image</div>
 <?php endif; ?>
 
-<h3><?php echo $s['name']; ?></h3> <!-- Dùng 'name' thay vì 'title' -->
-<p><?php echo number_format($s['price']); ?> PHP</p>
+<h3><?php echo $row['title'] ?? 'Chưa đặt tên'; ?></h3>
+<p><?php echo $row['price'] ?? '0.00'; ?> ETH</p>
 <img src="<?php echo $s['image_url']; ?>">
-<button onclick="playLocal('<?php echo $s['audio_url']; ?>','<?php echo $s['title']; ?>')">
+<button onclick="playLocal('<?php echo $s['audio_url']; ?>','<?php echo $s['name']; ?>')">
 ▶ Nghe thử
 </button>
 
@@ -111,6 +109,7 @@ $songs = callSupabase("hunglouis?order_by=id.desc");
 <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
 
 <script>
+
 let playlist = [];
 let currentIndex = 0;
 let isShuffle = false;
@@ -246,9 +245,10 @@ fetch("/api_nft.php", {
         const div = document.createElement("div");
         div.style.width = "200px";
 
-        div.innerHTML = 
+        div.innerHTML = `
             <img src="${img}" style="width:100%;height:200px;object-fit:cover">
-            <p>${name}</p>;
+            <p>${name}</p>
+        `;
 
         // ▶ PLAY
         const playBtn = document.createElement("button");
@@ -261,25 +261,30 @@ fetch("/api_nft.php", {
         buyBtn.style.background = "#2081e2";
         buyBtn.style.color = "#fff";
         buyBtn.onclick = () => buyNFT(nft);
+
         div.appendChild(playBtn);
         div.appendChild(buyBtn);
+
         container.appendChild(div);
     });
+
 });
+
 </script>
 <script>
 // Hàm này sẽ tự động chạy khi trang web tải xong
 document.addEventListener('DOMContentLoaded', function() {
     const songContainer = document.querySelector('#song-grid'); // Nơi chứa hoa Quỳnh
-    const storageUrl = "https://supabase.co";
+    const storageUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co/storage/v1/object/public/hunglouis/"; // URL gốc của Supabase Storage
+
     // Gọi đến file API Backend
     fetch('api/marketplace.php')
         .then(response => response.json())
         .then(data => {
             if (Array.isArray(data)) {
                 songContainer.innerHTML = ''; // Xóa thông báo "Đang tải"
-             
-            data.forEach(s => {
+                
+                data.forEach(s => {
                     // Tạo giao diện cho từng bông hoa
                     const card = `
                         <div class="glass p-5 rounded-[2rem] hover:scale-105 transition duration-500">
@@ -291,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     `;
                     songContainer.innerHTML += card;
-            });
+                });
             }
         })
         .catch(error => {
@@ -300,6 +305,49 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const grid = document.querySelector('#song-grid');
+
+    // Gọi đến file xử lý dữ liệu ở Backend
+    fetch('api/marketplace.php')
+        .then(res => res.json())
+        .then(data => {
+            // Alchemy trả về mảng nằm trong 'ownedNfts'
+            const nfts = data.ownedNfts || data; 
+            
+            if (Array.isArray(nfts)) {
+                grid.innerHTML = ''; // Xóa chữ "Đang tải"
+
+                nfts.forEach(item => {
+                    // Lấy link ảnh từ đúng vị trí trong file JSON của bạn
+                    const imageUrl = item.media[0]?.gateway || item.metadata?.image || 'default.jpg';
+                    const title = item.title || "Quỳnh Hương NFT";
+                    
+                    grid.innerHTML += `
+                        <div class="glass p-5 rounded-[2.5rem] hover:scale-105 transition duration-500 shadow-2xl">
+                            <div class="relative overflow-hidden rounded-3xl mb-4">
+                                <img src="${imageUrl}" class="w-full h-64 object-cover" alt="NFT">
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2">${title}</h3>
+                            <p class="text-cyan-400 text-xs mb-4">Số lượng: ${item.balance} bản</p>
+                            <a href="https://opensea.io{item.contract.address}/${item.id.tokenId}" 
+                               target="_blank" 
+                               class="block text-center bg-cyan-500 hover:bg-cyan-400 py-3 rounded-2xl font-bold transition">
+                                XEM TRÊN OPENSEA
+                            </a>
+                        </div>
+                    `;
+                });
+            }
+        })
+        .catch(err => {
+            console.error("Lỗi:", err);
+            grid.innerHTML = '<p class="text-center col-span-full">Không thể kết nối dữ liệu NFT.</p>';
+        });
+});
+</script>
+
 </body>
 </html>
 

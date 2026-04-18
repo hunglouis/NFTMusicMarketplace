@@ -39,7 +39,6 @@ if (!function_exists('callSupabase')) {
         curl_close($ch);
         return json_decode($response, true);
     }
-
 } 
 
 ?>

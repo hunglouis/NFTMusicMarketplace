@@ -185,7 +185,7 @@ async function loadAllNFT() {
 
     while (true) {
 
-        let url = "https://unaddressed-yaretzi-nonneural.ngrok-free.dev/web_cua_toi/api_nft.php";
+       // let url = "https://unaddressed-yaretzi-nonneural.ngrok-free.dev/web_cua_toi/api_nft.php";
 
         if (pageKey) {
             url += "?pageKey=" + pageKey;
