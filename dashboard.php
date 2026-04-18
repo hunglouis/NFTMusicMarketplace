@@ -1,7 +1,9 @@
 <?php
 session_start();
 require_once 'db.php';
-require 'finance_logic.php';
+// Nếu có user thì lấy, không có thì để là 'Khách'
+$user_display = $_SESSION['user'] ?? 'Khách';
+
 // 1. Kiểm tra: nếu có user thì lấy, không có thì gọi là 'Khách quý'
 $display_name = $_SESSION['user'] ?? 'Khách quý';   
 // Bảo mật: Chỉ anh (Admin) mới vào được trang này
