@@ -70,7 +70,7 @@ $songs = callSupabase("hunglouis");
 
 <!-- NHẠC PHP -->
 <div class="grid">
-<?php while($s = ($songs)): ?>
+<?php foreach ($songs as $s): ?>
 <div class="card">
 
 <?php if (!empty($s['image_url'])): ?>
@@ -87,7 +87,7 @@ $songs = callSupabase("hunglouis");
 </button>
 
 </div>
-<?php endwhile; ?>
+<?php endforeach; ?>
 </div>
 
 <!-- NFT -->
