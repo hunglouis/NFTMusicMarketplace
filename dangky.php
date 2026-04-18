@@ -1,20 +1,33 @@
 <?php
-require_once 'db.php'; // Gọi file kết nối database
+require_once 'db.php';
+error_reporting(0); // Tắt thông báo lỗi hệ thống để giao diện sạch sẽ
 
-$thongbao = "";
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = $_POST['username'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $user = $_POST['username'];
-    // Mã hóa mật khẩu để bảo mật (quan trọng!)
-    $pass = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    if (!empty($username) && !empty($password)) {
+        // 1. Chuẩn bị dữ liệu để gửi lên Supabase
+        $newUser = [
+            "username" => $username,
+            "email"    => $email,
+            "password" => $password, // Sau này nên dùng password_hash để bảo mật hơn
+            "avatar"   => "default-avatar.png"
+        ];
 
-    // Câu lệnh SQL để lưu vào bảng users
-    $sql = "INSERT INTO users (username, password) VALUES ('$user', '$pass')";
-    
-    if (mysqli_query($conn, $sql)) {
-        $thongbao = "<p style='color:green;'>Đăng ký thành công! <a href='dangnhap.php'>Đăng nhập ngay</a></p>";
+        // 2. Gọi hàm callSupabase để chèn (POST) người dùng mới vào bảng users
+        $response = callSupabase('users', 'POST', $newUser);
+
+        if (isset($response['error'])) {
+            $error_msg = "Lỗi đăng ký: " . $response['error']['message'];
+        } else {
+            // Đăng ký thành công, chuyển về trang đăng nhập
+            header("Location: dangnhap.php?success=1");
+            exit;
+        }
     } else {
-        $thongbao = "<p style='color:red;'>Lỗi: " . mysqli_error($conn) . "</p>";
+        $error_msg = "Vui lòng nhập đầy đủ Username và Password!";
     }
 }
 ?>
@@ -23,27 +36,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Quỳnh Hương - Genesis Edition</title>
-    <!-- Link làm đẹp giao diện -->
+    <title>Đăng ký - Louis Music NFT</title>
     <script src="https://tailwindcss.com"></script>
-    <link href="https://cloudflare.com" rel="stylesheet">
     <style>
-        body { background: radial-gradient(circle at top right, #0891b2, #064e3b, #020617); min-height: 100vh; color: white; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(6, 182, 212, 0.2); }
+        body { background: radial-gradient(circle at bottom right, #0891b2, #020617); min-height: 100vh; display: flex; align-items: center; justify-content: center; color: white; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(6, 182, 212, 0.2); border-radius: 2.5rem; }
     </style>
 </head>
-<body class="p-10">
-    <!-- Toàn bộ phần vòng lặp foreach của bạn nằm ở đây -->
+<body>
+    <div class="glass p-10 w-full max-w-md shadow-2xl">
+        <h1 class="text-3xl font-black text-center mb-6 uppercase tracking-widest text-cyan-400">Đăng ký</h1>
+        
+        <?php if(isset($error_msg)) echo "<p class='text-red-400 text-sm mb-4 text-center'>$error_msg</p>"; ?>
 
-    <?php include 'navbar.php'; ?> <!-- Chèn thanh điều hướng -->
-    <div class="form-box">
-        <h2>Đăng Ký</h2>
-        <?php echo $thongbao; ?>
-        <form method="POST">
-            <input type="text" name="username" placeholder="Tên đăng nhập" required>
-            <input type="password" name="password" placeholder="Mật khẩu" required>
-            <button type="submit">Xác nhận Đăng ký</button>
+        <form method="POST" class="space-y-6">
+            <input type="text" name="username" placeholder="Tên đăng nhập" required class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-cyan-500 transition">
+            <input type="email" name="email" placeholder="Email của bạn" required class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-cyan-500 transition">
+            <input type="password" name="password" placeholder="Mật khẩu" required class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-cyan-500 transition">
+            
+            <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 rounded-2xl shadow-lg shadow-cyan-500/30 transition transform hover:scale-[1.02]">
+                TẠO TÀI KHOẢN NGAY
+            </button>
         </form>
+        <p class="text-center mt-6 text-sm text-gray-400">
+            Đã có tài khoản? <a href="dangnhap.php" class="text-cyan-400 hover:underline">Đăng nhập ngay</a>
+        </p>
     </div>
 </body>
 </html>

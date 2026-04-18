@@ -3,8 +3,8 @@ session_start();
 require_once 'db.php';
 require 'finance_logic.php';
 
-$user = $_SESSION['user'];
-$thongbao = "";
+$user = $_SESSION['user']?? 'nhạc sĩ Mạnh Hùng';
+//$thongbao = "";
 
 // XỬ LÝ KHI NHẤN NÚT MUA
 if (isset($_POST['buy_nft'])) {
