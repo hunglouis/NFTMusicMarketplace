@@ -2,7 +2,7 @@
 session_start();
 require_once 'db.php';
 require 'finance_logic.php';
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['user'])) {
     header("Location: dangnhap.php");
     exit;
 }

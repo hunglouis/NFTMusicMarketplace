@@ -40,6 +40,3 @@ if (!function_exists('callSupabase')) {
         return json_decode($response, true);
     }
 } 
-
-?>
-
