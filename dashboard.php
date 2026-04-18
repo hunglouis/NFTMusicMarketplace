@@ -2,12 +2,8 @@
 session_start();
 require_once 'db.php';
 require 'finance_logic.php';
-if (!isset($_SESSION['user'])) {
-    header("Location: dangnhap.php");
-    exit;
-}
-$display_name = $_SESSION['full_name']; // Sẽ hiện "Nhạc sĩ Mạnh Hùng" nếu user là hunglouis
-
+// 1. Kiểm tra: nếu có user thì lấy, không có thì gọi là 'Khách quý'
+$display_name = $_SESSION['user'] ?? 'Khách quý';   
 // Bảo mật: Chỉ anh (Admin) mới vào được trang này
 //if (!isset($_SESSION['user']) || $_SESSION['user'] !== 'hunglouis_manhhung') 
 // 1. Lấy thống kê tổng quan

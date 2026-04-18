@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="glass p-10 rounded-[2.5rem] w-full max-w-md shadow-2xl">
         <div class="text-center mb-8">
             <i class="fas fa-unlock-alt text-cyan-400 text-4xl mb-4"></i>
-            <h1 class="text-2xl font-bold">LOUIS MUSIC LOGIN</h1>
+            <h1 class="text-2xl font-bold">HUNGLOUIS MUSIC LOGIN</h1>
             <p class="text-cyan-200/60 text-sm">Chào mừng Nhạc sĩ quay trở lại</p>
         </div>
 
