@@ -1,5 +1,9 @@
 <?php
+<<<<<<< HEAD
 require_once 'db.php'; 
+=======
+require_once 'db.php';
+>>>>>>> c80f28e699f8a654a555ab53c88a7f61a5001b85
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $song_id = $_POST['song_id'];

@@ -9,7 +9,7 @@
     <a href="dashboard.php">DashBoard</a>
     <a href="index.php">🏠 TRANG CHỦ</a>
     <a href="wallet.php">💰 VÍ TIỀN</a>
-    <a href="marketplace.php">🎼 CHỢ NHẠC</a>
+    <a href="marketplace_supabase.php">🎼 CHỢ NHẠC</a>
     <a href="api_nft.php">Bộ Sưu tập của tôi trên Alchemy</a>
     <a href="api_opensea.php">Bộ Sưu tập cua tôi trên OpenSea</a>
     <a href="player.php">🎧 NGHE NHẠC</a>

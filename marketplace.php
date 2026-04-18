@@ -38,10 +38,10 @@ if (isset($_POST['buy_nft'])) {
 }
 
 // Lấy danh sách nhạc từ kho
-$songs = callSupabase($conn, "SELECT * FROM hunglouis");
+$songs = callSupabase("hunglouis?order_by=id.desc");
 ?>
 
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -72,7 +72,7 @@ $songs = callSupabase($conn, "SELECT * FROM hunglouis");
 
 <!-- NHẠC PHP -->
 <div class="grid">
-<?php while($s = mysqli_fetch_assoc($songs)): ?>
+<?php while($s = ($songs)): ?>
 <div class="card">
 
 <?php if (!empty($s['image_url'])): ?>
@@ -82,7 +82,7 @@ $songs = callSupabase($conn, "SELECT * FROM hunglouis");
 <?php endif; ?>
 
 <h3><?php echo $s['name']; ?></h3> <!-- Dùng 'name' thay vì 'title' -->
-<p class="price"><?php echo number_format($s['price']); ?> PHP</p>
+<p><?php echo number_format($s['price']); ?> PHP</p>
 <img src="<?php echo $s['image_url']; ?>">
 <button onclick="playLocal('<?php echo $s['audio_url']; ?>','<?php echo $s['title']; ?>')">
 ▶ Nghe thử
@@ -111,7 +111,6 @@ $songs = callSupabase($conn, "SELECT * FROM hunglouis");
 <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
 
 <script>
-
 let playlist = [];
 let currentIndex = 0;
 let isShuffle = false;
@@ -247,10 +246,9 @@ fetch("/api_nft.php", {
         const div = document.createElement("div");
         div.style.width = "200px";
 
-        div.innerHTML = `
+        div.innerHTML = 
             <img src="${img}" style="width:100%;height:200px;object-fit:cover">
-            <p>${name}</p>
-        `;
+            <p>${name}</p>;
 
         // ▶ PLAY
         const playBtn = document.createElement("button");
@@ -263,17 +261,45 @@ fetch("/api_nft.php", {
         buyBtn.style.background = "#2081e2";
         buyBtn.style.color = "#fff";
         buyBtn.onclick = () => buyNFT(nft);
-
         div.appendChild(playBtn);
         div.appendChild(buyBtn);
-
         container.appendChild(div);
     });
-
 });
-
 </script>
-
+<script>
+// Hàm này sẽ tự động chạy khi trang web tải xong
+document.addEventListener('DOMContentLoaded', function() {
+    const songContainer = document.querySelector('#song-grid'); // Nơi chứa hoa Quỳnh
+    const storageUrl = "https://supabase.co";
+    // Gọi đến file API Backend
+    fetch('api/marketplace.php')
+        .then(response => response.json())
+        .then(data => {
+            if (Array.isArray(data)) {
+                songContainer.innerHTML = ''; // Xóa thông báo "Đang tải"
+             
+            data.forEach(s => {
+                    // Tạo giao diện cho từng bông hoa
+                    const card = `
+                        <div class="glass p-5 rounded-[2rem] hover:scale-105 transition duration-500">
+                            <img src="${storageUrl + s.image_path}" class="w-full h-56 object-cover rounded-2xl mb-4">
+                            <h3 class="font-bold text-lg">${s.name || 'Hoa Quỳnh'}</h3>
+                            <audio controls class="w-full h-8 mt-4 brightness-110">
+                                <source src="${storageUrl + s.audio_path}" type="audio/mpeg">
+                            </audio>
+                        </div>
+                    `;
+                    songContainer.innerHTML += card;
+            });
+            }
+        })
+        .catch(error => {
+            console.error('Lỗi lấy dữ liệu:', error);
+            songContainer.innerHTML = '<p class="text-red-400">Không thể kết nối với API Backend.</p>';
+        });
+});
+</script>
 </body>
 </html>
 

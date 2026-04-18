@@ -2,8 +2,6 @@
 session_start();
 require_once 'db.php';
 
-$error = "";
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
@@ -43,6 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
+<!-- Giữ nguyên phần HTML giao diện màu xanh bên dưới của bạn -->
+
 
 <!DOCTYPE html>
 <html lang="vi">

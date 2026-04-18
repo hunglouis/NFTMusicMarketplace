@@ -43,7 +43,11 @@ $file_to_play = $is_owner ? $song['full_file'] : $song['demo_file'];
 </head>
 <body class="p-10">
     <!-- Toàn bộ phần vòng lặp foreach của bạn nằm ở đây -->
+<<<<<<< HEAD
 >
+=======
+
+>>>>>>> c80f28e699f8a654a555ab53c88a7f61a5001b85
     <?php include 'navbar.php'; ?>
 
     <div class="player-card">

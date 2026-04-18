@@ -2,19 +2,20 @@
 session_start();
 require_once 'db.php';
 require 'finance_logic.php';
+if (!isset($_SESSION['username'])) {
+    header("Location: dangnhap.php");
+    exit;
+}
+$display_name = $_SESSION['full_name']; // Sẽ hiện "Nhạc sĩ Mạnh Hùng" nếu user là hunglouis
 
 // Bảo mật: Chỉ anh (Admin) mới vào được trang này
-//if (!isset($_SESSION['user']) || $_SESSION['user'] !== 'hunglouis_manhhung') {
-    //die("Truy cập bị từ chối! Trang này chỉ dành cho Nhạc sĩ Mạnh Hùng.")}
-
+//if (!isset($_SESSION['user']) || $_SESSION['user'] !== 'hunglouis_manhhung') 
 // 1. Lấy thống kê tổng quan
-$res_total = mysqli_query($conn, "SELECT COUNT(*) as total FROM music_collection");
-$total_songs = mysqli_fetch_assoc($res_total)['total'];
-
-$balance = getBalance($conn, $_SESSION['user']);
+$total_songs = count(callSupabase("hunglouis?select=id"));
+$balance = getBalance($_SESSION['user']);
 
 // 2. Lấy danh sách nhạc để quản lý
-$songs = mysqli_query($conn, "SELECT * FROM music_collection ORDER BY id DESC");
+$songs = callSupabase("hunglouis?select=id");
 ?>
 
 <!DOCTYPE html>
@@ -30,10 +31,10 @@ $songs = mysqli_query($conn, "SELECT * FROM music_collection ORDER BY id DESC");
         .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(6, 182, 212, 0.2); }
     </style>
 </head>
-<body class="p-10">
-    <!-- Toàn bộ phần vòng lặp foreach của bạn nằm ở đây -->
-
+<body>
     <?php include 'navbar.php'; ?> <!-- Chèn thanh điều hướng -->
+     <!-- Toàn bộ phần vòng lặp foreach của bạn nằm ở đây -->
+   
     <div class="sidebar">
         <h3>MENU ADMIN</h3>
         <hr>
@@ -68,10 +69,10 @@ $songs = mysqli_query($conn, "SELECT * FROM music_collection ORDER BY id DESC");
                 </tr>
             </thead>
             <tbody>
-                <?php while($s = mysqli_fetch_assoc($songs)): ?>
+                <?php while($s = ($songs)): ?>
                 <tr>
                     <td>#<?php echo $s['id']; ?></td>
-                    <td style="font-weight: bold;"><?php echo $s['title']; ?></td>
+                    <td style="font-weight: bold;"><?php echo $s['name']; ?></td>
                     <td><?php echo number_format($s['price']); ?> PHP</td>
                     <td style="font-size: 11px; color: #8b949e;"><?php echo $s['demo_file']; ?></td>
                     <td><span class="badge-active">On Cloud</span></td>
@@ -82,7 +83,7 @@ $songs = mysqli_query($conn, "SELECT * FROM music_collection ORDER BY id DESC");
                     <td>
                     <form method="POST" action="update_image.php" style="display: flex; gap: 5px;">
                     <input type="hidden" name="song_id" value="<?php echo $s['id']; ?>">
-                    <input type="text" name="new_image_url" placeholder="Dán link ảnh..." 
+                    <input type="text" name="new_image_url" placeholder="Dán link ảnh..." style="background: #0d1117; color: white; border: 1px solid #30363d; padding: 5px; border-radius: 4px; font-size: 11px;">
                     style="background: #0d1117; color: white; border: 1px solid #30363d; padding: 5px; border-radius: 4px; font-size: 11px;">
                     <button type="submit" style="background: #238636; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px;">
                     Lưu
@@ -105,21 +106,21 @@ $songs = mysqli_query($conn, "SELECT * FROM music_collection ORDER BY id DESC");
             </tbody>
         </table>
     </div>
-<?php
+
 // Thông tin này lấy từ mục Database Settings trên Supabase của anh
-$host = "://supabase.com"; // Địa chỉ host Supabase
-$port = "5432";
-$dbname = "postgres";
-$user = "postgres.hmvvjjiiaelcsfqgxbxv"; // User cụ thể của anh
-$password = "MẬT_KHẨU_CỦA_ANH";
+//$host = "://supabase.com"; // Địa chỉ host Supabase
+//$port = "5432";
+//$dbname = "postgres";
+//$user = "postgres.hmvvjjiiaelcsfqgxbxv"; // User cụ thể của anh
+//$password = "MẬT_KHẨU_CỦA_ANH";
 
 // Kết nối PostgreSQL (Supabase dùng Postgres thay vì MySQL)
-$conn = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$password");
+//$conn = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$password");
 
-if (!$conn) {
-    die("Không thể kết nối đến trung tâm Supabase!");
-}
-?>
+//if (!$conn) {
+    //die("Không thể kết nối đến trung tâm Supabase!");
+//}
+////
 // Đoạn code giả lập logic đồng bộ đa nền tảng
 if (isset($_POST['sync_all'])) {
     // 1. Kết nối Polygon để lấy danh sách NFT hiện có (thông qua Contract của anh)
@@ -130,7 +131,8 @@ if (isset($_POST['sync_all'])) {
     $sql_sync = "UPDATE music_collection SET status = 'Synced', last_update = NOW()";
     mysqli_query($conn, $sql_sync);
     
-    echo "<script>alert('Đã đồng bộ thành công: OpenSea <=> Polygon <=> Supabase <=> Localhost');</script>";
+    echo "<script>alert('Đã đồng bộ thành công: OpenSea <=> Polygon <=> Supabase <=> Localhost');
+    </script>";
 }
 
 </body>

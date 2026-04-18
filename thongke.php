@@ -3,14 +3,14 @@ require_once 'db.php';
 require 'finance_logic.php';
 
 // 1. Lấy danh sách tất cả người dùng hiện có
-$users_res = mysqli_query($conn, "SELECT username FROM users");
+$users_res = ("username FROM users");
 
 $leaderboard = [];
 
-while ($u = mysqli_fetch_assoc($users_res)) {
+($u = $users_res) {
     $name = $u['username'];
     // Dùng hàm getBalance chúng ta đã viết ở file trước để tính tiền
-    $balance = getBalance($conn, $name);
+    $balance = getBalance($name);
     $leaderboard[] = ['name' => $name, 'balance' => $balance];
 }
 
@@ -20,8 +20,8 @@ usort($leaderboard, function($a, $b) {
 });
 
 // 3. Thống kê chung
-$total_blocks = mysqli_query($conn, "SELECT COUNT(*) as total FROM blockchain");
-$block_count = mysqli_fetch_assoc($total_blocks)['total'];
+$total_blocks = callSupabase("SELECT COUNT(*) as total FROM blockchain");
+$block_count = $total_blocks[0]['total'];
 ?>
 
 <!DOCTYPE html>
@@ -37,11 +37,11 @@ $block_count = mysqli_fetch_assoc($total_blocks)['total'];
         .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(6, 182, 212, 0.2); }
     </style>
 </head>
-<body class="p-10">
+<body> 
+    <?php include 'navbar.php'; ?> <!-- Chèn thanh điều hướng -->
+class="p-10">
     <!-- Toàn bộ phần vòng lặp foreach của bạn nằm ở đây -->
-
-        <?php include 'navbar.php'; ?> <!-- Chèn thanh điều hướng -->
-
+       
 <div class="stats-container">
     <h1>📊 BẢNG VÀNG ĐẠI GIA PHP</h1>
     
@@ -64,7 +64,6 @@ $block_count = mysqli_fetch_assoc($total_blocks)['total'];
         </tr>
         <?php endforeach; ?>
     </table>
-
     <p style="text-align: center; margin-top: 20px;">
         <a href="wallet.php" style="color: #58a6ff; text-decoration: none;">← Quay lại Ví của bạn</a>
     </p>

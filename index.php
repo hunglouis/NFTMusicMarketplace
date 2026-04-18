@@ -8,7 +8,7 @@ $songs = callSupabase('hunglouis?select=*', 'GET');
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Louis Music NFT Marketplace</title>
+    <title>Hungouis Music NFT Marketplace</title>
     <!-- Nhúng thư viện làm đẹp -->
     <script src="https://tailwindcss.com"></script>
     <link href="https://cloudflare.com" rel="stylesheet">
@@ -27,7 +27,7 @@ $songs = callSupabase('hunglouis?select=*', 'GET');
         <div class="bg-green-500 p-2 rounded-lg shadow-lg shadow-green-500/50">
             <i class="fas fa-compact-disc text-2xl text-white fa-spin"></i>
         </div>
-        <span class="text-2xl font-black tracking-tighter text-white">LOUIS<span class="text-green-400">MUSIC</span></span>
+        <span class="text-2xl font-black tracking-tighter text-white">HUNGLOUIS<span class="text-green-400">MUSIC</span></span>
     </div>
     
     <!-- Các nút bấm đã có link để sử dụng được -->
@@ -35,14 +35,13 @@ $songs = callSupabase('hunglouis?select=*', 'GET');
         <a href="index.php" class="text-green-400 border-b-2 border-green-400 pb-1">TRANG CHỦ</a>
         <a href="marketplace.php" class="text-white hover:text-green-400 transition">CHỢ NFT</a>
         <a href="dashboard.php" class="text-white hover:text-green-400 transition">BẢNG ĐIỀU KHIỂN</a>
-        <a href="collection.php" class="text-white hover:text-green-400 transition">BỘ SƯU TẬP</a>
+        <a href="marketplace_supabase.php" class="text-white hover:text-green-400 transition">BỘ SƯU TẬP</a>
     </div>
 
     <button class="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-400 hover:to-blue-500 text-white px-6 py-2 rounded-xl font-bold transition transform hover:scale-105 shadow-lg shadow-green-500/40">
         <i class="fas fa-wallet mr-2"></i>KẾT NỐI VÍ
     </button>
 </nav>
-
 
     <!-- 2. NỘI DUNG CHÍNH (HOA QUỲNH) -->
     <div class="container mx-auto px-6">
