@@ -24,3 +24,6 @@
     box-shadow: 0 0 20px rgba(6, 182, 212, 0.6);
     filter: brightness(1.2); /* Làm hoa quỳnh sáng bừng lên */
 }
+body {
+    margin-left: 220px;
+}

@@ -80,6 +80,8 @@ button {
 </head>
 
 <body>
+<?php include 'sidebar.php'; ?>
+
 <div class="menu">
 
     <div class="menu-left">
