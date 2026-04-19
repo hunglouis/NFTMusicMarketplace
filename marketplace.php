@@ -1,10 +1,10 @@
 <?php
 session_start();
-require_once 'db.php';
-require 'finance_logic.php';
+require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/finance_logic.php';
+$user = $_SESSION['user'] ?? 'nhạc sĩ Mạnh Hùng';
+set_time_limit(5); // Script chỉ được chạy tối đa 5 giây, sau đó tự ngắt.
 
-$user = $_SESSION['user']?? 'nhạc sĩ Mạnh Hùng';
-//$thongbao = "";
 
 // XỬ LÝ KHI NHẤN NÚT MUA
 if (isset($_POST['buy_nft'])) {
@@ -79,8 +79,8 @@ $songs = callSupabase("hunglouis");
 <div style="height:200px;background:#333;display:flex;align-items:center;justify-content:center;">No Image</div>
 <?php endif; ?>
 
-<h3><?php echo $row['title'] ?? 'Chưa đặt tên'; ?></h3>
-<p><?php echo $row['price'] ?? '0.00'; ?> ETH</p>
+<h3><?php echo $s['title'] ?? 'Chưa đặt tên'; ?></h3>
+<p><?php echo $s['price'] ?? '0.00'; ?> ETH</p>
 <img src="<?php echo $s['image_url']; ?>">
 <button onclick="playLocal('<?php echo $s['audio_url']; ?>','<?php echo $s['name']; ?>')">
 ▶ Nghe thử
@@ -274,7 +274,8 @@ fetch("/api_nft.php", {
 <script>
 // Hàm này sẽ tự động chạy khi trang web tải xong
 document.addEventListener('DOMContentLoaded', function() {
-    const songContainer = document.querySelector('#song-grid'); // Nơi chứa hoa Quỳnh
+    const songContainer = document.querySelector('#song-grid');
+		if (!songContainer) return	// Nơi chứa hoa Quỳnh
     const storageUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co/storage/v1/object/public/hunglouis/"; // URL gốc của Supabase Storage
 
     // Gọi đến file API Backend
@@ -295,9 +296,22 @@ document.addEventListener('DOMContentLoaded', function() {
                             </audio>
                         </div>
                     `;
-                    songContainer.innerHTML += card;
+					 if (!data || data.length === 0) {
+                    songContainer.innerHTML = 'HẾT NHẠC RỒI!';
+					 return;					 			 
                 });
             }
+        })
+		let htmlContent = ''; // Dùng biến tạm để cộng dồn chuỗi, tránh render liên tục
+            data.forEach(s => {
+                htmlContent += `
+                    <div class="glass p-5 rounded-[2rem]">
+                        <img src="${storageUrl + s.image_path}" class="w-full h-56 object-cover">
+                        <h3>${s.name}</h3>
+                        <audio src="${storageUrl + s.audio_path}" controls></audio>
+                    </div>`;
+            });
+            songContainer.innerHTML = htmlContent; // Chỉ cập nhật DOM đúng 1 lần duy nhất
         })
         .catch(error => {
             console.error('Lỗi lấy dữ liệu:', error);
