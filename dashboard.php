@@ -167,29 +167,7 @@ $user_display = $user;
         </table>
     </div>
 
-// Thông tin này lấy từ mục Database Settings trên Supabase của anh
-//$host = "://supabase.com"; // Địa chỉ host Supabase
-//$port = "5432";
-//$dbname = "postgres";
-//$user = "postgres.hmvvjjiiaelcsfqgxbxv"; // User cụ thể của anh
-//$password = "MẬT_KHẨU_CỦA_ANH";
 
-// Kết nối PostgreSQL (Supabase dùng Postgres thay vì MySQL)
-//$conn = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$password");
-
-//if (!$conn) {
-    //die("Không thể kết nối đến trung tâm Supabase!");
-//}
-////
-// Đoạn code giả lập logic đồng bộ đa nền tảng
-if (isset($_POST['sync_all'])) {
-    // 1. Kết nối Polygon để lấy danh sách NFT hiện có (thông qua Contract của anh)
-    // 2. Kết nối Pinata để lấy link nhạc chất lượng cao
-    // 3. Đổ tất cả vào Supabase
-    
-    // Giả lập lệnh cập nhật hàng loạt
-    $sql_sync = "UPDATE music_collection SET status = 'Synced', last_update = NOW()";
-    mysqli_query($conn, $sql_sync);
     
     echo "<script>alert('Đã đồng bộ thành công: OpenSea <=> Polygon <=> Supabase <=> Localhost');
     </script>";
