@@ -1,31 +1,51 @@
 <?php
 session_start();
 require_once 'db.php';
-require 'finance_logic.php'; 
+require 'finance_logic.php';
 
-if (!isset($_SESSION['user'])) { header("Location: dangnhap.php"); exit(); }
+if (!isset($_SESSION['user'])) { 
+    header("Location: dangnhap.php"); 
+    exit(); 
+}
 
 $user = $_SESSION['user'];
-$song_id = isset($_GET['id']) ? $_GET['id'] : 1; 
-// 1. Lấy thông tin bài hát từ kho
-$res_song = mysqli_query($conn, "SELECT * FROM hunglouis WHERE id='$song_id'");
-$song = mysqli_fetch_assoc($res_song);
-if (!$song) {
-    die("Không tìm thấy bài hát này trong hệ thống!");
+$song_id = isset($_GET['id']) ? (int)$_GET['id'] : 1;
+
+// 1) Lấy thông tin bài hát
+$res_song = callSupabase(
+    "hunglouis?select=*&id=eq." . $song_id . "&limit=1"
+);
+
+// Debug nhanh (tạm thời mở dòng này để xem API trả gì)
+var_dump($res_song);
+
+if (!is_array($res_song) || count($res_song) === 0) {
+    die("Không tìm thấy bài hát này trong hệ thống! (id=" . $song_id . ")");
 }
-// Tăng số lượt nghe lên 1 mỗi khi trang này được tải
-mysqli_query($conn, "UPDATE hunglouis SET views = views + 1 WHERE id = '$song_id'");
 
-// 2. KIỂM TRA QUYỀN SỞ HỮU (Dòng 18 quan trọng ở đây)
-// Chúng ta tìm xem có khối nào mà bạn là người gửi tiền với nội dung là tên bài hát này không
-$title = mysqli_real_escape_string($conn, $song['title']);
-$check_owner = mysqli_query($conn, "SELECT * FROM blockchain WHERE sender='$user' AND content='$title'");
+$song = $res_song[0];
 
-// Sửa lỗi: Kiểm tra xem truy vấn có thành công không trước khi đếm dòng
-$is_owner = ($check_owner && mysqli_num_rows($check_owner) > 0);
+// 1.1) Tăng views lên 1
+$current_views = (int)($song['views'] ?? 0);
 
-// 3. Quyết định file nhạc
-$file_to_play = $is_owner ? $song['full_file'] : $song['demo_file'];
+callSupabase(
+    "hunglouis?id=eq." . $song_id,
+    "PATCH",
+    ["views" => $current_views + 1]
+);
+
+// 2) KIỂM TRA QUYỀN SỞ HỮU
+$title = (string)($song['title'] ?? "");
+
+// Kiểm tra blockchain: sender = user và content = title
+$check_owner = callSupabase(
+    "blockchain?select=id&sender=eq." . urlencode($user) . "&content=eq." . urlencode($title) . "&limit=1"
+);
+
+$is_owner = (is_array($check_owner) && count($check_owner) > 0);
+
+// 3) Quyết định file nhạc
+$file_to_play = $is_owner ? ($song['full_file'] ?? '') : ($song['demo_file'] ?? '');
 ?>
 
 <!DOCTYPE html>
@@ -43,11 +63,7 @@ $file_to_play = $is_owner ? $song['full_file'] : $song['demo_file'];
 </head>
 <body class="p-10">
     <!-- Toàn bộ phần vòng lặp foreach của bạn nằm ở đây -->
-<<<<<<< HEAD
->
-=======
 
->>>>>>> c80f28e699f8a654a555ab53c88a7f61a5001b85
     <?php include 'navbar.php'; ?>
 
     <div class="player-card">

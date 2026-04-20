@@ -1,19 +1,27 @@
 <?php
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+  session_start();
+}
+$total_songs = $total_songs ?? 0;
+$balance = $balance ?? 0;
+$songs =  $songs ?? [];
 require_once 'db.php';
-// Nếu có user thì lấy, không có thì để là 'Khách'
-$user_display = $_SESSION['user'] ?? 'Khách';
+require_once 'finance_logic.php';
+set_time_limit(5);
 
-// 1. Kiểm tra: nếu có user thì lấy, không có thì gọi là 'Khách quý'
-$display_name = $_SESSION['user'] ?? 'Khách quý';   
-// Bảo mật: Chỉ anh (Admin) mới vào được trang này
-//if (!isset($_SESSION['user']) || $_SESSION['user'] !== 'hunglouis_manhhung') 
-// 1. Lấy thống kê tổng quan
-$total_songs = count(callSupabase("hunglouis?select=id"));
-$balance = getBalance($_SESSION['user']);
+// TẠM DEBUG: bỏ exit để trang tiếp tục chạy
+// echo isset($_SESSION['user']) ? 'user có' : 'user KHÔNG có';
+// echo '<pre>'; print_r($_SESSION); echo '</pre>';
+// exit;
 
-// 2. Lấy danh sách nhạc để quản lý
-$songs = callSupabase("hunglouis?select=id");
+// GỠ KHÓA TẠM: bỏ kiểm tra admin
+// if (empty($_SESSION['user']) || $_SESSION['user'] !== 'hunglouis') {
+//   die("Bạn chưa được phép vào trang này.");
+// }
+
+// Cho chạy tiếp dù không có session
+$user = $_SESSION['user'] ?? '';
+$user_display = $user;
 ?>
 
 <!DOCTYPE html>
@@ -98,14 +106,11 @@ $songs = callSupabase("hunglouis?select=id");
         <h1>🎙️ TRUNG TÂM ĐIỀU HÀNH STUDIO</h1>
         
         <div class="stat-card">
-            <div style="color: #8b949e;">Tổng tác phẩm</div>
-            <div style="font-size: 24px; font-weight: bold;"><?php echo $total_songs; ?></div>
-        </div>
-        
-        <div class="stat-card">
-            <div style="color: #8b949e;">Số dư ví Polygon</div>
-            <div style="font-size: 24px; font-weight: bold; color: #f2e711;"><?php echo number_format($balance); ?> PHP</div>
-        </div>
+  <div style="color: #8b949e;">Tổng tác phẩm</div>
+  <div style="font-size: 24px; font-weight: bold;">
+    <?php echo $total_songs ?? 0; ?>
+  </div>
+</div>
 
         <table>
             <thead>
@@ -120,40 +125,44 @@ $songs = callSupabase("hunglouis?select=id");
                 </tr>
             </thead>
             <tbody>
-                <?php while($s = ($songs)): ?>
-                <tr>
-                    <td>#<?php echo $s['id']; ?></td>
-                    <td style="font-weight: bold;"><?php echo $s['name']; ?></td>
-                    <td><?php echo number_format($s['price']); ?> PHP</td>
-                    <td style="font-size: 11px; color: #8b949e;"><?php echo $s['demo_file']; ?></td>
-                    <td><span class="badge-active">On Cloud</span></td>
-                    <td>
-                        <a href="player.php?id=<?php echo $s['id']; ?>" class="btn-edit">Nghe thử</a> | 
-                        <a href="#" class="btn-edit" style="color: #d73a49;">Gỡ bỏ</a>
-                    </td>
-                    <td>
-                    <form method="POST" action="update_image.php" style="display: flex; gap: 5px;">
-                    <input type="hidden" name="song_id" value="<?php echo $s['id']; ?>">
-                    <input type="text" name="new_image_url" placeholder="Dán link ảnh..." style="background: #0d1117; color: white; border: 1px solid #30363d; padding: 5px; border-radius: 4px; font-size: 11px;">
-                    style="background: #0d1117; color: white; border: 1px solid #30363d; padding: 5px; border-radius: 4px; font-size: 11px;">
-                    <button type="submit" style="background: #238636; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px;">
-                    Lưu
-                    </button>
-                    </form>
-                    </td>
-                    <td>
-        <!-- Nếu có link ảnh thì hiện ảnh, không thì hiện ô trống -->
-                    <?php if(!empty($s['image_url'])): ?>
-                    <img src="<?php echo $s['image_url']; ?>" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; margin-right: 10px; border: 1px solid #30363d;">
-                    <?php else: ?>
-                    <div style="width: 50px; height: 50px; background: #161b22; display: inline-block; vertical-align: middle; border-radius: 5px; margin-right: 10px;"></div>
-                    <?php endif; ?>
-    
-                    <span style="font-weight: bold;"><?php echo $s['title']; ?></span>
-                    </td>
+                <?php foreach ($songs as $s) : ?>
+  <tr>
+    <td>#<?php echo $s['id']; ?></td>
+    <td style="font-weight: bold;"><?php echo $s['name']; ?></td>
+    <td><?php echo number_format($s['price']); ?> PHP</td>
+    <td style="font-size: 11px; color: #8b949e;"><?php echo $s['demo_file']; ?></td>
+    <td><span class="badge-active">On Cloud</span></td>
+    <td>
+      <a href="player.php?id=<?php echo $s['id']; ?>" class="btn-edit">Nghe thử</a> | 
+      <a href="#" class="btn-edit" style="color: #d73a49;">Gỡ bỏ</a>
+    </td>
 
-                </tr>
-                <?php endwhile; ?>
+    <td>
+      <form method="POST" action="update_image.php" style="display: flex; gap: 5px;">
+        <input type="hidden" name="song_id" value="<?php echo $s['id']; ?>">
+        <input
+          type="text"
+          name="new_image_url"
+          placeholder="Dán link ảnh..."
+          style="background: #0d1117; color: white; border: 1px solid #30363d; padding: 5px; border-radius: 4px; font-size: 11px;"
+        >
+        <button type="submit" style="background: #238636; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px;">
+          Lưu
+        </button>
+      </form>
+    </td>
+
+    <td>
+      <?php if(!empty($s['image_url'])): ?>
+        <img src="<?php echo $s['image_url']; ?>" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; margin-right: 10px; border: 1px solid #30363d;">
+      <?php else: ?>
+        <div style="width: 50px; height: 50px; background: #161b22; display: inline-block; vertical-align: middle; border-radius: 5px; margin-right: 10px;"></div>
+      <?php endif; ?>
+
+      <span style="font-weight: bold;"><?php echo $s['title']; ?></span>
+    </td>
+  </tr>
+<?php endforeach; ?>
             </tbody>
         </table>
     </div>

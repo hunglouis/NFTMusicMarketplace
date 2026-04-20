@@ -10,7 +10,7 @@ $storageUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co/storage/v1/object/public
 // $method: GET (lấy dữ liệu), POST (thêm mới), PATCH (sửa)
 // $data: Mảng dữ liệu gửi đi (nếu có)
 if (!function_exists('callSupabase')) {
-    function callSupabase($path, $method = 'GET', $data = null) {
+    function callSupabase($conn, $method = 'GET', $data = null) {
         global $supabaseUrl, $supabaseKey;
         $url = $supabaseUrl . "/rest/v1/" ;
            

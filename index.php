@@ -29,7 +29,7 @@ $songs = callSupabase('hunglouis?select=*', 'GET');
         </div>
         <span class="text-2xl font-black tracking-tighter text-white">HUNGLOUIS<span class="text-green-400">MUSIC</span></span>
     </div>
-    
+  
     <!-- Các nút bấm đã có link để sử dụng được -->
     <div class="hidden md:flex gap-8 font-bold">
         <a href="index.php" class="text-green-400 border-b-2 border-green-400 pb-1">TRANG CHỦ</a>
@@ -42,7 +42,7 @@ $songs = callSupabase('hunglouis?select=*', 'GET');
         <i class="fas fa-wallet mr-2"></i>KẾT NỐI VÍ
     </button>
 </nav>
-
+<?php include 'navbar.php'; ?>
     <!-- 2. NỘI DUNG CHÍNH (HOA QUỲNH) -->
     <div class="container mx-auto px-6">
         <h2 class="text-3xl font-bold mb-8 flex items-center gap-3">

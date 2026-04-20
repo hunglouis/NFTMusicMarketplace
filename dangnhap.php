@@ -8,26 +8,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
 
-    // --- CỬA HẬU DÀNH RIÊNG CHO BẠN ---
-    if ($username === 'hunglouis' && $password === '123') { 
-        $_SESSION['user'] = 'Nhạc sĩ Mạnh Hùng';
-        header("Location: marketplace.php");
-        exit;
-    }
-
-    // Logic kiểm tra Supabase dự phòng
-    $path = "users?username=eq." . urlencode($username) . "&select=*";
+       // Logic kiểm tra Supabase dự phòng
+    
     $res = callSupabase($path, 'GET');
-    if (is_array($res) && !empty($res)) {
-        $user = $res[0];
-        if ($password === $user['password']) {
-            $_SESSION['user'] = 'Nhạc sĩ Mạnh Hùng';
-            header("Location: marketplace.php");
-            exit;
-        }
+  
     }
     $error = "Thông tin không chính xác!";
-}
+
 ?>
 
 <!DOCTYPE html>

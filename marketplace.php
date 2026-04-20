@@ -11,7 +11,7 @@ if (isset($_POST['buy_nft'])) {
     $song_id = $_POST['song_id'];
     $song_title = $_POST['song_title'];
     $price = $_POST['price'];
-    
+
     // 1. Kiểm tra số dư người mua
     $balance = getBalance($conn, $user);
     

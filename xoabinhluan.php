@@ -1,10 +1,6 @@
 <?php
 session_start();
 require_once 'db.php';
-<<<<<<< HEAD
-=======
-
->>>>>>> c80f28e699f8a654a555ab53c88a7f61a5001b85
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
     $user = $_SESSION['user'];
