@@ -3,7 +3,7 @@ session_start();
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/finance_logic.php';
 $user = $_SESSION['user'] ?? 'nhạc sĩ Mạnh Hùng';
-//set_time_limit(); // Script chỉ được chạy tối đa 5 giây, sau đó tự ngắt.
+//set_time_limit(5); // Script chỉ được chạy tối đa 5 giây, sau đó tự ngắt.
 
 
 // XỬ LÝ KHI NHẤN NÚT MUA
@@ -70,7 +70,7 @@ $songs = callSupabase("hunglouis");
 
 <!-- NHẠC PHP -->
 <div class="grid">
-<?php foreach ($songs as $s): ?>
+<?php while($songs = $s)?>
 <div class="card">
 
 <?php if (!empty($s['image_url'])): ?>
@@ -87,7 +87,7 @@ $songs = callSupabase("hunglouis");
 </button>
 
 </div>
-<?php endforeach; ?>
+<?php endwhile; ?>
 </div>
 
 <!-- NFT -->
@@ -320,7 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Lỗi lấy dữ liệu:', error);
             songContainer.innerHTML = '<p class="text-red-400">Không thể kết nối với API Backend.</p>';
         });
-});
+
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
