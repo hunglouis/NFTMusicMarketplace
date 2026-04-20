@@ -34,7 +34,8 @@ if (isset($_POST['buy_nft'])) {
 }
 
 // LẤY NHẠC
-$result = callSupabase("SELECT * FROM songs");
+// Lấy danh sách nhạc (Sửa lại tham số cho đúng logic hàm của bạn)
+$songs = callSupabase("SELECT * FROM songs");
 ?>
 
 <!DOCTYPE html>

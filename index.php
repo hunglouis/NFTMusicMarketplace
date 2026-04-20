@@ -1,79 +1,72 @@
-<?php
-require_once 'db.php';
-$storageUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
-$songs = callSupabase('hunglouis?select=*', 'GET');
-?>
-
 <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Hungouis Music NFT Marketplace</title>
-    <!-- Nhúng thư viện làm đẹp -->
-    <script src="https://tailwindcss.com"></script>
-    <link href="https://cloudflare.com" rel="stylesheet">
-    <style>
-        body { background: radial-gradient(circle at top right, #0891b2, #020617); min-height: 100vh; color: white; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(6, 182, 212, 0.2); }
-        .nav-link:hover { color: #22d3ee; transition: 0.3s; }
-    </style>
+<meta charset="UTF-8">
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="p-0">
 
-    <!-- 1. THANH MENU (NAVBAR) -->
-    <!-- THANH MENU (NAVBAR) CẢI TIẾN -->
-<nav class="glass sticky top-0 z-50 px-6 md:px-10 py-4 flex justify-between items-center mb-10 shadow-2xl border-b border-green-500/30">
-    <div class="flex items-center gap-3">
-        <div class="bg-green-500 p-2 rounded-lg shadow-lg shadow-green-500/50">
-            <i class="fas fa-compact-disc text-2xl text-white fa-spin"></i>
-        </div>
-        <span class="text-2xl font-black tracking-tighter text-white">HUNGLOUIS<span class="text-green-400">MUSIC</span></span>
-    </div>
-  
-    <!-- Các nút bấm đã có link để sử dụng được -->
-    <div class="hidden md:flex gap-8 font-bold">
-        <a href="index.php" class="text-green-400 border-b-2 border-green-400 pb-1">TRANG CHỦ</a>
-        <a href="marketplace.php" class="text-white hover:text-green-400 transition">CHỢ NFT</a>
-        <a href="dashboard.php" class="text-white hover:text-green-400 transition">BẢNG ĐIỀU KHIỂN</a>
-        <a href="marketplace_supabase.php" class="text-white hover:text-green-400 transition">BỘ SƯU TẬP</a>
-    </div>
+<body class="bg-black text-white p-10">
 
-    <button class="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-400 hover:to-blue-500 text-white px-6 py-2 rounded-xl font-bold transition transform hover:scale-105 shadow-lg shadow-green-500/40">
-        <i class="fas fa-wallet mr-2"></i>KẾT NỐI VÍ
-    </button>
-</nav>
-<?php include 'navbar.php'; ?>
-    <!-- 2. NỘI DUNG CHÍNH (HOA QUỲNH) -->
-    <div class="container mx-auto px-6">
-        <h2 class="text-3xl font-bold mb-8 flex items-center gap-3">
-            <i class="fas fa-star text-yellow-400"></i> Bộ sưu tập Hoa Quỳnh Genesis
-        </h2>
+<h1 class="text-3xl mb-5">🎼 NFT Music (Supabase)</h1>
+<h2 class="text-xl mt-6">Upload nhạc NFT</h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <?php if (is_array($songs)): foreach($songs as $s): ?>
-                <div class="glass p-5 rounded-[2rem] hover:scale-105 transition duration-500 group">
-                    <!-- Ảnh hoa -->
-                    <div class="relative overflow-hidden rounded-2xl mb-4">
-                        <img src="<?= $storageUrl . ($s['image_path'] ?? 'default.jpg') ?>" 
-                             class="w-full h-56 object-cover group-hover:scale-110 transition duration-700">
-                    </div>
-                    
-                    <!-- Thông tin -->
-                    <h3 class="font-bold text-lg mb-1 truncate"><?= $s['name'] ?? 'Tuyệt phẩm' ?></h3>
-                    <p class="text-green-400/70 text-xs mb-4 uppercase tracking-widest">Digital Art NFT</p>
-                    
-                    <!-- Trình phát nhạc -->
-                    <audio controls class="w-full h-8 brightness-125 hue-rotate-180">
-                        <source src="<?= $storageUrl . ($s['audio_path'] ?? '') ?>" type="audio/mpeg">
-                    </audio>
-                </div>
-            <?php endforeach; else: ?>
-                <p class="col-span-full text-center">Đang tải dữ liệu...</p>
-            <?php endif; ?>
-        </div>
-    </div>
+<input type="file" id="audio" class="text-black block my-2">
+<input type="file" id="image" class="text-black block my-2">
+<input id="title" placeholder="Tên bài" class="text-black p-2 block my-2">
+
+<button onclick="upload()" class="bg-green-500 px-4 py-2 rounded">
+    🚀 Upload + Mint NFT
+</button>
+
+<div id="grid" class="grid grid-cols-4 gap-5"></div>
+
+<div class="fixed bottom-0 left-0 w-full bg-gray-900 p-3">
+    <div id="now">Chưa phát</div>
+    <audio id="audio" controls class="w-full"></audio>
+</div>
+
+<script src="player.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<input id="email" placeholder="Email" class="text-black p-2">
+<input id="password" type="password" placeholder="Password" class="text-black p-2">
+
+<button onclick="login()" class="bg-green-500 px-3 py-2">
+    Login
+</button>
+
+<div id="auth" class="mb-6">
+    <input id="email" placeholder="Email" class="text-black p-2">
+    <input id="password" type="password" placeholder="Password" class="text-black p-2">
+    <button onclick="login()" class="bg-green-500 px-3 py-2">Login</button>
+</div>
+
+<script>
+const supabase = window.supabase.createClient(
+    "https://hmvvjjiiaelcsfqgxbxv.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw"
+);
+
+async function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email, password
+    });
+
+    if (error) return alert(error.message);
+
+    alert("Đăng nhập OK");
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
+
+<script src="assets/js/web3.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="player.js"></script>
+
 
 </body>
 </html>
-
-
