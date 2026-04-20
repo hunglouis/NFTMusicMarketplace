@@ -74,7 +74,7 @@ foreach ($alchemyData["ownedNfts"] as $nft) {
     $price = $priceMap[$tokenId] ?? null;
 
    $result[] = [
-    "tokenId" => $tokenId,
+    //"tokenId" => $tokenId,
     "name" => $name,
     "image" => $image,
     "audio" => $audio,
