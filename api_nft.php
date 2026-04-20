@@ -14,4 +14,10 @@ $url = "https://polygon-mainnet.g.alchemy.com/nft/v2/$apiKey/getNFTs?owner=$owne
 $response = file_get_contents($url);
 
 echo $response;
+$pageKey = $_GET['pageKey'] ?? '';
+
+if ($pageKey) {
+    $url .= "&pageKey=" . $pageKey;
+}
+
 ?>
