@@ -72,15 +72,15 @@ foreach ($alchemyData["ownedNfts"] as $nft) {
 
     // 🎯 price
     $price = $priceMap[$tokenId] ?? null;
-
+    var_dump($tokenId);
    $result[] = [
-    //"tokenId" => $tokenId,
+    "tokenId" => $tokenId,
     "name" => $name,
     "image" => $image,
     "audio" => $audio,
     "price" => $price,
     "opensea_url" => "https://opensea.io/assets/matic/",
-    "contract" => $nft["contract"].["address"] . "/" . hexdec($nft["id"]["tokenId"])
+    "contract" => $nft["contract"]["address"] . "/" . hexdec($nft["id"]["tokenId"])
 ];
 }
 

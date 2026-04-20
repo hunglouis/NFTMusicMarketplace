@@ -9,7 +9,7 @@ $url = "https://api.opensea.io/api/v2/chain/polygon/account/$wallet/nfts";
 $options = [
     "http" => [
         "method" => "GET",
-        "header" => "Accept: application/json\r\n"
+        "header" => "Accept: application/json"
     ]
 ];
 

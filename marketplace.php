@@ -3,7 +3,7 @@ session_start();
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/finance_logic.php';
 $user = $_SESSION['user'] ?? 'nhạc sĩ Mạnh Hùng';
-set_time_limit(5); // Script chỉ được chạy tối đa 5 giây, sau đó tự ngắt.
+//set_time_limit(); // Script chỉ được chạy tối đa 5 giây, sau đó tự ngắt.
 
 
 // XỬ LÝ KHI NHẤN NÚT MUA
@@ -155,6 +155,9 @@ function fixIPFS(url) {
 
 // 🎧 PLAY LOCAL
 function playLocal(url, name) {
+    
+console.log('audio_url=', url);  
+console.log('name=', name);
     mainAudio.src = url;
     mainAudio.play();
     nowPlaying.innerText = "🎵 " + name;
