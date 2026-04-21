@@ -87,5 +87,71 @@ $file_to_play = $is_owner ? ($song['full_file'] ?? '') : ($song['demo_file'] ?? 
         <br><br>
         <a href="marketplace.php" style="color: #8b949e; text-decoration: none; font-size: 13px;">← Quay lại Chợ Nhạc</a>
     </div>
+<script>
+<script>
+// 1. Khai báo máy nhạc
+const mainAudio = document.getElementById("main-audio");
+const nowPlaying = document.getElementById("now-playing");
+
+// 2. Hàm xử lý âm thanh chuẩn (Fix lỗi link đơ)
+function processAudioUrl(url) {
+    if (!url) return "";
+    let cleanUrl = url.trim();
+    // Nếu là link IPFS thì chuyển về link web công cộng
+    if (cleanUrl.startsWith("ipfs://")) {
+        return cleanUrl.replace("ipfs://", "https://ipfs.io");
+    }
+    return cleanUrl;
+}
+
+// 3. Hàm phát nhạc cho Supabase (Hàng nội bộ)
+function playLocal(url, name) {
+    const finalUrl = processAudioUrl(url);
+    if (!finalUrl) {
+        alert("Không tìm thấy link nhạc cho bài: " + name);
+        return;
+    }
+    
+    nowPlaying.innerText = "🎵 Đang tải: " + name + "...";
+    mainAudio.src = finalUrl;
+    
+    // Lệnh phát nhạc có xử lý lỗi
+    mainAudio.play()
+        .then(() => { nowPlaying.innerText = "🎵 Đang hát: " + name; })
+        .catch(e => {
+            console.error("Lỗi phát nhạc:", e);
+            nowPlaying.innerText = "❌ Lỗi: Không thể phát file này.";
+        });
+}
+
+// 4. Hàm phát nhạc cho OpenSea (Hàng Blockchain)
+function playMusic(index) {
+    const nft = playlist[index];
+    if (!nft) return;
+
+    // Tìm link nhạc trong mọi ngóc ngách của NFT
+    const rawUrl = nft.animation_url || nft.metadata?.animation_url || nft.rawMetadata?.animation_url;
+    const finalUrl = processAudioUrl(rawUrl);
+
+    if (!finalUrl) {
+        alert("NFT này không chứa file âm thanh!");
+        return;
+    }
+
+    nowPlaying.innerText = "🎵 Đang tải NFT: " + (nft.title || "Unnamed") + "...";
+    mainAudio.src = finalUrl;
+    mainAudio.play()
+        .then(() => { nowPlaying.innerText = "🎵 Đang hát NFT: " + (nft.title || "Unnamed"); })
+        .catch(e => {
+            nowPlaying.innerText = "❌ Lỗi: NFT này có định dạng nhạc không hỗ trợ.";
+        });
+}
+
+// 5. Tự động chuyển bài (Nếu muốn)
+mainAudio.onended = function() {
+    nowPlaying.innerText = "⏹ Đã hát xong.";
+};
+</svript>
+
 </body>
 </html>

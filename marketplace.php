@@ -1,10 +1,62 @@
 <?php
+error_reporting(0);
+ini_set('display_errors', 0);
+if (isset($_GET['init_9_cards'])) {
+    for ($i = 1; $i <= 9; $i++) {
+        $name = "Cửu Phẩm Quỳnh Hương - Sắc Thái " . $i;
+        callSupabase("INSERT INTO songs (name, price) VALUES ('$name', '0.05')");
+    }
+    echo "Đã tạo xong 9 ngăn trưng bày!";
+}
+
+// ... tiếp theo là session_start() và các code cũ của bạn ...
 session_start();
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/finance_logic.php';
 
 $user = $_SESSION['user'] ?? 'nhạc sĩ Mạnh Hùng';
 $thongbao = "";
+// ==================================================================
+// BƯỚC 1: ĐOẠN CODE TỰ ĐỘNG LẤY 12 TẤM QUỲNH HƯƠNG (DÁN VÀO ĐÂY)
+if (isset($_GET['auto_quynh'])) {
+    // 1. Bạn nhớ kiểm tra mã project ID của bạn trong tab Buckets nhé
+    $project_id = "hmvvjjiiaelcsfqgxbxv"; 
+    $bucket = "Music";
+
+    // Danh sách 12 lời thơ cho 12 sắc thái Quỳnh Hương
+    $tho = [
+        1 => "Quỳnh Hương khai nhụy đêm trăng", 
+        2 => "Sương khuya đọng lại bóng hằng tinh khôi",
+        3 => "Thanh tao một đóa giữa đời",
+        4 => "Hương bay dịu nhẹ đất trời ngất ngây",
+        5 => "Cánh hoa trắng muốt như mây",
+        6 => "Nửa đêm thức giấc tràn đầy sắc hương",
+        7 => "Gió đưa cánh mỏng vấn vương",
+        8 => "Huyền ảo đóa quỳnh trong sương mịt mờ",
+        9 => "Đẹp như một bức họa thơ",
+        10 => "Tình trong một khắc đợi chờ ngàn năm",
+        11 => "Sắc quỳnh rực rỡ đêm rằm",
+        12 => "Trăm năm một kiếp xa xăm bóng hình"
+    ];
+
+    callSupabase("DELETE FROM songs");
+
+    for ($i = 1; $i <= 12; $i++) {
+        $file_name = "quynhhuong$i.png";
+        $url = "https://$project_id.supabase.co/storage/v1/object/public/$bucket/$file_name";
+        $name = "Quỳnh Hương - " . $tho[$i]; // Gắn lời thơ vào tên bài hát
+        
+        $sql = "INSERT INTO songs (name, image_url, price) VALUES ('$name', '$url', '0.05')";
+        callSupabase($sql);
+    }
+    echo "<script>alert('12 đóa Quỳnh Hương kèm lời thơ đã sẵn sàng!'); window.location.href='marketplace.php';</script>";
+}
+
+// ==================================================================
+
+// Phải đặt dòng này bên dưới đoạn code xử lý auto_quynh
+$all_data = callSupabase("SELECT * FROM songs"); 
+
 // 1. Lấy dữ liệu Supabase (Code hiện tại của bạn)
 $res_supabase = callSupabase("SELECT * FROM songs");
 $all_data = [];
@@ -89,34 +141,55 @@ body {
 <?php include 'navbar.php'; ?>
 <!-- Container chung dùng Grid để đảm bảo cân đối -->
 <div id="nft-display-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-5">
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 p-5">
+    <!-- Vòng lặp hiển thị NFT của bạn -->
+</div>
     
     <!-- A. HIỂN THỊ DỮ LIỆU TỪ SUPABASE (PHP) -->
-    <?php if (!empty($all_data)): ?>
-        <?php foreach ($all_data as $item): ?>
-            <div class="card bg-gray-900 border border-gray-700 p-4 rounded-2xl shadow-xl flex flex-col justify-between h-[500px]">
-                <div>
-                    <?php if (!empty($item['image_url'])): ?>
-                        <img src="<?= $item['image_url'] ?>" class="w-full h-48 object-cover rounded-xl mb-4">
-                    <?php else: ?>
-                        <div class="w-full h-48 bg-gray-800 flex items-center justify-center rounded-xl mb-4 text-gray-500">No Image</div>
-                    <?php endif; ?>
-                    
-                    <h3 class="text-lg font-bold text-white truncate text-center"><?= $item['name'] ?></h3>
-                    <p class="text-yellow-500 font-bold text-center mt-1">💰 <?= $item['price'] ?> MATIC</p>
-                    <p class="text-xs text-gray-500 text-center mt-1">Nguồn: Supabase</p>
-                </div>
+    <!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
+<!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
+<!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
+<!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
+<!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
+<!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
+<!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
+<!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
+<?php if (!empty($all_data)): ?>
+    <?php foreach ($all_data as $item): ?>
+        <div class="card bg-gray-900 border border-gray-700 p-4 rounded-2xl shadow-xl flex flex-col justify-between h-[580px]">
+            <div>
+                <!-- Ảnh -->
+                <img src="<?php echo ($item['image_url'] ?? ''); ?>" class="w-full h-44 object-cover rounded-xl mb-4">
+                
+                <h3 class="text-lg font-bold text-white truncate text-center"><?php echo ($item['name'] ?? 'No name'); ?></h3>
+                <p class="text-yellow-500 font-bold text-center mt-1">💰 <?php echo ($item['price'] ?? '0'); ?> MATIC</p>
+                <p class="text-xs text-gray-400 text-center mt-1">Nguồn: Supabase</p>
 
-                <div class="flex flex-col gap-2 mt-4">
-                    <button onclick="playLocal('<?= $item['audio_url'] ?>', '<?= $item['name'] ?>')" 
-                            class="bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg font-medium transition-all">▶ Nghe Nhạc</button>
-                    <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition-all">🦊 Kết nối ví</button>
-                    <button class="bg-orange-600 hover:bg-orange-700 text-white py-2 rounded-lg font-medium transition-all">💰 Mua NFT</button>
+                <!-- KHUNG CHỈNH SỬA (FIXED) -->
+                <div id="edit-box-<?php echo $item['id']; ?>" class="hidden mt-3 p-3 bg-gray-800 rounded-lg border border-cyan-600 text-left">
+                    <form method="POST" class="flex flex-col gap-2">
+                        <input type="hidden" name="song_id" value="<?php echo $item['id']; ?>">
+                        <label class="text-xs text-cyan-400">Dán link ảnh Hoa Quỳnh:</label>
+                        <input type="text" name="update_image_url" placeholder="Dán link https://..." 
+                               class="bg-gray-700 text-white text-xs p-2 rounded border border-gray-600 outline-none w-full">
+                        <button type="submit" name="submit_update_image" class="bg-cyan-600 text-xs py-1.5 rounded font-bold text-white w-full">Lưu ảnh</button>
+                    </form>
                 </div>
             </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
 
-    <!-- B. KHU VỰC CHỜ CHO OPENSEA (JS) -->
+            <!-- NÚT BẤM -->
+            <div class="flex flex-col gap-2 mt-auto">
+                <button onclick="playLocal('<?php echo $item['audio_url']; ?>', '<?php echo addslashes($item['name'] ?? ''); ?>')" 
+                        class="bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-sm font-bold transition-all w-full">▶ Nghe Nhạc</button>
+                <button onclick="document.getElementById('edit-box-<?php echo $item['id']; ?>').classList.toggle('hidden')" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-bold transition-all w-full">✏️ Chỉnh sửa ảnh</button>
+                <button class="bg-orange-600 hover:bg-orange-700 text-white py-2 rounded-lg text-sm font-bold transition-all w-full">💰 Mua NFT</button>
+            </div>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>
+
+   <!-- B. KHU VỰC CHỜ CHO OPENSEA (JS) -->
     <!-- Dữ liệu JS sẽ được "nối đuôi" vào cùng hàng với Supabase -->
 </div>
 
@@ -141,21 +214,43 @@ body {
 <!-- Khu vực bao chung cho cả 2 nguồn -->
 <div id="combined-marketplace" class="grid grid-cols-1 md:grid-cols-3 gap-6 p-5">    
  <!-- BƯỚC A: ĐỔ NFT TỪ SUPABASE (Bằng PHP) -->
-    <?php if (!empty($all_data)): ?>
-        <?php foreach ($all_data as $item): ?>
-            <div class="card bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-                <img src="<?= $item['image_url'] ?>" class="w-full h-40 object-cover rounded mb-4">
-                <h3 class="text-center font-bold text-lg text-white"><?= $item['name'] ?></h3>
-                <p class="text-center text-yellow-500 mb-4">💰 <?= $item['price'] ?> MATIC</p>
+    <!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
+<?php if (!empty($all_data)): ?>
+    <?php foreach ($all_data as $item): ?>
+        <div class="card bg-gray-900 border border-gray-700 p-4 rounded-2xl shadow-xl flex flex-col justify-between h-[580px]">
+            <div>
+                <!-- Ảnh -->
+                <img src="<?= $item['image_url'] ?? '' ?>" class="w-full h-44 object-cover rounded-xl mb-4" onerror="this.src='https://placeholder.com'">
                 
-                <div class="grid grid-col gap-2">
-                    <button onclick="playLocal('<?= $item['audio_url'] ?>', '<?= $item['name'] ?>')" class="bg-green-600 hover:bg-green-700 py-2 rounded text-white text-sm">▶ Nghe</button>
-                    <button class="bg-blue-600 hover:bg-blue-700 py-2 rounded text-white text-sm grid items-center justify-center gap-2">🦊 Kết nối ví</button>
-                    <button class="bg-orange-600 hover:bg-orange-700 py-2 rounded text-white text-sm">💰 Mua NFT</button>
+                <h3 class="text-lg font-bold text-white truncate text-center"><?= $item['name'] ?? 'No name' ?></h3>
+                <p class="text-yellow-500 font-bold text-center mt-1">💰 <?= $item['price'] ?? '0' ?> MATIC</p>
+                <p class="text-xs text-gray-400 text-center mt-1">Nguồn: Supabase</p>
+
+                <!-- KHUNG CHỈNH SỬA (FIXED KHÔNG DÍNH CHỮ) -->
+                <div id="edit-box-<?= $item['id'] ?>" class="hidden mt-3 p-3 bg-gray-800 rounded-lg border border-cyan-600">
+                    <form method="POST">
+                        <input type="hidden" name="song_id" value="<?= $item['id'] ?>">
+                        <input type="text" name="update_image_url" placeholder="Dán link ảnh vào đây" class="w-full bg-gray-700 text-white text-xs p-2 rounded mb-2 outline-none">
+                        <div class="flex gap-1">
+                            <button type="submit" name="submit_update_image" class="flex-1 bg-cyan-600 text-white text-xs py-1.5 rounded font-bold">Lưu ảnh</button>
+                            <button type="submit" name="submit_delete_song" class="bg-red-600 text-white text-xs py-1.5 px-2 rounded font-bold" onclick="return confirm('Xóa bài này?')">🗑️</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
+
+            <!-- NÚT BẤM ĐỒNG BỘ -->
+            <div class="flex flex-col gap-2 mt-auto">
+                <button onclick="playLocal('<?= $item['audio_url'] ?>', '<?= addslashes($item['name'] ?? 'Music') ?>')" 
+                        class="bg-emerald-600 text-white py-2 rounded-lg text-sm font-bold">▶ Nghe Nhạc</button>
+                <button onclick="document.getElementById('edit-box-<?= $item['id'] ?>').classList.toggle('hidden')" 
+                        class="bg-blue-600 text-white py-2 rounded-lg text-sm font-bold">✏️ Chỉnh sửa ảnh</button>
+                <button class="bg-orange-600 text-white py-2 rounded-lg text-sm font-bold">💰 Mua NFT</button>
+            </div>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>
+
 
     <!-- NƠI ĐỂ JAVASCRIPT ĐỔ NFT OPENSEA VÀO TIẾP THEO -->
     <div id="nft-list" class="contents"></div> 
@@ -308,6 +403,8 @@ function renderNFTs(nfts) {
         container.appendChild(div);
     });
 }
+
+
 
 
 // GỌI HÀM
