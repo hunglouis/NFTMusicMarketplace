@@ -14,7 +14,7 @@
         <a href="marketplace.php">Local</a>
         <a href="marketplace_supabase.php">Supabase</a>
     </div>
-    <a href="marketplace_supabase.php">🎼 CHỢ NHẠC</a>
+    <a href="marketplace_supabase.php">🎼 NFT TRÊN SUPABASE</a>
     <a href="api_nft.php">Bộ Sưu tập của tôi trên Alchemy</a>
     <a href="api_opensea.php">Bộ Sưu tập cua tôi trên OpenSea</a>
     <a href="player.php">🎧 NGHE NHẠC</a>
