@@ -10,9 +10,9 @@ require_once __DIR__ . '/../db.php'; // Đường dẫn tới file db.php của 
 $data = callSupabase("SELECT id, name, image_url, audio_url, price FROM hunglouis ORDER BY id ASC LIMIT 50");
 function supabaseRequest($endpoint, $method = "GET", $data = null) {
     $URL="https://hmvvjjiiaelcsfqgxbxv.supabase.co"/rest/v1/".$endpoint;
-$headers = [
-   "apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDM0ODgzNywiZXhwIjoyMDg5OTI0ODM3fQ._nfvEI7MYFfppe-SOrdsS6t5O54wXOPOYDQP-HJoOQQ,
-   "Authorization: Bearer "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDM0ODgzNywiZXhwIjoyMDg5OTI0ODM3fQ._nfvEI7MYFfppe-SOrdsS6t5O54wXOPOYDQP-HJoOQQ,
+headers = [
+   "apikey: "
+   "Authorization: Bearer "
    "Content-Type: application/json"
     ];
 
