@@ -13,7 +13,7 @@ if (isset($_GET['init_9_cards'])) {
 session_start();
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/finance_logic.php';
-
+set_time_limit(5);
 $user = $_SESSION['user'] ?? 'nhạc sĩ Mạnh Hùng';
 $thongbao = "";
 // ==================================================================
