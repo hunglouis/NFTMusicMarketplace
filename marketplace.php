@@ -1,414 +1,281 @@
 <?php
-error_reporting(0);
-ini_set('display_errors', 0);
-if (isset($_GET['init_9_cards'])) {
-    for ($i = 1; $i <= 9; $i++) {
-        $name = "Cửu Phẩm Quỳnh Hương - Sắc Thái " . $i;
-        callSupabase("INSERT INTO songs (name, price) VALUES ('$name', '0.05')");
-    }
-    echo "Đã tạo xong 9 ngăn trưng bày!";
-}
-
-// ... tiếp theo là session_start() và các code cũ của bạn ...
 session_start();
-require_once __DIR__ . '/db.php';
-require_once __DIR__ . '/finance_logic.php';
-set_time_limit(5);
-$user = $_SESSION['user'] ?? 'nhạc sĩ Mạnh Hùng';
-$thongbao = "";
-// ==================================================================
-// BƯỚC 1: ĐOẠN CODE TỰ ĐỘNG LẤY 12 TẤM QUỲNH HƯƠNG (DÁN VÀO ĐÂY)
-if (isset($_GET['auto_quynh'])) {
-    // 1. Bạn nhớ kiểm tra mã project ID của bạn trong tab Buckets nhé
-    $project_id = "hmvvjjiiaelcsfqgxbxv"; 
-    $bucket = "Music";
+// Khai báo các thông số kết nối trực tiếp
+$supabaseUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
+$apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw"; 
 
-    // Danh sách 12 lời thơ cho 12 sắc thái Quỳnh Hương
-    $tho = [
-        1 => "Quỳnh Hương khai nhụy đêm trăng", 
-        2 => "Sương khuya đọng lại bóng hằng tinh khôi",
-        3 => "Thanh tao một đóa giữa đời",
-        4 => "Hương bay dịu nhẹ đất trời ngất ngây",
-        5 => "Cánh hoa trắng muốt như mây",
-        6 => "Nửa đêm thức giấc tràn đầy sắc hương",
-        7 => "Gió đưa cánh mỏng vấn vương",
-        8 => "Huyền ảo đóa quỳnh trong sương mịt mờ",
-        9 => "Đẹp như một bức họa thơ",
-        10 => "Tình trong một khắc đợi chờ ngàn năm",
-        11 => "Sắc quỳnh rực rỡ đêm rằm",
-        12 => "Trăm năm một kiếp xa xăm bóng hình"
+// 1. GỌI DỮ LIỆU THẬT TỪ SUPABASE
+$fullUrl = $supabaseUrl . "/rest/v1/hunglouis?select=*&order=id.asc&limit=50";
+$ch = curl_init($fullUrl);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "apikey: " . $apiKey,
+    "Authorization: Bearer " . $apiKey,
+    "Content-Type: application/json"
+]);
+$response = curl_exec($ch);
+$all_data = json_decode($response, true);
+curl_close($ch);
+
+// 2. NẾU SUPABASE TRỐNG, TỰ ĐỘNG HIỆN HÀNG MẪU (Để bạn yên lòng dàn trang)
+if (empty($all_data)) {
+    $all_data = [
+        [
+            "id" => "0",
+            "name" => "Hàng mẫu: Quỳnh Hương 01",
+            "price" => "0.05",
+            "image_url" => "https://vnecdn.net"
+        ],
+        [
+            "id" => "0",
+            "name" => "Hàng mẫu: Ngày Tình Xa",
+            "price" => "0.1",
+            "image_url" => "https://scdn.co"
+        ]
     ];
-
-    callSupabase("DELETE FROM songs");
-
-    for ($i = 1; $i <= 12; $i++) {
-        $file_name = "quynhhuong$i.png";
-        $url = "https://$project_id.supabase.co/storage/v1/object/public/$bucket/$file_name";
-        $name = "Quỳnh Hương - " . $tho[$i]; // Gắn lời thơ vào tên bài hát
-        
-        $sql = "INSERT INTO songs (name, image_url, price) VALUES ('$name', '$url', '0.05')";
-        callSupabase($sql);
-    }
-    echo "<script>alert('12 đóa Quỳnh Hương kèm lời thơ đã sẵn sàng!'); window.location.href='marketplace.php';</script>";
 }
 
-// ==================================================================
-
-// Phải đặt dòng này bên dưới đoạn code xử lý auto_quynh
-$all_data = callSupabase("SELECT * FROM songs"); 
-
-// 1. Lấy dữ liệu Supabase (Code hiện tại của bạn)
-$res_supabase = callSupabase("SELECT * FROM songs");
-$all_data = [];
-if (!empty($res_supabase)) {
-    $nfts_supabase = is_string($res_supabase) ? json_decode($res_supabase, true) : $res_supabase;
-    foreach ($nfts_supabase as $s) {
-        $all_data[] = [
-            'name'      => $s['name'] ?? 'No name',
-            'price'     => $s['price'] ?? '0',
-            'audio_url' => $s['audio_url'] ?? '',
-            'image_url' => $s['image_url'] ?? '',
-            'source'    => 'Supabase' // Đánh dấu để dùng nút bấm riêng
-        ];
-    }
-}
-
-// 2. ĐƯA DỮ LIỆU OPENSEA VÀO MẢNG CHUNG
-if (!empty($nfts_opensea) && is_array($nfts_opensea)) {
-    foreach ($nfts_opensea as $n) {
-        if (is_array($n)) {
-            $all_data[] = [
-                'name'      => $n['name'] ?? 'No name',
-                'image_url' => $n['image_url'] ?? '',
-                'price'     => '0.01', 
-                'audio_url' => $n['audio_url'] ?? '', 
-                'source'    => 'OpenSea'
-            ];
-        }
-    }
-}
-
-// Trộn lẫn 2 nguồn nếu có dữ liệu
-if (!empty($all_data)) {
-    shuffle($all_data); 
-}
-
-// MUA NFT (GIỮ NGUYÊN HOÀN TOÀN LOGIC CỦA BẠN)
-if (isset($_POST['buy_nft'])) {
-    $song_id = $_POST['song_id'];
-    $song_title = htmlspecialchars($_POST['song_title']);
-    $price = (float)$_POST['price'];
-    $balance = getBalance($conn, $user);
-    if ($balance >= $price) {
-        $prevHash = getLatestHash($conn);
-        $res = callSupabase("SELECT id FROM blockchain ORDER BY id DESC LIMIT 1");
-        $next_id = (isset($res[0]['id']) ? $res[0]['id'] : 0) + 1;
-        $hash = calculateFinanceHash($next_id, $prevHash, $user, 'Hệ thống Music NFT', $price);
-        $sql = "INSERT INTO blockchain (sender, receiver, amount, content, prev_hash, hash) 
-                VALUES ('$user', 'Nhạc sĩ Mạnh Hùng', $price, '$song_title', '$prevHash', '$hash')";
-        if (callSupabase($sql)) {
-            $thongbao = "<div style='color:lime'>✔️ Đã mua: $song_title</div>";
-        }
-    } else {
-        $thongbao = "<div style='color:red'>❌ Không đủ tiền</div>";
-    }
-}
+$user = $_SESSION['user'] ?? 'Nhạc sĩ Mạnh Hùng';
 ?>
+
 
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title> NHẠC NFT</title>
+    <meta charset="UTF-8">
+    <title>CỬA HÀNG NHẠC NFT - MẠNH HÙNG</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: radial-gradient(circle at top right, #0891b2, #064e3b, #020617);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        body { 
+            padding-left: 16rem;
+        }
 
-<!-- ✅ Tailwind đúng -->
-<script src="https://cdn.tailwindcss.com"></script>
+        .card-nft {
+            background: rgba(255, 255, 255, 0.02); /* Trong suốt hơn */
+            backdrop-filter: blur(12px); /* Hiệu ứng kính mờ */
+            border: 1px solid rgba(255, 255, 255, 0.05); /* Viền cực mảnh */
+            border-radius: 24px; /* Bo tròn sâu hơn cho sang trọng */
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-<style>
-body {
-    background: radial-gradient(circle at top right, #0891b2, #064e3b, #020617);
-    color: white;
+        .card-nft:hover {
+            transform: translateY(-12px) scale(1.02); /* Bay bổng hơn khi rà chuột */
+            border-color: rgba(6, 182, 212, 0.4);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-action {
+             border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
 }
-.card {
-    background: rgba(255,255,255,0.05);
-    padding:15px;
-    border-radius:15px;
-}
-</style>
+
+    </style>
 </head>
-
-<body class="p-10">
-<?php include 'navbar.php'; ?>
-<!-- Container chung dùng Grid để đảm bảo cân đối -->
-<div id="nft-display-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-5">
-<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 p-5">
-    <!-- Vòng lặp hiển thị NFT của bạn -->
-</div>
+<body class="p-5 md:p-10">
     
-    <!-- A. HIỂN THỊ DỮ LIỆU TỪ SUPABASE (PHP) -->
-    <!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
-<!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
-<!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
-<!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
-<!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
-<!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
-<!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
-<!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
-<?php if (!empty($all_data)): ?>
-    <?php foreach ($all_data as $item): ?>
-        <div class="card bg-gray-900 border border-gray-700 p-4 rounded-2xl shadow-xl flex flex-col justify-between h-[580px]">
-            <div>
-                <!-- Ảnh -->
-                <img src="<?php echo ($item['image_url'] ?? ''); ?>" class="w-full h-44 object-cover rounded-xl mb-4">
-                
-                <h3 class="text-lg font-bold text-white truncate text-center"><?php echo ($item['name'] ?? 'No name'); ?></h3>
-                <p class="text-yellow-500 font-bold text-center mt-1">💰 <?php echo ($item['price'] ?? '0'); ?> MATIC</p>
-                <p class="text-xs text-gray-400 text-center mt-1">Nguồn: Supabase</p>
+    <?php if(file_exists('navbar.php')) include 'navbar.php'; ?>
 
-                <!-- KHUNG CHỈNH SỬA (FIXED) -->
-                <div id="edit-box-<?php echo $item['id']; ?>" class="hidden mt-3 p-3 bg-gray-800 rounded-lg border border-cyan-600 text-left">
-                    <form method="POST" class="flex flex-col gap-2">
-                        <input type="hidden" name="song_id" value="<?php echo $item['id']; ?>">
-                        <label class="text-xs text-cyan-400">Dán link ảnh Hoa Quỳnh:</label>
-                        <input type="text" name="update_image_url" placeholder="Dán link https://..." 
-                               class="bg-gray-700 text-white text-xs p-2 rounded border border-gray-600 outline-none w-full">
-                        <button type="submit" name="submit_update_image" class="bg-cyan-600 text-xs py-1.5 rounded font-bold text-white w-full">Lưu ảnh</button>
-                    </form>
-                </div>
-            </div>
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400 mb-2">
+                NFT MARKETPLACE
+            </h1>
+            <p class="text-gray-400">Chào mừng nghệ sĩ: <span class="text-cyan-400 font-bold"><?php echo $user; ?></span></p>
+        </header>
 
-            <!-- NÚT BẤM -->
-            <div class="flex flex-col gap-2 mt-auto">
-                <button onclick="playLocal('<?php echo $item['audio_url']; ?>', '<?php echo addslashes($item['name'] ?? ''); ?>')" 
-                        class="bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-sm font-bold transition-all w-full">▶ Nghe Nhạc</button>
-                <button onclick="document.getElementById('edit-box-<?php echo $item['id']; ?>').classList.toggle('hidden')" 
-                        class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-bold transition-all w-full">✏️ Chỉnh sửa ảnh</button>
-                <button class="bg-orange-600 hover:bg-orange-700 text-white py-2 rounded-lg text-sm font-bold transition-all w-full">💰 Mua NFT</button>
-            </div>
-        </div>
-    <?php endforeach; ?>
-<?php endif; ?>
+        <!-- GRID HIỂN THỊ HÀNG HÓA -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            
+            <?php if (!empty($all_data) && is_array($all_data)): ?>
+                <?php foreach ($all_data as $item): ?>
+                    <div class="card-nft rounded-3xl p-5 flex flex-col h-[520px]">
+                                                <!-- Ảnh NFT -->
+                        <div class="relative h-56 w-full mb-4 overflow-hidden rounded-2xl group">
+                            <a href="nft_detail.php?id=<?php echo $item['id']; ?>" class="block h-full w-full">
+                                <img src="<?php echo $item['image_url'] ?: 'https://placeholder.com'; ?>" 
+                                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                
+                                <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-cyan-400">
+                                    #<?php echo $item['id']; ?>
+                                </div>
 
-   <!-- B. KHU VỰC CHỜ CHO OPENSEA (JS) -->
-    <!-- Dữ liệu JS sẽ được "nối đuôi" vào cùng hàng với Supabase -->
-</div>
-
-<!-- Thay đổi class thành grid để tự động chia cột và xuống hàng -->
-<div id="nft-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-5">
-    
-    <!-- Phần PHP (Supabase) của bạn nằm ở đây -->
-    <?php foreach ($all_data as $item): ?>
-        <div class="card bg-gray-800 p-4 rounded-xl border border-gray-700 grid grid-col h-full">
-             <!-- Giữ nguyên nội dung bên trong thẻ card của bạn -->
-        </div>
-    <?php endforeach; ?>
-
-    <!-- Phần OpenSea (JavaScript) sẽ được vẽ tiếp vào đây -->
-</div>
-
-<h1 class="text-3xl mb-6 text-center">🎼  NHẠC NFT</h1>
-
-<!-- HIỂN THỊ THÔNG BÁO MUA BÁN CỦA BẠN -->
-<div class="mb-4 text-center"><?= $thongbao ?></div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-<!-- Khu vực bao chung cho cả 2 nguồn -->
-<div id="combined-marketplace" class="grid grid-cols-1 md:grid-cols-3 gap-6 p-5">    
- <!-- BƯỚC A: ĐỔ NFT TỪ SUPABASE (Bằng PHP) -->
-    <!-- DUYỆT VÀ HIỂN THỊ NFT TỪ SUPABASE -->
-<?php if (!empty($all_data)): ?>
-    <?php foreach ($all_data as $item): ?>
-        <div class="card bg-gray-900 border border-gray-700 p-4 rounded-2xl shadow-xl flex flex-col justify-between h-[580px]">
-            <div>
-                <!-- Ảnh -->
-                <img src="<?= $item['image_url'] ?? '' ?>" class="w-full h-44 object-cover rounded-xl mb-4" onerror="this.src='https://placeholder.com'">
-                
-                <h3 class="text-lg font-bold text-white truncate text-center"><?= $item['name'] ?? 'No name' ?></h3>
-                <p class="text-yellow-500 font-bold text-center mt-1">💰 <?= $item['price'] ?? '0' ?> MATIC</p>
-                <p class="text-xs text-gray-400 text-center mt-1">Nguồn: Supabase</p>
-
-                <!-- KHUNG CHỈNH SỬA (FIXED KHÔNG DÍNH CHỮ) -->
-                <div id="edit-box-<?= $item['id'] ?>" class="hidden mt-3 p-3 bg-gray-800 rounded-lg border border-cyan-600">
-                    <form method="POST">
-                        <input type="hidden" name="song_id" value="<?= $item['id'] ?>">
-                        <input type="text" name="update_image_url" placeholder="Dán link ảnh vào đây" class="w-full bg-gray-700 text-white text-xs p-2 rounded mb-2 outline-none">
-                        <div class="flex gap-1">
-                            <button type="submit" name="submit_update_image" class="flex-1 bg-cyan-600 text-white text-xs py-1.5 rounded font-bold">Lưu ảnh</button>
-                            <button type="submit" name="submit_delete_song" class="bg-red-600 text-white text-xs py-1.5 px-2 rounded font-bold" onclick="return confirm('Xóa bài này?')">🗑️</button>
+                                <div class="absolute inset-0 bg-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <span class="bg-black/80 text-white text-[10px] px-3 py-1 rounded-full border border-cyan-500">XEM CHI TIẾT</span>
+                                </div>
+                            </a>
                         </div>
-                    </form>
+
+                        <!-- Thông tin -->
+                        <div class="flex-grow">
+                           
+                        <h3 class="text-lg font-bold text-white line-clamp-2 mb-2 leading-tight">
+                                <?php echo $item['name'] ?: 'Tác phẩm chưa đặt tên'; ?>
+                            </h3>
+                            <div class="flex justify-between items-center bg-white/5 p-3 rounded-xl">
+                                <span class="text-gray-400 text-sm">Giá niêm yết</span>
+                                <span class="text-emerald-400 font-black">💰 <?php echo $item['price']; ?> MATIC</span>
+                            </div>
+                        </div>
+
+                        <!-- Nút hành động -->
+                        <div class="grid grid-cols-2 gap-3 mt-5">
+                            <button onclick="playMusic('<?php echo $item['audio_url'] ?: $item['image_url']; ?>', '<?php echo addslashes($item['name']); ?>', '<?php echo $item['image_url']; ?>')" 
+                                class="bg-cyan-600 hover:bg-cyan-500 text-white py-2 px-4 rounded-lg text-xs font-bold transition-all flex items-center gap-2">
+                                    ▶ Nghe/Xem thử
+                            </button>
+
+
+
+
+                            <form method="POST">
+                                <input type="hidden" name="song_id" value="<?php echo $item['id']; ?>">
+                                <button name="buy_nft" class="w-full bg-white text-black hover:bg-emerald-400 hover:text-white py-2.5 rounded-xl text-sm font-bold transition-all">
+                                    Sở hữu ngay
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <!-- Thông báo khi kho hàng trống -->
+                <div class="col-span-full text-center py-20 bg-white/5 rounded-3xl border border-dashed border-gray-700">
+                    <p class="text-gray-500 text-xl">Kho hàng hiện đang trống...</p>
+                    <a href="?auto_quynh=1" class="mt-4 inline-block text-cyan-400 underline italic">Tự động nhập 12 đóa Quỳnh Hương?</a>
+                    <a href="nft_detail.php?id=<?php echo $item['id']; ?>"> ... </a>
+                </div>
+            <?php endif; ?>
+
+        </div>
+    </div>
+
+    <!-- Thông báo mua hàng -->
+    <?php if (isset($thongbao)) echo "<div class='fixed bottom-5 right-5 p-4 rounded-2xl bg-black/80 border border-cyan-500 shadow-2xl'>$thongbao</div>"; ?>
+
+<!-- Music Player Bar -->
+<div id="music-player-bar" class="fixed bottom-0 left-0 w-full bg-black/95 backdrop-blur-md border-t border-cyan-500/50 p-4 transform translate-y-full transition-all duration-500 z-[100]">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+        
+        <!-- 1. Khu vực hiển thị Video/Ảnh -->
+        <div class="flex items-center gap-4 w-1/3">
+            <div class="relative w-24 h-14 bg-black rounded-lg overflow-hidden border border-cyan-400 group">
+                <video id="main-hybrid-player" class="w-full h-full object-cover cursor-pointer" onclick="toggleFullscreen()"></video>
+                <img id="player-poster" src="" class="absolute inset-0 w-full h-full object-cover hidden pointer-events-none">
+                <!-- Nút phóng to nhanh hiện khi di chuột vào -->
+                <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    <span class="text-[10px] text-white">CLICK PHÓNG TO</span>
                 </div>
             </div>
-
-            <!-- NÚT BẤM ĐỒNG BỘ -->
-            <div class="flex flex-col gap-2 mt-auto">
-                <button onclick="playLocal('<?= $item['audio_url'] ?>', '<?= addslashes($item['name'] ?? 'Music') ?>')" 
-                        class="bg-emerald-600 text-white py-2 rounded-lg text-sm font-bold">▶ Nghe Nhạc</button>
-                <button onclick="document.getElementById('edit-box-<?= $item['id'] ?>').classList.toggle('hidden')" 
-                        class="bg-blue-600 text-white py-2 rounded-lg text-sm font-bold">✏️ Chỉnh sửa ảnh</button>
-                <button class="bg-orange-600 text-white py-2 rounded-lg text-sm font-bold">💰 Mua NFT</button>
+            <div class="overflow-hidden">
+                <h4 id="player-title" class="text-white font-bold truncate text-sm">Tên bài hát</h4>
+                <p id="player-status" class="text-cyan-400 text-[10px] uppercase">Đang phát...</p>
             </div>
         </div>
-    <?php endforeach; ?>
-<?php endif; ?>
 
-
-    <!-- NƠI ĐỂ JAVASCRIPT ĐỔ NFT OPENSEA VÀO TIẾP THEO -->
-    <div id="nft-list" class="contents"></div> 
-</div>
-
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <?php if (!empty($all_data)): ?>
-        <?php foreach ($all_data as $item): ?>
-            <div class="card border p-4 rounded-lg bg-gray-800 text-white">
+        <!-- 2. Bộ điều khiển trung tâm -->
+        <div class="flex flex-col items-center gap-2 w-1/3">
+            <div class="flex items-center gap-8">
+                <!-- Nút Tạm dừng/Phát -->
+                <button onclick="togglePlay()" class="bg-white text-black p-3 rounded-full hover:scale-110 transition-transform">
+                    <div id="play-pause-icon">
+                        <!-- Mặc định hiện icon Pause khi đang hát -->
+                        <svg xmlns="http://w3.org" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                </button>
                 
-                <!-- Hiển thị Ảnh -->
-                <?php if (!empty($item['image_url'])): ?>
-                    <img src="<?= !empty($item['image_url']) ? $item['image_url'] : 'https://placeholder.com' ?>" class="w-full h-48 object-cover rounded">
-
-                <?php else: ?>
-                    <div class="h-48 bg-gray-700 grid items-center justify-center">No Image</div>
-                <?php endif; ?>
-
-                <!-- Hiển thị Tên và Giá -->
-                <h3 class="mt-3 font-bold"><?= $item['name'] ?? 'No name' ?></h3>
-                <p><?= $item['price'] ?? '0' ?> ETH</p>
-                
-                <!-- Nhãn nguồn để phân biệt -->
-                <span class="text-xs bg-gray-600 px-2 py-1 rounded">Nguồn: <?= $item['source'] ?></span>
-
-                <!-- Nút Nghe (Chỉ hiện nếu có link Audio) -->
-                <?php if (!empty($item['audio_url'])): ?>
-                    <button onclick="playLocal('<?= $item['audio_url'] ?>','<?= $item['name'] ?>')" 
-                            class="bg-cyan-500 px-3 py-1 rounded mt-2 block w-full">
-                        ▶ Nghe
-                    </button>
-                <?php endif; ?>
-
+                <!-- Nút Phóng to chuyên dụng -->
+                <button onclick="toggleFullscreen()" class="text-gray-400 hover:text-cyan-400 transition-colors">
+                    <svg xmlns="http://w3.org" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    </svg>
+                </button>
             </div>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <p class="col-span-3 text-center">Không có dữ liệu NFT nào được tìm thấy.</p>
-    <?php endif; ?>
+        </div>
+        <!-- 3. Nút Tắt hẳn -->
+        <div class="w-1/3 text-right">
+            <button onclick="closePlayer()" class="text-gray-500 hover:text-red-500 font-black text-xl px-4 transition-colors">✕</button>
+        </div>
+    </div>
 </div>
-
-<h2 class="mt-10 text-2xl font-bold">NFT của bạn</h2>
-
-<!-- PHẦN JS GỌI API ĐỂ IN RA NFT CỦA BẠN Ở ĐÂY -->
-<div id="nft-list" class="grid gap-5 grid-wrap"></div>
-
-<!-- PLAYER (GIỮ NGUYÊN HOÀN TOÀN CỦA BẠN) -->
-<div class="fixed bottom-0 left-0 w-full bg-black p-3">
-    <div id="now-playing">Chưa phát</div>
-    <audio id="main-audio" controls class="w-full"></audio>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
 
 <script>
+    // Toàn bộ logic điều khiển nhạc nằm ở đây
+    const playerBar = document.getElementById('music-player-bar');
+    const audioTag = document.getElementById('main-audio');
+    const playIcon = document.getElementById('play-icon');
 
-let playlist = [];
-let currentIndex = 0;
+    function playMusic(url, name, img) {
+    const player = document.getElementById('main-hybrid-player');
+    const poster = document.getElementById('player-poster');
+    const playerBar = document.getElementById('music-player-bar');
 
-const mainAudio = document.getElementById("main-audio");
-const nowPlaying = document.getElementById("now-playing");
+    if (!url) return alert("Không tìm thấy link tệp tin!");
 
-// PLAY LOCAL
-function playLocal(url, name) {
-    mainAudio.src = url;
-    mainAudio.play();
-    nowPlaying.innerText = "🎵 " + name;
+    // 1. Cập nhật thông tin cơ bản
+    document.getElementById('player-title').innerText = name;
+    player.src = url;
+
+    // 2. Kiểm tra định dạng để hiển thị "màn hình"
+    const isVideo = url.toLowerCase().includes('.mp4');
+    
+    if (isVideo) {
+        poster.classList.add('hidden'); // Ẩn ảnh bìa đi để hiện video
+    } else {
+        poster.src = img;
+        poster.classList.remove('hidden'); // Hiện ảnh bìa đè lên video nếu chỉ là nhạc
+    }
+
+    // 3. Hiện thanh điều khiển và phát
+    playerBar.classList.remove('translate-y-full');
+    player.play();
+    updatePlayIcon(true);
 }
 
-// NEXT
-function nextTrack() {
-    if (!playlist.length) return;
-    currentIndex = (currentIndex + 1) % playlist.length;
-    playMusic(currentIndex);
+function togglePlay() {
+    const player = document.getElementById('main-hybrid-player');
+    const iconContainer = document.getElementById('play-pause-icon');
+
+    if (player.paused) {
+        player.play();
+        iconContainer.innerHTML = '<svg xmlns="http://w3.org" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
+    } else {
+        player.pause();
+        iconContainer.innerHTML = '<svg xmlns="http://w3.org" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /></svg>';
+    }
 }
 
-// PLAY NFT
-function playMusic(index) {
-    const nft = playlist[index];
-    const audio = nft.animation_url || nft.metadata?.animation_url;
-    mainAudio.src = audio;
-    mainAudio.play();
-    nowPlaying.innerText = nft.title || "NFT";
+function toggleFullscreen() {
+    const player = document.getElementById('main-hybrid-player');
+    if (player.requestFullscreen) {
+        player.requestFullscreen();
+    } else if (player.webkitRequestFullscreen) { /* Safari */
+        player.webkitRequestFullscreen();
+    } else if (player.msRequestFullscreen) { /* IE11 */
+        player.msRequestFullscreen();
+    }
 }
 
-mainAudio.onended = nextTrack;
-
-// 🔥 LOAD TOÀN BỘ NFT (FULL)
-async function loadAllNFTs() {
-    let pageKey = null;
-    let allNFTs = [];
-
-    do {
-        let url = "api_nft.php";
-        if (pageKey) url += "?pageKey=" + pageKey;
-
-        const res = await fetch(url);
-        const data = await res.json();
-
-        if (data.ownedNfts) {
-            allNFTs = allNFTs.concat(data.ownedNfts);
-        }
-
-        pageKey = data.pageKey || null;
-
-    } while (pageKey);
-
-    renderNFTs(allNFTs);
+function closePlayer() {
+    const player = document.getElementById('main-hybrid-player');
+    const playerBar = document.getElementById('music-player-bar');
+    
+    player.pause(); // Dừng nhạc ngay lập tức
+    player.src = ""; // Xóa link nhạc
+    playerBar.classList.add('translate-y-full'); // Ẩn thanh công cụ
 }
 
-// RENDER NFT
-function renderNFTs(nfts) {
-    // Trỏ đúng vào Container chung để OpenSea hiện tiếp sau Supabase
-    const container = document.getElementById("nft-display-container"); 
-    // container.innerHTML = ""; // Giữ dòng này nếu muốn xóa các thông báo chờ
-
-    nfts.forEach((nft, index) => {
-        playlist.push(nft);
-
-        // 1. XỬ LÝ ẢNH & FIX LỖI IPFS (Hết lỗi dấu X)
-        let img = nft.media?.[0]?.gateway || nft.rawMetadata?.image || nft.metadata?.image || "";
-        if (img.startsWith("ipfs://")) {
-            img = img.replace("ipfs://", "https://ipfs.io");
-        } else if (!img) {
-            img = "https://placeholder.com";
-        }
-
-        let name = nft.title || nft.metadata?.name || "Unnamed NFT";
-
-        // 2. TẠO THẺ CARD ĐỒNG BỘ VỚI PHẦN TRÊN
-        const div = document.createElement("div");
-        // Class này giúp chia cột đều và cao bằng nhau
-        div.className = "card bg-gray-900 border border-gray-700 p-4 rounded-2xl shadow-xl flex flex-col justify-between h-[500px]";
-
-        div.innerHTML = `
-            <div>
-                <img src="${img}" class="w-full h-48 object-cover rounded-xl mb-4" onerror="this.src='https://placeholder.com'">
-                <h3 class="text-lg font-bold text-white truncate text-center">${name}</h3>
-                <p class="text-yellow-500 font-bold text-center mt-1">💰 0.01 ETH</p>
-                <p class="text-xs text-gray-500 text-center mt-1">Nguồn: OpenSea</p>
-            </div>
-
-            <div class="flex flex-col gap-2 mt-4">
-                <button onclick="playMusic(${index})" 
-                        class="bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg font-medium transition-all">▶ Nghe NFT</button>
-                <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition-all">🦊 Kết nối ví</button>
-                <button class="bg-orange-600 hover:bg-orange-700 text-white py-2 rounded-lg font-medium transition-all">💰 Mua NFT</button>
-            </div>
-        `;
-
-        container.appendChild(div);
-    });
-}
-
-
-
-
-// GỌI HÀM
-loadAllNFTs();
 </script>
 
 </body>
