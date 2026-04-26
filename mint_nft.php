@@ -192,11 +192,12 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
                 const nftData = {
                     name: document.getElementById('nft-name').value,
                     price: document.getElementById('nft-price').value,
-                    image_url: "ipfs://" + cid,
+                    image_url: "ipfs://" + data.IpfsHash,
                     description: document.getElementById('nft-desc').value
+                    wallet_address: document.getElementById('artist-wallet-detail').innerText // Lấy ví Mạnh Hùng
                 };
 
-                const resSupa = await fetch('save_to_supabase.php', {
+                fetch('save_to_supabase.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(nftData)
