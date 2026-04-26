@@ -132,6 +132,21 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
 <script>
     // 1. Chìa khóa kho di sản
     const PINATA_JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJkYmU0YWZlMi04ZTNkLTQzODItYmI4MC03NmEyNjYxZjUwNDciLCJlbWFpbCI6Imh1bmdsb3Vpcy5tYW5oaHVuZ0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJGUkExIn0seyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJOWUMxIn1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiYmM2MGZmMjQzNzYyMWYxODY3YzgiLCJzY29wZWRLZXlTZWNyZXQiOiJmN2Y0NDc2MTk0ZmI3ZmVhZTRkOGFmYzlkNTIzMGI5NDU3MjZkNWMwNDQ3ODFmOGYzZThiYzA3NTZiMGNmN2YzIiwiZXhwIjoxODA1OTUxMjIyfQ.KoZ-lqftq5bv-GDyjvoyHVvcf5h52K9RKYCIv6pBUGI";
+        
+    // HÀM XỬ LÝ KHI CHỌN FILE (DỨT ĐIỂM LỖI ĐỎ)
+    function handleFileSelect(input) {
+    if (input.files && input.files[0]) {
+        const fileName = input.files[0].name;
+        // Nếu bạn có thẻ hiện tên file thì nó sẽ hiện, nếu không cũng không sao
+        const status = document.getElementById('file-status');
+        if (status) {
+            status.innerText = "ĐÃ CHỌN: " + fileName;
+            status.style.color = "#eab308";
+        }
+        console.log("Đã chọn sản vật: " + fileName);
+    }
+}
+
 
     // 2. Tự động hiện địa chỉ ví vào Bản Giao Ước
     async function showWallet() {
@@ -193,16 +208,16 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
                     name: document.getElementById('nft-name').value,
                     price: document.getElementById('nft-price').value,
                     image_url: "ipfs://" + data.IpfsHash,
-                    description: document.getElementById('nft-desc').value
+                    description: document.getElementById('nft-desc').value,
                     wallet_address: document.getElementById('artist-wallet-detail').innerText // Lấy ví Mạnh Hùng
                 };
 
-                fetch('save_to_supabase.php', {
+               const resSupa = await fetch('save_to_supabase.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(nftData)
                 });
-                const resSupaData = await resSupa.json();
+                const resSupaData = await resSupa.json(); // <-- Hãy đảm bảo dòng này dùng đúng tên biến resSupa ở trên
 
                 if (resSupaData.success) {
                     alert("✨ TUYỆT VỜI! Di sản đã lên kệ hàng Marketplace.");
