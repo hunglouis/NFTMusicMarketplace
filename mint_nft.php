@@ -131,7 +131,7 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
 
 <script>
     // 1. Chìa khóa kho di sản
-    const PINATA_JWT = "DÁN_MÃ_JWT_CỦA_BẠN_VÀO_ĐÂY";
+    const PINATA_JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJkYmU0YWZlMi04ZTNkLTQzODItYmI4MC03NmEyNjYxZjUwNDciLCJlbWFpbCI6Imh1bmdsb3Vpcy5tYW5oaHVuZ0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJGUkExIn0seyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJOWUMxIn1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiYmM2MGZmMjQzNzYyMWYxODY3YzgiLCJzY29wZWRLZXlTZWNyZXQiOiJmN2Y0NDc2MTk0ZmI3ZmVhZTRkOGFmYzlkNTIzMGI5NDU3MjZkNWMwNDQ3ODFmOGYzZThiYzA3NTZiMGNmN2YzIiwiZXhwIjoxODA1OTUxMjIyfQ.KoZ-lqftq5bv-GDyjvoyHVvcf5h52K9RKYCIv6pBUGI";
 
     // 2. Tự động hiện địa chỉ ví vào Bản Giao Ước
     async function showWallet() {
@@ -177,7 +177,7 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
 
         try {
             // A. Đẩy lên Pinata
-            const res = await fetch("https://pinata.cloud", {
+            const res = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
                 method: 'POST',
                 headers: { 'Authorization': 'Bearer ' + PINATA_JWT },
                 body: formData
