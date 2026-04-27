@@ -7,6 +7,7 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    <script src="https://cdn.jsdelivr.net"></script>
     <meta charset="UTF-8">
     <title>STUDIO CHẾ TÁC NFT - DI SẢN MẠNH HÙNG</title>
     <script src="https://tailwindcss.com"></script>
@@ -179,7 +180,7 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
         }
     });
 
-    // 4. Lệnh thực thi: Đẩy Pinata -> Lưu Supabase
+    // 4. Lệnh thực thi: Đẩy Pinata
     btn.onclick = async () => {
         const fileInput = document.getElementById('file-input');
         if (!fileInput.files[0]) return alert("Nghệ sĩ vui lòng chọn Sản vật!");
@@ -200,37 +201,99 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
             const data = await res.json();
             
             if (data.IpfsHash) {
-                const cid = data.IpfsHash;
+                const autoCID = res.data.IpfsHash;
                 btn.innerText = "✅ ĐÃ LƯU KHO - ĐANG NIÊM YẾT...";
 
                 // B. Lưu sang Supabase
+            
                 const nftData = {
                     name: document.getElementById('nft-name').value,
                     price: document.getElementById('nft-price').value,
                     image_url: "ipfs://" + data.IpfsHash,
                     description: document.getElementById('nft-desc').value,
                     wallet_address: document.getElementById('artist-wallet-detail').innerText // Lấy ví Mạnh Hùng
-                };
+                }}
 
-               const resSupa = await fetch('save_to_supabase.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(nftData)
-                });
-                const resSupaData = await resSupa.json(); // <-- Hãy đảm bảo dòng này dùng đúng tên biến resSupa ở trên
+               // 1. Khởi tạo kết nối trực tiếp
+               
+            URL = `https://hmvvjjiiaelcsfqgxbxv.supabase.co` 
+            ANON_KEY =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw
 
-                if (resSupaData.success) {
-                    alert("✨ TUYỆT VỜI! Di sản đã lên kệ hàng Marketplace.");
-                    window.location.href = "marketplace_supabase.php";
-                }
-            }
-        } catch (e) {
-            alert("Lỗi: " + e.message);
-            btn.innerText = "THỬ LẠI NGAY";
-            btn.disabled = false;
+    const autoCID = res.data.IpfsHash;
+    console.log("Mã CID nhận được:", autoCID);
+    setStatus('✅ Đã có CID! Đang lưu vào Supabase...');
+
+    // ... (phần lưu Supabase tiếp theo) ...
+	// --- ĐOẠN NÀY LÀ PHẦN ĐẨY LÊN SUPABASE ---
+    const { error } = await supabase.from('hunglouis').insert([{ 
+          name: nftData.name, 
+          description: nftData.desc,
+          hunglouis_id: autoCID, // Lưu mã CID vừa nhận được vào đây
+          image_url: `https://Gateway.pinata.cloud/ipfs/` + autoCID, // Tạo link xem luôn
+          artist: nftData.artist,
+          created_at: new Date()
+        }]);
+
+    if (error) {
+        console.error("Lỗi Supabase:", error);
+        throw error;
+    }
+
+    setStatus('🎉 THÀNH CÔNG! NFT đã lên kệ Supabase.');
+    fetchNFTs(); // Tự động làm mới danh sách hiển thị phía dưới
+    // ------------------------------------------
+  } catch (err) {
+  // Sửa dòng này để hiện lỗi cụ thể thay vì [object Object]
+  setStatus('❌ Lỗi: ' + (err.response?.error || err.message));
+  console.log("Chi tiết lỗi:", err.response?.data);
+  }
+};
+
+// 1. HÀM HIỆN VÍ (Chạy ngay khi mở trang)
+async function identifyArtist() {
+    if (window.ethereum) {
+        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+        (accounts.length > 0) 
+            const walletSpan = document.getElementById('artist-wallet-detail');
+            if (walletSpan) walletSpan.innerText = accounts[0];
         }
-    };
-</script>
+    }
 
+
+// 2. TẤT CẢ LOGIC NẰM TRONG NÀY ĐỂ TRÁNH LỖI XUNG ĐỘT
+document.addEventListener('DOMContentLoaded', function() {
+    identifyArtist();
+
+    const agree = document.getElementById('agreement');
+    const btn = document.getElementById('mint-button');
+
+    // LOGIC LÀM SÁNG NÚT VÀNG
+    if (agree && btn) {
+        agree.addEventListener('change', function() {
+            if (this.checked) {
+                btn.disabled = false;
+                btn.style.background = 'linear-gradient(to right, #eab308, #ca8a04)';
+                btn.style.color = '#000';
+                btn.innerText = "KHỞI SINH DI SẢN NGAY";
+                btn.style.boxShadow = '0 0 30px rgba(234, 179, 8, 0.4)';
+            } else {
+                btn.disabled = true;
+                btn.style.background = '#18181b';
+                btn.style.color = '#3f3f46';
+                btn.innerText = "KHỞI SINH DI SẢN (MINT NFT)";
+            }
+        });
+    }
+});
+
+// 3. HÀM CHỌN FILE
+function handleFileSelect(input) {
+    if (input.files && input.files[0]) {
+        const status = document.getElementById('file-status');
+        if (status) status.innerText = "ĐÃ CHỌN: " + input.files[0].name;
+    }
+}
+
+</script>
 </body>
 </html>
