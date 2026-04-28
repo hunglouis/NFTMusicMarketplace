@@ -78,6 +78,11 @@
             <span class="menu-text font-bold uppercase">MarketPlace</span>
         </a>   
 
+        <a href="https://opensea.io/" class="flex items-center gap-5 px-2 py-3 text-gray-500 hover:text-yellow-500 transition-all">
+            <i class="fa-solid fa-circle-nodes min-w-[1.2rem] text-center text-sm"></i>
+            <span class="menu-text font-bold uppercase">OpenSea</span>
+        </a>
+
     </nav>
 
     <!-- Khu vực Ví ở đáy -->
