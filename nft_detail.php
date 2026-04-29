@@ -41,11 +41,9 @@ if (isset($nft['image_url']) && strpos($nft['image_url'], 'ipfs://') !== false) 
         .poster-frame img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
-<!-- Thay thế đoạn từ <body> đến hết file nft_detail.php bằng đoạn này -->
+    <?php if(file_exists('navbar.php')) include 'navbar.php'; ?>
 <body class="p-10 min-h-screen bg-[#020617]">
-    <?php include 'navbar.php'; ?>
-
-    <div class="max-w-6xl mx-auto mt-10">
+        <div class="max-w-6xl mx-auto mt-10">
         <!-- Nút quay lại -->
         <a href="marketplace_supabase.php" class="text-gray-500 hover:text-cyan-400 font-bold text-xs uppercase tracking-widest mb-10 inline-block">
             ← Quay lại cửa hàng

@@ -1,3 +1,28 @@
+/* Làm cho các nút mạng xã hội sáng lên */
+.social-icons a {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1); /* Nền hơi sáng */
+    color: #eab308 !important; /* Màu vàng đồng cho đồng bộ */
+    margin-right: 8px;
+    transition: all 0.3s;
+    opacity: 1 !important; /* Hiện rõ 100% */
+    pointer-events: auto !important; /* Mở khóa để bấm được */
+    text-decoration: none;
+}
+
+/* Hiệu ứng khi di chuột vào: Sáng rực lên */
+.social-icons a:hover {
+    background: #eab308;
+    color: #000 !important;
+    transform: scale(1.1);
+}
+
+
 #music-player {
     position:fixed;
     bottom:0;

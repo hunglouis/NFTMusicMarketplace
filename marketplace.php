@@ -83,17 +83,8 @@ $user = $_SESSION['user'] ?? 'Nhạc sĩ Mạnh Hùng';
     </style>
 </head>
 <body class="p-5 md:p-10">
+     <?php if(file_exists('navbar.php')) include 'navbar.php'; ?>
     
-    <?php if(file_exists('navbar.php')) include 'navbar.php'; ?>
-
-    <div class="max-w-7xl mx-auto">
-        <header class="text-center mb-12">
-            <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400 mb-2">
-                NFT MARKETPLACE
-            </h1>
-            <p class="text-gray-400">Chào mừng nghệ sĩ: <span class="text-cyan-400 font-bold"><?php echo $user; ?></span></p>
-        </header>
-
         <!-- GRID HIỂN THỊ HÀNG HÓA -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             

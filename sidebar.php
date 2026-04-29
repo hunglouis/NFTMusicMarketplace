@@ -2,27 +2,27 @@
 
     <h2 style="text-align:center;">🎵 NFT</h2>
 
-    <a href="index.php">🏠 Trang chủ</a>
+    <a href="index.php">🏠</a>
 
-    <button class="dropdown-btn">🎼 Marketplace ▼</button>
+    <button class="dropdown-btn">🎼▼</button>
     <div class="submenu">
         <a href="marketplace.php">Local</a>
         <a href="marketplace_supabase.php">Supabase</a>
     </div>
 
-    <button class="dropdown-btn">🎧 Player ▼</button>
+    <button class="dropdown-btn">🎧▼</button>
     <div class="submenu">
         <a href="player.php">Nghe nhạc</a>
     </div>
 
-    <a href="dangnhap.php">🔐 Đăng nhập</a>
-    <a href="logout.php">🚪 Đăng xuất</a>
+    <a href="dangnhap.php">🔐</a>
+    <a href="logout.php">🚪</a>
 
 </div>
 
 <style>
 .sidebar {
-    width: 220px;
+    width: 3rem;
     height: 100vh;
     position: fixed;
     left: 0;
