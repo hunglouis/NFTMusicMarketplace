@@ -37,6 +37,25 @@ if (empty($all_data)) {
 }
 
 $user = $_SESSION['user'] ?? 'Nhạc sĩ Mạnh Hùng';
+
+// 1. Cấu hình số món trên mỗi trang
+$items_per_page = 12;
+$current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($current_page < 1) $current_page = 1;
+// 3. Tính toán vị trí bắt đầu lấy dữ liệu (Offset)
+$offset = ($current_page - 1) * $items_per_page;
+
+// 4. Lấy dữ liệu từ Supabase (Chỉ lấy 12 món bắt đầu từ Offset)
+// Thêm header "Range: offset-limit" để Supabase hiểu
+$ch = curl_init("$supabaseUrl/rest/v1/items?select=*&order=created_at.desc");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "apikey: $apiKey",
+    "Authorization: Bearer $apiKey",
+    "Range: $offset-" . ($offset + $items_per_page - 1)
+]);
+$items = json_decode(curl_exec($ch), true);
+curl_close($ch);
 ?>
 
 
@@ -78,7 +97,24 @@ $user = $_SESSION['user'] ?? 'Nhạc sĩ Mạnh Hùng';
             font-weight: 700;
             letter-spacing: 0.05em;
             text-transform: uppercase;
-}
+        }
+
+        .page-btn {
+            background: #111;
+            border: 1px solid #333;
+            color: #666;
+            padding: 8px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .page-btn:hover {
+            border-color: #00ffff;
+            color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+        }
 
     </style>
 </head>
@@ -149,7 +185,26 @@ $user = $_SESSION['user'] ?? 'Nhạc sĩ Mạnh Hùng';
 
         </div>
     </div>
+<!-- BỘ NÚT CHUYỂN TRANG -->
+<div style="display: flex; justify-content: center; gap: 10px; margin-top: 50px; margin-bottom: 50px;">
+    
+    <!-- Nút Trang trước -->
+    <?php if ($current_page > 1): ?>
+        <a href="?page=<?php echo $current_page - 1; ?>" class="page-btn">
+            <i class="fas fa-chevron-left"></i> TRƯỚC
+        </a>
+    <?php endif; ?>
 
+    <!-- Hiển thị số trang hiện tại -->
+    <span style="background: rgba(0, 255, 255, 0.1); border: 1px solid #00ffff; color: #00ffff; padding: 8px 20px; border-radius: 8px; font-weight: bold;">
+        Trang <?php echo $current_page; ?>
+    </span>
+
+    <!-- Nút Trang sau (Tạm thời luôn hiện, hoặc bạn có thể đếm tổng số trang để ẩn đi khi hết) -->
+    <a href="?page=<?php echo $current_page + 1; ?>" class="page-btn">
+        SAU <i class="fas fa-chevron-right"></i>
+    </a>
+</div>
     <!-- Thông báo mua hàng -->
     <?php if (isset($thongbao)) echo "<div class='fixed bottom-5 right-5 p-4 rounded-2xl bg-black/80 border border-cyan-500 shadow-2xl'>$thongbao</div>"; ?>
 
