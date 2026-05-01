@@ -1,61 +1,18 @@
 <?php
-session_start();
-// Khai báo các thông số kết nối trực tiếp
-$supabaseUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
-$apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw"; 
-
-// 1. GỌI DỮ LIỆU THẬT TỪ SUPABASE
-$fullUrl = $supabaseUrl . "/rest/v1/hunglouis?select=*&order=id.asc&limit=50";
-$ch = curl_init($fullUrl);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    "apikey: " . $apiKey,
-    "Authorization: Bearer " . $apiKey,
-    "Content-Type: application/json"
-]);
-$response = curl_exec($ch);
-$all_data = json_decode($response, true);
-curl_close($ch);
-
-// 2. NẾU SUPABASE TRỐNG, TỰ ĐỘNG HIỆN HÀNG MẪU (Để bạn yên lòng dàn trang)
-if (empty($all_data)) {
-    $all_data = [
-        [
-            "id" => "0",
-            "name" => "Hàng mẫu: Quỳnh Hương 01",
-            "price" => "0.05",
-            "image_url" => "https://vnecdn.net"
-        ],
-        [
-            "id" => "0",
-            "name" => "Hàng mẫu: Ngày Tình Xa",
-            "price" => "0.1",
-            "image_url" => "https://scdn.co"
-        ]
-    ];
-}
-
-$user = $_SESSION['user'] ?? 'Nhạc sĩ Mạnh Hùng';
-
-// 1. Cấu hình số món trên mỗi trang
+// --- 1. PHẦN XỬ LÝ DỮ LIỆU (Giữ nguyên logic cũ của bạn) ---
+$supabaseUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co"; 
+$apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw";
 $items_per_page = 12;
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-if ($current_page < 1) $current_page = 1;
-// 3. Tính toán vị trí bắt đầu lấy dữ liệu (Offset)
 $offset = ($current_page - 1) * $items_per_page;
 
-// 4. Lấy dữ liệu từ Supabase (Chỉ lấy 12 món bắt đầu từ Offset)
-// Thêm header "Range: offset-limit" để Supabase hiểu
-$ch = curl_init("$supabaseUrl/rest/v1/hunglouis?select=*&order=created_at.desc");
+$ch = curl_init("$supabaseUrl/rest/v1/items?select=*&order=created_at.desc");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    "apikey: $apiKey",
-    "Authorization: Bearer $apiKey",
-    "Range: $offset-" . ($offset + $items_per_page - 1)
-]);
+curl_setopt($ch, CURLOPT_HTTPHEADER, ["apikey: $apiKey", "Authorization: Bearer $apiKey", "Range: $offset-" . ($offset + $items_per_page - 1)]);
 $items = json_decode(curl_exec($ch), true);
 curl_close($ch);
+if (!is_array($items)) { $items = []; }
+
 // Hàm nút bấm thiết kế lại: Sáng sủa và Sang trọng
 function renderPagination($current_page) {
     echo '<div style="display: flex; justify-content: center; align-items: center; gap: 25px; margin: 50px 0;">';
@@ -68,12 +25,11 @@ function renderPagination($current_page) {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>CỬA HÀNG NHẠC NFT - MẠNH HÙNG</title>
+    <title>OpenSea Heritage | Studio NFT</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -147,32 +103,35 @@ function renderPagination($current_page) {
 </head>
 <body class="p-5 md:p-10">
      <?php if(file_exists('navbar.php')) include 'navbar.php'; ?>
-            <!-- 2. NỘI DUNG CHÍNH (Rực sáng và Hoành tráng) -->
+ 
+    <!-- 2. NỘI DUNG CHÍNH (Rực sáng và Hoành tráng) -->
           
         <div style="margin-bottom: 60px;">
             <h1 class="cyan-glow" style="font-size: 48px; font-weight: 900; text-transform: uppercase; letter-spacing: -2px; margin: 0;">
-                Di Sản Từ Supabase
+                Di Sản Từ OpenSea
             </h1>
             <p style="color: #555; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 4px; margin-top: 15px;">
                 <i class="fas fa-database" style="color: #00ffff; margin-right: 10px;"></i>
-                Kho di sản • 14 vật phẩm • Blockchain Polygon
+                Kho di sản • 26 vật phẩm • Blockchain Polygon
             </p>
         </div>
-         <!-- 🧭 NÚT CHUYỂN TRANG ĐẦU -->
+
+        <!-- 🧭 NÚT CHUYỂN TRANG ĐẦU -->
         <?php renderPagination($current_page); ?>
-            <!-- GRID HIỂN THỊ HÀNG HÓA -->
+
+        <!-- 🖼️ LƯỚI NFT -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            <?php if (!empty($all_data) && is_array($all_data)): ?>
-                <?php foreach ($all_data as $item): ?>
+            <?php if (!empty($items) && is_array($items)): ?>
+                <?php foreach ($items as $item): ?>
                     <div class="card-nft rounded-3xl p-5 flex flex-col h-[520px]">
                                                 <!-- Ảnh NFT -->
                         <div class="relative h-56 w-full mb-4 overflow-hidden rounded-2xl group">
-                            <a href="nft_detail.php?id=<?php echo $item['id']; ?>" class="block h-full w-full">
-                                <img src="<?php echo $item['image_url'] ?: 'https://placeholder.com'; ?>" 
+                            <a href="nft_detail.php?id=<?php $item['id']; ?>" class="block h-full w-full">
+                                <img src="<?php $item['image_url'] ?: 'https://placeholder.com'; ?>" 
                                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                 
                                 <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-cyan-400">
-                                    #<?php echo $item['id']; ?>
+                                    #<?php  $item['id']; ?>
                                 </div>
 
                                 <div class="absolute inset-0 bg-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -185,23 +144,22 @@ function renderPagination($current_page) {
                         <div class="flex-grow">
                            
                         <h3 class="text-lg font-bold text-white line-clamp-2 mb-2 leading-tight">
-                                <?php echo $item['name'] ?: 'Tác phẩm chưa đặt tên'; ?>
+                                <?php  $item['name'] ?: 'Tác phẩm chưa đặt tên'; ?>
                             </h3>
                             <div class="flex justify-between items-center bg-white/5 p-3 rounded-xl">
                                 <span class="text-gray-400 text-sm">Giá niêm yết</span>
-                                <span class="text-emerald-400 font-black">💰 <?php echo $item['price']; ?> MATIC</span>
+                                <span class="text-emerald-400 font-black">💰 <?php $item['price']; ?> MATIC</span>
                             </div>
                         </div>
 
                         <!-- Nút hành động -->
                         <div class="grid grid-cols-2 gap-3 mt-5">
-                            <button onclick="playMusic('<?php echo $item['audio_url'] ?: $item['image_url']; ?>', '<?php echo addslashes($item['name']); ?>', '<?php echo $item['image_url']; ?>')" 
-                                class="bg-cyan-600 hover:bg-cyan-500 text-white py-2 px-4 rounded-lg text-xs font-bold transition-all flex items-center gap-2">
-                                    ▶ Nghe/Xem thử
+                            <button onclick=playMusic('<?php $item['url'] ?: $item['image_url']; ?><?php  addslashes($item['name']); ?><?php  $item['image_url']; ?>) 
+                                                                    ▶ Nghe/Xem thử
                             </button>
 
                             <form method="POST">
-                                <input type="hidden" name="song_id" value="<?php echo $item['id']; ?>">
+                                <input type="hidden" name="song_id" value="<?php $item['id']; ?>">
                                 <button name="buy_nft" class="w-full bg-white text-black hover:bg-emerald-400 hover:text-white py-2.5 rounded-xl text-sm font-bold transition-all">
                                     Sở hữu ngay
                                 </button>
@@ -210,20 +168,19 @@ function renderPagination($current_page) {
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <!-- Thông báo khi kho hàng trống -->
-                <div class="col-span-full text-center py-20 bg-white/5 rounded-3xl border border-dashed border-gray-700">
-                    <p class="text-gray-500 text-xl">Kho hàng hiện đang trống...</p>
-                    <a href="?auto_quynh=1" class="mt-4 inline-block text-cyan-400 underline italic">Tự động nhập 12 đóa Quỳnh Hương?</a>
-                    <a href="nft_detail.php?id=<?php echo $item['id']; ?>"> ... </a>
+                <div style="grid-column: span 4; text-align: center; padding: 100px; color: #333;">
+                    <i class="fas fa-box-open" style="font-size: 50px; margin-bottom: 20px;"></i>
+                    <p>Kho hàng đang trống, hãy kiểm tra lại kết nối Supabase!</p>
                 </div>
             <?php endif; ?>
-                    <!-- 🧭 NÚT CHUYỂN TRANG CUỐI -->
-        <?php renderPagination($current_page); ?>
-    </div>
-          
+        </div>
 
-    <!-- Thông báo mua hàng -->
-    <?php if (isset($thongbao)) echo "<div class='fixed bottom-5 right-5 p-4 rounded-2xl bg-black/80 border border-cyan-500 shadow-2xl'>$thongbao</div>"; ?>
+        <!-- 🧭 NÚT CHUYỂN TRANG CUỐI -->
+        <?php renderPagination($current_page); ?>
+   </div>
+
+<!-- Thông báo mua hàng -->
+    <?php if (isset($thongbao))  "<div class='fixed bottom-5 right-5 p-4 rounded-2xl bg-black/80 border border-cyan-500 shadow-2xl'>$thongbao</div>"; ?>
 
     <!-- Music Player Bar -->
     <div id="music-player-bar" class="fixed bottom-0 left-0 w-full bg-black/95 backdrop-blur-md border-t border-cyan-500/50 p-4 transform translate-y-full transition-all duration-500 z-[100]">
@@ -342,4 +299,6 @@ function closePlayer() {
 </script>
 
 </body>
-</html>
+</html>                                                                 
+
+
