@@ -102,6 +102,12 @@
             <span class="menu-text font-bold uppercase">Trang chủ</span>
         </a>
 
+        <a href="manifesto.php" class="flex items-center gap-4 px-2 py-3 text-gray-500 hover:text-cyan-400 transition-all group">
+            <i class="fa-solid fa-house min-w-[1.2rem] text-center text-sm"></i>
+            <span class="menu-text font-bold uppercase">Manifesto</span>
+        </a>
+
+
         <a href="collections.php" class="flex items-center gap-4 px-2 py-3 text-gray-500 hover:text-cyan-400 transition-all group">
             <i class="fa-solid fa-house min-w-[1.2rem] text-center text-sm"></i>
             <span class="menu-text font-bold uppercase">Bộ Sưu Tập</span>
