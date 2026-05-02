@@ -6,7 +6,7 @@ $items_per_page = 12;
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($current_page - 1) * $items_per_page;
 
-$ch = curl_init("$supabaseUrl/rest/v1/items?select=*&order=created_at.desc");
+$ch = curl_init("$supabaseUrl/rest/v1/items?select=*&order=item_id.asc&limit=50");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, ["apikey: $apiKey", "Authorization: Bearer $apiKey", "Range: $offset-" . ($offset + $items_per_page - 1)]);
 $items = json_decode(curl_exec($ch), true);
@@ -126,12 +126,12 @@ function renderPagination($current_page) {
                     <div class="card-nft rounded-3xl p-5 flex flex-col h-[520px]">
                                                 <!-- Ảnh NFT -->
                         <div class="relative h-56 w-full mb-4 overflow-hidden rounded-2xl group">
-                            <a href="nft_detail.php?id=<?php $item['id']; ?>" class="block h-full w-full">
-                                <img src="<?php $item['image_url'] ?: 'https://placeholder.com'; ?>" 
+                            <a href="nft_detail.php?id=<?php echo $item['id']; ?>" class="block h-full w-full">
+                                <img src="<?php  echo $item['image_url'] ?: 'https://placeholder.com'; ?>" 
                                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                 
                                 <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-cyan-400">
-                                    #<?php  $item['id']; ?>
+                                    #<?php  echo $item['id']; ?>
                                 </div>
 
                                 <div class="absolute inset-0 bg-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -146,17 +146,35 @@ function renderPagination($current_page) {
                         <h3 class="text-lg font-bold text-white line-clamp-2 mb-2 leading-tight">
                                 <?php  $item['name'] ?: 'Tác phẩm chưa đặt tên'; ?>
                             </h3>
-                            <div class="flex justify-between items-center bg-white/5 p-3 rounded-xl">
-                                <span class="text-gray-400 text-sm">Giá niêm yết</span>
-                                <span class="text-emerald-400 font-black">💰 <?php $item['price']; ?> MATIC</span>
-                            </div>
-                        </div>
+                            <!-- KHUNG NỘI DUNG DƯỚI ẢNH -->
+<div style="padding: 20px; background: rgba(0,0,0,0.2); border-radius: 0 0 20px 20px;">
+    
+    <!-- Dòng Giá niêm yết -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <span style="font-size: 11px; color: #555; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">Giá niêm yết</span>
+        <div style="display: flex; align-items: center; gap: 5px;">
+            <span style="color: #ffcc00; font-weight: 900; font-size: 20px; text-shadow: 0 0 10px rgba(255,204,0,0.3);">
+                <?php echo number_format($item['price'] ?? 0, 1); ?>
+            </span>
+            <span style="color: #00ffff; font-size: 12px; font-weight: bold;">MATIC</span>
+        </div>
+    </div>
 
-                        <!-- Nút hành động -->
-                        <div class="grid grid-cols-2 gap-3 mt-5">
-                            <button onclick=playMusic('<?php $item['url'] ?: $item['image_url']; ?><?php  addslashes($item['name']); ?><?php  $item['image_url']; ?>) 
-                                                                    ▶ Nghe/Xem thử
-                            </button>
+    <!-- Hàng nút bấm (Ép nằm ngang tăm tắp) -->
+    <div style="display: flex; gap: 10px; width: 100%;">
+        <!-- Nút Nghe/Xem thử -->
+        <button onclick="playMusic('<?php echo $item['image_url']; ?>', '<?php echo addslashes($item['name']); ?>', '<?php echo $item['image_url']; ?>')" 
+                style="flex: 1; background: #008888; color: white; border: none; padding: 12px 5px; border-radius: 10px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 5px;">
+            <i class="fas fa-play-circle"></i> Nghe/Xem thử
+        </button>
+
+        <!-- Nút Sở hữu ngay -->
+        <a href="nft-details.php?id=<?php echo $item['id']; ?>" 
+           style="flex: 1; background: #ffffff; color: #000; text-decoration: none; padding: 12px 5px; border-radius: 10px; font-size: 11px; font-weight: bold; transition: 0.3s; display: flex; align-items: center; justify-content: center; text-align: center;">
+            Sở hữu ngay
+        </a>
+    </div>
+</div>
 
                             <form method="POST">
                                 <input type="hidden" name="song_id" value="<?php $item['id']; ?>">

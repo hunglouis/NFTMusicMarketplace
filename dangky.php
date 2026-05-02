@@ -37,13 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Đăng ký - Louis Music NFT</title>
-    <script src="https://tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: radial-gradient(circle at bottom right, #0891b2, #020617); min-height: 100vh; display: flex; align-items: center; justify-content: center; color: white; }
         .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(6, 182, 212, 0.2); border-radius: 2.5rem; }
     </style>
 </head>
-<body>
+<body class="p-5 md:p-10">
+     <?php if(file_exists('navbar.php')) include 'navbar.php'; ?>
     <div class="glass p-10 w-full max-w-md shadow-2xl">
         <h1 class="text-3xl font-black text-center mb-6 uppercase tracking-widest text-cyan-400">Đăng ký</h1>
         

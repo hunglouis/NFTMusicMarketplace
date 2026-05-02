@@ -10,7 +10,7 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
     <script src="https://cdn.jsdelivr.net"></script>
     <meta charset="UTF-8">
     <title>STUDIO CHẾ TÁC NFT - DI SẢN MẠNH HÙNG</title>
-    <script src="https://tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
         body { 

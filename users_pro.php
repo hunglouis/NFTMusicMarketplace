@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>THIẾT LẬP HỒ SƠ CHUYÊN NGHIỆP</title>
-    <script src="https://tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
         body { background: #080808; color: #fff; padding-left: 5rem; min-height: 100vh; }

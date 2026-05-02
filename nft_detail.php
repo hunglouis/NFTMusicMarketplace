@@ -3,27 +3,48 @@ session_start();
 require_once 'db.php'; 
 
 // 1. Lấy ID
-$nft_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-
+$item_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 // 2. Cấu hình Supabase (NHỚ ĐIỀN KEY THẬT CỦA BẠN VÀO ĐÂY)
 $supabaseUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
 $apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw"; 
 
-$fullUrl = $supabaseUrl . "/rest/v1/hunglouis?id=eq." . $nft_id . "&select=*";
-$ch = curl_init($fullUrl);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, ["apikey: ".$apiKey, "Authorization: Bearer ".$apiKey]);
-$response = curl_exec($ch);
-curl_close($ch);
-$data = json_decode($response, true);
-$nft = (isset($data[0])) ? $data[0] : null;
+$id = $_GET['id'];
 
-if (!$nft) die("Không tìm thấy tác phẩm.");
+// TỪ ĐÂY TRỞ XUỐNG, BẠN CỨ DÙNG $data['name'], $data['image_url'] THOẢI MÁI
+
+// 1. Thử tìm trong bảng 'items' (Kho hàng OpenSea)
+$ch = curl_init("$supabaseUrl/rest/v1/items?id=eq.$id&select=*");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, ["apikey: $apiKey", "Authorization: Bearer $apiKey"]);
+$item = json_decode(curl_exec($ch), true);
+curl_close($ch);
+
+if (!empty($items)) {
+    $item = $items[0];
+} else {
+    // 2. Nếu không thấy, thử tìm trong bảng cũ (Ví dụ: hunglouis)
+    $ch = curl_init("$supabaseUrl/rest/v1/hunglouis?id=eq.$id&select=*");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ["apikey: $apiKey", "Authorization: Bearer $apiKey"]);
+    $nft = json_decode(curl_exec($ch), true);
+    curl_close($ch);
+    
+    if (!empty($nft)) {
+        $item = $nft[0];
+    }
+}
+
+// Nếu sau khi tìm cả 2 nơi vẫn không thấy
+if (!$item) {
+    die("⚠️ Không tìm thấy tác phẩm này trong bất kỳ kho hàng nào!");
+}
+
 
 // Xử lý link Pinata
-if (isset($nft['image_url']) && strpos($nft['image_url'], 'ipfs://') !== false) {
-    $nft['image_url'] = str_replace('ipfs://', 'https://pinata.cloud', $nft['image_url']);
+if (isset($item['image_url']) && strpos($item['image_url'], 'ipfs://') !== false) {
+    $item['image_url'] = str_replace('ipfs://', 'https://pinata.cloud', $item['image_url']);
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -33,7 +54,7 @@ if (isset($nft['image_url']) && strpos($nft['image_url'], 'ipfs://') !== false) 
 
     <meta charset="UTF-8">
     <title>Chi tiết NFT</title>
-    <script src="https://tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #020617; color: white; font-family: sans-serif; margin: 0; padding-left: 3.5rem; }
         /* Khống chế ảnh tuyệt đối */
@@ -41,8 +62,10 @@ if (isset($nft['image_url']) && strpos($nft['image_url'], 'ipfs://') !== false) 
         .poster-frame img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
+    
+
+<body class="p-5 md:p-10">
     <?php if(file_exists('navbar.php')) include 'navbar.php'; ?>
-<body class="p-10 min-h-screen bg-[#020617]">
         <div class="max-w-6xl mx-auto mt-10">
         <!-- Nút quay lại -->
         <a href="marketplace_supabase.php" class="text-gray-500 hover:text-cyan-400 font-bold text-xs uppercase tracking-widest mb-10 inline-block">
@@ -54,16 +77,16 @@ if (isset($nft['image_url']) && strpos($nft['image_url'], 'ipfs://') !== false) 
             
             <!-- CỘT TRÁI: KHUNG ẢNH ĐÃ FIX KÍCH THƯỚC -->
             <div class="w-[400px] flex-shrink-0 shadow-[0_0_50px_rgba(6,182,212,0.15)] rounded-[40px] overflow-hidden border border-white/10">
-                <img src="<?php echo $nft['image_url']; ?>" class="w-full h-auto object-cover block">
+                <img src="<?php echo $item['image_url']; ?>" class="w-full h-auto object-cover block">
             </div>
 
             <!-- CỘT PHẢI: THÔNG TIN CHI TIẾT -->
             <div class="flex-grow space-y-8">
                 <div>
-                    <h1 class="text-5xl font-black text-white tracking-tighter leading-tight">
-                        <?php echo $nft['name']; ?>
+                    <h1 style="color: #00ffff; font-weight: 900;"><?php echo $item['name']; ?></h1>
+                    <img src="<?php echo $item['image_url']; ?>" style="width: 100%; border-radius: 20px;">
                     </h1>
-                    <p class="text-2xl font-bold text-emerald-400 mt-4">💰 <?php echo $nft['price']; ?> MATIC</p>
+                    <p class="text-2xl font-bold text-emerald-400 mt-4">💰 <?php echo $item['price']; ?> MATIC</p>
                 </div>
 <!-- BỘ NÚT CHIA SẺ MẠNG XÃ HỘI - DỨT ĐIỂM LỖI -->
 <div style="display: flex; align-items: center; gap: 15px; margin-top: 20px; margin-bottom: 20px;">
@@ -98,7 +121,7 @@ function copyPageLink() {
                 <div class="bg-white/5 p-8 rounded-[32px] border border-white/5 backdrop-blur-xl">
                     <h3 class="text-cyan-400 text-[10px] font-black uppercase tracking-[0.3em] mb-4">📜 Mô tả tác phẩm</h3>
                     <p class="text-gray-300 text-sm leading-relaxed italic whitespace-pre-line">
-                        <?php echo $nft['description'] ?: "Tác phẩm NFT âm nhạc độc bản nằm trong bộ sưu tập di sản của nghệ sĩ Mạnh Hùng."; ?>
+                        <?php echo $item['description'] ?: "Tác phẩm NFT âm nhạc độc bản nằm trong bộ sưu tập di sản của nghệ sĩ Mạnh Hùng."; ?>
                     </p>
                 </div>
                 <!-- BẮT ĐẦU ĐOẠN HÀNH TRÌNH DI SẢN (BẢN ĐẸP) -->

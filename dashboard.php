@@ -30,15 +30,15 @@ $user_display = $user;
     <meta charset="UTF-8">
     <title>Quỳnh Hương - Genesis Edition</title>
     <!-- Link làm đẹp giao diện -->
-    <script src="https://tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cloudflare.com" rel="stylesheet">
     <style>
         body { background: radial-gradient(circle at top right, #0891b2, #064e3b, #020617); min-height: 100vh; color: white; }
         .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(6, 182, 212, 0.2); }
     </style>
 </head>
-<body>
-    <?php include 'navbar.php'; ?> <!-- Chèn thanh điều hướng -->
+<body class="p-5 md:p-10">
+     <?php if(file_exists('navbar.php')) include 'navbar.php'; ?> <!-- Chèn thanh điều hướng -->
      <!-- Toàn bộ phần vòng lặp foreach của bạn nằm ở đây -->
    
 

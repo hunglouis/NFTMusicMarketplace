@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>HỒ SƠ CHUYÊN GIA - MANH HUNG STUDIO</title>
-    <script src="https://tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
         body { background: #020617; color: #d4d4d8; padding-left: 5rem; min-height: 100vh; }
