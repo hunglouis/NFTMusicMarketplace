@@ -8,37 +8,33 @@ $item_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $supabaseUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
 $apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw"; 
 
-$id = $_GET['id'];
+$id = $_GET['id'] ?? 0;
+$item = null;
 
-// TỪ ĐÂY TRỞ XUỐNG, BẠN CỨ DÙNG $data['name'], $data['image_url'] THOẢI MÁI
-
-// 1. Thử tìm trong bảng 'items' (Kho hàng OpenSea)
-$ch = curl_init("$supabaseUrl/rest/v1/items?id=eq.$id&select=*");
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, ["apikey: $apiKey", "Authorization: Bearer $apiKey"]);
-$item = json_decode(curl_exec($ch), true);
-curl_close($ch);
-
-if (!empty($items)) {
-    $item = $items[0];
-} else {
-    // 2. Nếu không thấy, thử tìm trong bảng cũ (Ví dụ: hunglouis)
-    $ch = curl_init("$supabaseUrl/rest/v1/hunglouis?id=eq.$id&select=*");
+// Hàm hỗ trợ lấy dữ liệu từ Supabase để code sạch hơn
+function getFromSupabase($url, $apiKey, $table, $id) {
+    $ch = curl_init("$url/rest/v1/$table?id=eq.$id&select=*");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, ["apikey: $apiKey", "Authorization: Bearer $apiKey"]);
-    $nft = json_decode(curl_exec($ch), true);
+    $response = json_decode(curl_exec($ch), true);
     curl_close($ch);
-    
-    if (!empty($nft)) {
-        $item = $nft[0];
-    }
+    // Trả về phần tử đầu tiên nếu mảng có dữ liệu, nếu không trả về null
+    return (is_array($response) && !empty($response)) ? $response[0] : null;
 }
 
-// Nếu sau khi tìm cả 2 nơi vẫn không thấy
+// 1. Thử tìm trong bảng 'items'
+$item = getFromSupabase($supabaseUrl, $apiKey, 'items', $id);
+
+// 2. Nếu không thấy, thử tìm trong bảng 'hunglouis'
 if (!$item) {
-    die("⚠️ Không tìm thấy tác phẩm này trong bất kỳ kho hàng nào!");
+    $item = getFromSupabase($supabaseUrl, $apiKey, 'hunglouis', $id);
 }
 
+// --- KIỂM TRA CUỐI CÙNG ---
+if (!$item) {
+    // Dùng exit hoặc die để dừng hoàn toàn, không chạy xuống phần HTML bên dưới nữa
+    exit("⚠️ Không tìm thấy tác phẩm có ID là $id trong bất kỳ kho hàng nào!");
+}
 
 // Xử lý link Pinata
 if (isset($item['image_url']) && strpos($item['image_url'], 'ipfs://') !== false) {
