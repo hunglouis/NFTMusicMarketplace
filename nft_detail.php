@@ -5,38 +5,52 @@ require_once 'db.php';
 // 1. Lấy ID
 $item_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 // 2. Cấu hình Supabase (NHỚ ĐIỀN KEY THẬT CỦA BẠN VÀO ĐÂY)
-$supabaseUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
+$url = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
 $apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw"; 
 
 $id = $_GET['id'] ?? 0;
 $item = null;
 
-// Hàm hỗ trợ lấy dữ liệu từ Supabase để code sạch hơn
+// Hàm lấy dữ liệu - Đã được tối ưu cho cấu trúc Supabase của bạn
 function getFromSupabase($url, $apiKey, $table, $id) {
+    // 1. Khởi tạo cURL
     $ch = curl_init("$url/rest/v1/$table?id=eq.$id&select=*");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ["apikey: $apiKey", "Authorization: Bearer $apiKey"]);
-    $response = json_decode(curl_exec($ch), true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: $apiKey", 
+        "Authorization: Bearer $apiKey"
+    ]);
+    
+    $result = curl_exec($ch);
+    $response = json_decode($result, true);
     curl_close($ch);
-    // Trả về phần tử đầu tiên nếu mảng có dữ liệu, nếu không trả về null
-    return (is_array($response) && !empty($response)) ? $response[0] : null;
+
+    // 2. Kiểm tra dữ liệu trả về (Sửa lỗi dòng 26 tại đây)
+    // Nếu $response là mảng và CÓ phần tử, mới lấy phần tử số 0
+    if (is_array($response) && !empty($response) && isset($response[0])) {
+        return $response[0]; 
+    }
+    
+    // Nếu không có dữ liệu, trả về null thay vì báo lỗi
+    return null;
 }
+
 
 // 1. Thử tìm trong bảng 'items'
 $item = getFromSupabase($supabaseUrl, $apiKey, 'items', $id);
 
-// 2. Nếu không thấy, thử tìm trong bảng 'hunglouis'
+// 2. Nếu không thấy ở bảng 'items', tìm trong bảng 'hunglouis'
 if (!$item) {
     $item = getFromSupabase($supabaseUrl, $apiKey, 'hunglouis', $id);
 }
 
 // --- KIỂM TRA CUỐI CÙNG ---
 if (!$item) {
-    // Dùng exit hoặc die để dừng hoàn toàn, không chạy xuống phần HTML bên dưới nữa
-    exit("⚠️ Không tìm thấy tác phẩm có ID là $id trong bất kỳ kho hàng nào!");
+    exit("⚠️ Không tìm thấy tác phẩm có ID là $id trong hệ thống!");
 }
 
-// Xử lý link Pinata
+// Xử lý hiển thị link ảnh (Dữ liệu của bạn trong hình đã là link gateway rồi)
+// Chúng ta chỉ đổi nếu nó vẫn ở dạng ipfs://
 if (isset($item['image_url']) && strpos($item['image_url'], 'ipfs://') !== false) {
     $item['image_url'] = str_replace('ipfs://', 'https://pinata.cloud', $item['image_url']);
 }
