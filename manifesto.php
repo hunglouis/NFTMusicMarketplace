@@ -156,51 +156,46 @@
             <!-- Chương 3 (BỔ SUNG) -->
             <section id="chuong-3" class="glass-card p-8 rounded-[2rem]">
                 <h2 id="c3-title" class="text-3xl font-black text-white mb-6 flex items-center gap-3">
-                    <span class="text-neon text-2xl">03</span> Chương 3: Đặc quyền Cộng community
+                    <span id="c3-lead" class="text-neon text-2xl">03</span> Chương 3: Đặc quyền Cộng đồng (ERC-1155)    
                 </h2>
                 <ul id="c3-lead"class="space-y-3 text-sm text-gray-400">
                     <li id="c3-li-1"class="flex items-start gap-2"><span>✔️</span> Quyền truy cập thư viện âm thanh Lossless và video hậu trường.</li>
                     <li id="c3-li-2"class="flex items-start gap-2"><span>✔️</span> Nhận Airdrop các bản demo đặc biệt trực tiếp vào ví cá nhân.</li>
-                    <li id="c3-li-3" class="flex items-start gap-2"><span>✔️</span> Quyền biểu quyết (DAO) cho các dự án bảo tồn tiếp theo.</li>
+                    <li id="c3-li-3" class="flex items-start gap-2"><span>✔️</span> Tham gia biểu quyết (DAO) cho các hoạt động cộng đồng.</li>
+                    <li id="c3-li-4" class="flex items-start gap-2"><span>✔️</span> Ưu tiên mua các bộ sưu tập giới hạn trong tương lai.</li>
                 </ul>
             </section>
-
                         <!-- PHẦN NÀY ĐÃ CÓ ĐỦ VĂN BẢN - BẠN CHỈ CẦN COPY & PASTE -->
-            <section id="chương-4" class="glass-card p-8 rounded-[40px] border-emerald-500/30">
-                <h2 id="c4-title" class="text-3xl font-bold text-emerald-400 mb-6">🛡️ Chương 4: Chống bào mòn tài sản</h2>
-                <p id="c4-desc" class="mb-4 text-gray-300">
-                    Tại Louis Music, chúng tôi chấm dứt kỷ nguyên của các loại phí ẩn. 
+            <section id="chuong-4" class="glass-card p-8 rounded-[2rem]">            
+                <h2 id="c4-title" class="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+                    <span id="c4-lead"class="text-neon text-2xl">04</span> Chương 4: Chống bào mòn tài sản
+                </h2>
+                <ul class="list-disc pl-5 text-sm text-gray-400 ">
+                    <li id="c4-li-1">Tại Louis Music, chúng tôi chấm dứt kỷ nguyên của các loại phí ẩn. 
                     Khác với hệ thống ngân hàng truyền thống - nơi biểu phí có thể thay đổi đơn phương 
-                    và âm thầm bào mòn tài sản của khách hàng - mọi quy tắc tại đây được bảo vệ bởi toán học.
-                </p>
-                <div class="bg-black/40 p-6 rounded-2xl border border-emerald-500/20 mb-6">
-                    <p id="c4-note" class="text-emerald-300 font-bold mb-2">QUY TẮC BẤT BIẾN:</p>
-                    <ul class="list-disc pl-5 text-sm text-gray-400 space-y-2">
-                        <li id="c4-li-1">Phí tác quyền 10% được lập trình cứng trong Smart Contract.</li>
-                        <li id="c4-li-2">Không một ai (kể cả tác giả) có quyền tự ý nâng mức phí sau khi phát hành.</li>
-                        <li id="c4-li-3">Phí này dùng để bảo tồn di sản, đảm bảo giá trị NFT của bạn luôn tăng trưởng.</li>
-                    </ul>
-                </div>
-            </section>
+                    và âm thầm bào mòn tài sản của khách hàng - mọi quy tắc tại đây được bảo vệ bởi toán học.</li>
+                    <li id="c4-li-2">Phí tác quyền 10% được lập trình cứng trong Smart Contract. Không một ai (kể cả tác giả) có quyền tự ý nâng mức phí sau khi phát hành.</li>
+                    <li id="c4-li-3">Phí này dùng để bảo tồn di sản, đảm bảo giá trị NFT của bạn luôn tăng trưởng.</li>
+                </ul>
+                </section>
 
-            <!-- BOX HIỆU TRIỆU XÁC THỰC -->
-<div class="max-w-4xl mx-auto my-12 p-8 rounded-[3rem] border-2 border-dashed border-cyan-500/30 bg-cyan-950/10 text-center">
-    <h3 class="text-2xl font-black text-white mb-4">BẠN KHÔNG CẦN PHẢI TIN CHÚNG TÔI</h3>
-    <p class="text-gray-400 mb-6 px-4">
-        Khác với các tổ chức tài chính truyền thống luôn giữ kín các thuật toán thu phí, 
-        <span class="text-neon">Louis Music</span> mở toang cánh cửa để bạn giám sát. 
-        Hãy để toán học và Blockchain chứng minh quyền lợi của bạn.
-    </p>
-    
-    <div class="flex flex-wrap justify-center gap-4">
-        <a href="#huong-dan-soi" class="px-8 py-3 bg-cyan-500 text-black font-bold rounded-full hover:scale-105 transition">
-            Cách "soi" Contract cho người mới
-        </a>
-        <a href="https://polygonscan.com" target="_blank" class="px-8 py-3 border border-cyan-500 text-cyan-500 font-bold rounded-full hover:bg-cyan-500/10 transition">
-            Xem trực tiếp trên Polygonscan
-        </a>
-    </div>
-</div>
+                        <!-- BOX HIỆU TRIỆU XÁC THỰC -->
+            <div class="max-w-4xl mx-auto my-12 p-8 rounded-[3rem] border-2 border-dashed border-cyan-500/30 bg-cyan-950/10 text-center">
+                <h3 class="text-2xl font-black text-white mb-4">BẠN KHÔNG CẦN PHẢI TIN CHÚNG TÔI</h3>
+                <p class="text-gray-400 mb-6 px-4">
+                    Khác với các tổ chức tài chính truyền thống luôn giữ kín các thuật toán thu phí, 
+                    <span class="text-neon">Louis Music</span> mở toang cánh cửa để bạn giám sát. 
+                    Hãy để toán học và Blockchain chứng minh quyền lợi của bạn.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#huong-dan-soi" class="px-8 py-3 bg-cyan-500 text-black font-bold rounded-full hover:scale-105 transition">
+                        Cách "soi" Contract cho người mới
+                    </a>
+                    <a href="https://polygonscan.com" target="_blank" class="px-8 py-3 border border-cyan-500 text-cyan-500 font-bold rounded-full hover:bg-cyan-500/10 transition">
+                        Xem trực tiếp trên Polygonscan
+                    </a>
+                </div>
+            </div>
 
         </main>
         
@@ -232,12 +227,12 @@ function changeLang(lang) {
             s6: 'Bằng chứng pháp lý cao nhất cho quyền sở hữu của bạn.',
             c4_t: 'Chương 4: Chống bào mòn tài sản',
             c4_d: 'Chúng tôi chấm dứt kỷ nguyên phí ẩn. Khác với ngân hàng, mọi quy tắc tại đây được bảo vệ bởi toán học.',
-            c4_n: 'Phí tác quyền 10% là minh bạch và duy nhất.',
+            c4_n: 'QUY TẮC BẤT BIẾN:.',
             c4_1: 'Phí 10% được lập trình cứng trong Smart Contract.',
             c4_2: 'Không ai có quyền nâng phí sau khi đã phát hành NFT.',
             c4_3: 'Phí dùng để bảo tồn di sản và gia tăng giá trị NFT.'
-        // ... (Phần Chương 4 và 6 bước soi đã có ở trên)
-        },
+            // ... (Phần Chương 4 và 6 bước soi đã có ở trên)
+            },
         en: {
             manifesto: '"Music is more than notes; it is the heritage of the soul. HungLouis Music was born to preserve originals, honor creators, and build a transparent intellectual property community."',
             c1_t: 'Chapter 1: The Artistic Concept',
@@ -260,12 +255,12 @@ function changeLang(lang) {
             s5: 'Permanent info; banks cannot modify it unilaterally.',
             s6: 'The highest legal proof of your digital ownership.',
             c4_t: 'Chapter 4: Asset Erosion Protection',
-            c4_d: 'We end the era of hidden fees. Unlike banks, every rule here is protected by mathematics.',
-            c4_n: 'The 10% royalty fee is transparent and fixed.',
-            c4_1: '10% royalty fee is hard-coded into the Smart Contract.',
-            c4_2: 'No one can increase fees after the NFT launch.',
-            c4_3: 'Fees are used to preserve heritage and grow NFT value.'
-        },
+            c4_d:'We end the era of hidden fees. Unlike banks, every rule here is protected by mathematics.',
+            c4_n:'UNCHANGEABLE RULES:',
+            c4_1:'10% royalty fee is hard-coded into the Smart Contract.',
+            c4_2:'No one can increase fees after the NFT launch.',
+            c4_3:'Fees are used to preserve heritage and grow NFT value.'
+             },
         fr: {
             manifesto: '"La musique est plus que des notes ; c\'est l\'héritage de l\'âme. HungLouis Music est né pour préserver les originaux, honorer les créateurs et bâtir une communauté transparente."',
             c1_t: 'Chapitre 1: Le Concept Artistique',
@@ -281,7 +276,19 @@ function changeLang(lang) {
             c3_2: '✔️ Recevoir des Airdrops musicaux périodiques de l\'Artiste.',
             c3_3: '✔️ Droits prioritaires pour l\'achat de collections limitées.',
             c3_4: '✔️ Participer aux votes (DAO) pour les activités de la communauté.',
-        },
+            s1: 'Cliquez sur le lien Polygonscan ci-dessus pour ouvrir le registre public.',
+            s2: 'Sélectionnez "Contract" -> "Read Contract" pour voir les règles.',
+            s3: 'Sous "royaltyInfo": Taux de 10% - Un engagement perpétuel.',
+            s4: 'Sous "ownerOf": Entrez le TokenID pour voir votre portefeuille.',
+            s5: 'Informations permanentes; les banques ne peuvent pas les modifier unilatéralement.',
+            s6: 'La preuve légale la plus élevée de votre propriété numérique.',
+            c4_t: 'Chapitre 4: Protection contre l\'érosion des actifs',
+            c4_d: 'Nous mettons fin à l\'ère des frais cachés. Contrairement aux banques, chaque règle ici est protégée par les mathématiques.',
+            c4_n: 'RÈGLES INCHANGEABLES:',
+            c4_1: 'La redevance de 10% est codée en dur dans le Smart Contract.',
+            c4_2: 'Personne ne peut augmenter les frais après le lancement du NFT.',
+            c4_3: 'Les frais sont utilisés pour préserver le patrimoine et augmenter la valeur du NFT.'
+            },
         zh: {
             manifesto: '"音乐不仅仅是音符，它是灵魂的遗产。路易斯音乐 (HungLouis Music) 为保护原创、致敬创作者并构建透明的知识产权社区而生。"',
             c1_t: '第一章：艺术理念',
@@ -297,6 +304,18 @@ function changeLang(lang) {
             c3_2: '✔️ 定期接收艺术家发送的音乐空投。',
             c3_3: '✔️ 限量系列的优先购买权。',
             c3_4: '✔️ 参与社区活动的投票表决 (DAO)。',
+            s1: '✔️ 参与社区活动的投票表决 (DAO)。',
+            s2: '✔️ 参与社区活动的投票表决 (DAO)。',
+            s3: '✔️ 参与社区活动的投票表决 (DAO)。',
+            s4: '✔️ 参与社区活动的投票表决 (DAO)。',
+            s5: '✔️ 参与社区活动的投票表决 (DAO)。',
+            s6: '✔️ 参与社区活动的投票表决 (DAO)。',
+            c4_t: '第四章：资产侵蚀保护',
+            c4_d: '我们结束了隐藏费用的时代。与银行不同，这里的每一条规则都受到数学的保护。',
+            c4_n: '不可更改的规则：',
+            c4_1: '10%的版税费用被硬编码到智能合约中。',
+            c4_2: 'NFT发布后，任何人都不能提高费用。',
+            c4_3: '费用用于保护遗产并提升NFT价值。'
         }
     };
 // Lệnh thực thi thay đổi (Cần bọc trong try-catch để nếu thiếu 1 ID cũng không bị đơ cả trang)
@@ -305,6 +324,7 @@ function changeLang(lang) {
         document.getElementById('c1-title').innerText = data[lang].c1_t;
         document.getElementById('c1-desc').innerText = data[lang].c1_d;
         document.getElementById('c2-title').innerText = data[lang].c2_t;
+        document.getElementById('c2-lead').innerText = data[lang].c2_lead;
         document.getElementById('c2-h1').innerText = data[lang].c2_h1;
         document.getElementById('c2-p1').innerText = data[lang].c2_p1;
         document.getElementById('c2-h2').innerText = data[lang].c2_h2;
@@ -317,6 +337,7 @@ function changeLang(lang) {
         document.getElementById('c3-li-4').innerText = data[lang].c3_4;
         document.getElementById('c4-title').innerText = data[lang].c4_t;
         document.getElementById('c4-desc').innerText = data[lang].c4_d;
+        document.getElementById('c4-lead').innerText = data[lang].c4_n;        
         document.getElementById('c4-note').innerText = data[lang].c4_n;
         document.getElementById('c4-li-1').innerText = data[lang].c4_1;
         document.getElementById('c4-li-2').innerText = data[lang].c4_2;
