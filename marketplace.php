@@ -338,6 +338,18 @@ function closePlayer() {
     player.src = ""; // Xóa link nhạc
     playerBar.classList.add('translate-y-full'); // Ẩn thanh công cụ
 }
+const audio = document.getElementById('myAudio');
+const previewTime = 45; // 45 giây nghe thử
+
+audio.addEventListener('timeupdate', function() {
+    // Nếu người dùng chưa xác thực Ví (không có NFT)
+    if (!userHasNFT && audio.currentTime >= previewTime) {
+        audio.pause();
+        audio.currentTime = 0;
+        alert("🔒 Bạn đã nghe hết phần thử. Hãy sở hữu NFT để mở khóa trọn vẹn di sản này!");
+        showMintButton(); // Hiện nút hướng dẫn mua NFT
+    }
+});
 
 </script>
 
