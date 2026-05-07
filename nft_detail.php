@@ -1,52 +1,37 @@
 <?php
 session_start();
+include 'config.php';
 require_once 'db.php'; 
-
-// 1. Lấy ID
-$item_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-// 2. Cấu hình Supabase (NHỚ ĐIỀN KEY THẬT CỦA BẠN VÀO ĐÂY)
-$url = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
+// Khai báo các thông số kết nối trực tiếp
+$supabaseUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
 $apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw"; 
 
-$id = $_GET['id'] ?? 0;
-$item = null;
+error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
 
-// Hàm lấy dữ liệu - Đã được tối ưu cho cấu trúc Supabase của bạn
-function getFromSupabase($url, $apiKey, $table, $id) {
-    // 1. Khởi tạo cURL
+$slug = $_GET['slug'] ?? ''; 
+
+// 1. Tách lấy phần ID ở cuối chuỗi slug
+$parts = explode('-', $slug);
+$id_to_find = end($parts); // Lấy phần cuối cùng (0ec566982e88)
+
+// 2. Sửa lại hàm truy vấn để chấp nhận cả chữ và số (UUID)
+function getHeritageById($url, $apiKey, $table, $id) {
+    // Chúng ta dùng 'eq' (bằng) để tìm chính xác cái ID dài đó
     $ch = curl_init("$url/rest/v1/$table?id=eq.$id&select=*");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "apikey: $apiKey", 
-        "Authorization: Bearer $apiKey"
-    ]);
-    
-    $result = curl_exec($ch);
-    $response = json_decode($result, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ["apikey: $apiKey", "Authorization: Bearer $apiKey"]);
+    $res = json_decode(curl_exec($ch), true);
     curl_close($ch);
-
-    // 2. Kiểm tra dữ liệu trả về (Sửa lỗi dòng 26 tại đây)
-    // Nếu $response là mảng và CÓ phần tử, mới lấy phần tử số 0
-    if (is_array($response) && !empty($response) && isset($response[0])) {
-        return $response[0]; 
-    }
     
-    // Nếu không có dữ liệu, trả về null thay vì báo lỗi
-    return null;
+    // Trình xuất dữ liệu: Supabase trả về mảng, ta lấy phần tử đầu tiên
+    return (is_array($res) && !empty($res)) ? $res[0] : null;
 }
-
-
-// 1. Thử tìm trong bảng 'items'
-$item = getFromSupabase($supabaseUrl, $apiKey, 'items', $id);
-
-// 2. Nếu không thấy ở bảng 'items', tìm trong bảng 'hunglouis'
-if (!$item) {
-    $item = getFromSupabase($supabaseUrl, $apiKey, 'hunglouis', $id);
-}
-
-// --- KIỂM TRA CUỐI CÙNG ---
-if (!$item) {
-    exit("⚠️ Không tìm thấy tác phẩm có ID là $id trong hệ thống!");
+//3. Gọi lệnh tìm kiếm (Bỏ kiểm tra is_numeric để chấp nhận ID dài)
+if ($id_to_find) {
+    $item = getHeritageById($supabaseUrl, $apiKey, 'hunglouis', $id_to_find);
+    if (!$item) {
+        $item = getHeritageById($supabaseUrl, $apiKey, 'items', $id_to_find);
+    }
 }
 
 // Xử lý hiển thị link ảnh (Dữ liệu của bạn trong hình đã là link gateway rồi)
@@ -61,7 +46,7 @@ if (isset($item['image_url']) && strpos($item['image_url'], 'ipfs://') !== false
 <html>
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <base href="/NFTMusicmarketplace/">
     <meta charset="UTF-8">
     <title>Chi tiết NFT</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -98,26 +83,22 @@ if (isset($item['image_url']) && strpos($item['image_url'], 'ipfs://') !== false
                     </h1>
                     <p class="text-2xl font-bold text-emerald-400 mt-4">💰 <?php echo $item['price']; ?> MATIC</p>
                 </div>
-<!-- BỘ NÚT CHIA SẺ MẠNG XÃ HỘI - DỨT ĐIỂM LỖI -->
-<div style="display: flex; align-items: center; gap: 15px; margin-top: 20px; margin-bottom: 20px;">
-    <span style="font-size: 10px; color: #6b7280; font-weight: 900; text-transform: uppercase; letter-spacing: 2px;">Lan tỏa:</span>
-    
+   <!-- BỘ NÚT MẠNG XÃ HỘI MỚI -->
+<?php $current_url = urlencode("http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>
+<div style="display: flex; gap: 10px; align-items: center; padding-left: 10px;">
+    <span style="font-size: 9px; color: #666; text-transform: uppercase;">Lan tỏa:</span>
+
     <!-- Nút Facebook -->
-    <a href="https://facebook.com<?php echo urlencode("http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"); ?>" 
-       target="_blank" style="width: 32px; height: 32px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.3s;">
-        <i class="fab fa-facebook-f" style="color: #9ca3af; font-size: 12px;"></i>
-    </a>
+    <div onclick="openLink('fb')" class="s-icon"><span style="font-size: 8px; font-weight: bold;">F</span></div>
 
-    <!-- Nút Twitter -->
-    <a href="https://twitter.com<?php echo urlencode("http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"); ?>" 
-       target="_blank" style="width: 32px; height: 32px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.3s;">
-        <i class="fab fa-x-twitter" style="color: #9ca3af; font-size: 12px;"></i>
-    </a>
+    <!-- Nút Twitter (X) -->
+    <div onclick="openLink('tw')" class="s-icon"><span style="font-size: 8px; font-weight: bold;">X</span></div>
 
-    <!-- Nút Sao chép link -->
-    <button onclick="copyPageLink()" style="width: 32px; height: 32px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s;">
-        <i class="fas fa-link" style="color: #9ca3af; font-size: 12px;"></i>
-    </button>
+    <!-- Nút Zalo -->
+    <div onclick="openLink('zl')" class="s-icon"><span style="font-size: 8px; font-weight: bold;">Zalo</span></div>
+
+    <!-- Nút YouTube -->
+    <div onclick="openLink('yt')" class="s-icon"><span style="font-size: 8px; font-weight: bold;">Y</span></div>
 </div>
 
 <script>

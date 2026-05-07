@@ -1,7 +1,35 @@
 <?php
+include 'config.php';
+session_start();
 // --- 1. PHẦN XỬ LÝ DỮ LIỆU (Giữ nguyên logic cũ của bạn) ---
 $supabaseUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co"; 
 $apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw";
+
+// --- BỘ ĐẾM DI SẢN TỰ ĐỘNG ---
+function getTotalCount($tableName) {
+    // Bắc cầu trực tiếp để lấy chìa khóa từ bên ngoài vào
+    global $url, $apiKey; 
+    
+    $ch = curl_init($url . $tableName . "?select=id");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: " . $apiKey,
+        "Authorization: Bearer " . $apiKey
+    ]);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    $data = json_decode($response, true);
+    return is_array($data) ? count($data) : 0;
+}
+
+// BÂY GIỜ GỌI LỆNH NÀY SẼ CỰC KỲ AN TOÀN
+$countHungLouis = getTotalCount('hunglouis');
+$countItems = getTotalCount('items');
+$totalHeritage = $countHungLouis + $countItems;
+
+// -----------------------------
+
+
 $items_per_page = 12;
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($current_page - 1) * $items_per_page;
@@ -28,6 +56,7 @@ function renderPagination($current_page) {
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    <base href="/NFTMusicmarketplace/">
     <meta charset="UTF-8">
     <title>OpenSea Heritage | Studio NFT</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -98,22 +127,20 @@ function renderPagination($current_page) {
             transition: 0.4s;
         }
 
-
     </style>
 </head>
+
 <body class="p-5 md:p-10">
      <?php if(file_exists('navbar.php')) include 'navbar.php'; ?>
  
     <!-- 2. NỘI DUNG CHÍNH (Rực sáng và Hoành tráng) -->
           
         <div style="margin-bottom: 60px;">
-            <h1 class="cyan-glow" style="font-size: 48px; font-weight: 900; text-transform: uppercase; letter-spacing: -2px; margin: 0;">
-                Di Sản Từ OpenSea
-            </h1>
-            <p style="color: #555; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 4px; margin-top: 15px;">
-                <i class="fas fa-database" style="color: #00ffff; margin-right: 10px;"></i>
-                Kho di sản • 26 vật phẩm • Blockchain Polygon
+            <h1 class="text-white font-black text-5xl uppercase mb-2">DI SẢN TỪ OPENSEA</h1>
+            <p class="text-cyan-400 text-xs tracking-[0.3em] uppercase opacity-70">
+                        KHO DI SẢN: <?php echo $totalHeritage; ?> TÁC PHẨM | BLOCKCHAIN POLYGON
             </p>
+
         </div>
 
         <!-- 🧭 NÚT CHUYỂN TRANG ĐẦU -->
@@ -126,9 +153,12 @@ function renderPagination($current_page) {
                     <div class="card-nft rounded-3xl p-5 flex flex-col h-[520px]">
                                                 <!-- Ảnh NFT -->
                         <div class="relative h-56 w-full mb-4 overflow-hidden rounded-2xl group">
-                            <a href="nft_detail.php?id=<?php echo $item['id']; ?>" class="block h-full w-full">
-                                <img src="<?php  echo $item['image_url'] ?: 'https://placeholder.com'; ?>" 
-                                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <a href="heritage/<?php echo createSlug($item['name'], $item['id']); ?>" class="block h-full w-full">
+                                <img src="<?php 
+    // Nếu có link ảnh thì hiện, nếu không thì dùng ảnh logo hoặc biểu tượng âm nhạc của bạn
+    echo !empty($item['image_url']) ? $item['image_url'] : 'assets/images/louis-music-default.jpg'; 
+?>" class="w-full h-full object-cover">
+
                                 
                                 <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-cyan-400">
                                     #<?php  echo $item['id']; ?>
@@ -280,7 +310,26 @@ function renderPagination($current_page) {
     player.play();
     updatePlayIcon(true);
 }
+// --- BẮT ĐẦU CHẾ ĐỘ GIÁM SÁT 45 GIÂY ---
+const mainPlayer = document.getElementById('main-hybrid-player');
+const previewLimit = 45; 
 
+mainPlayer.addEventListener('timeupdate', function() {
+    // Tạm thời để false để test. Sau này code xác thực ví sẽ điều khiển biến này.
+    let isVerifiedMember = false; 
+
+    if (!isVerifiedMember && mainPlayer.currentTime >= previewLimit) {
+        mainPlayer.pause();
+        mainPlayer.currentTime = 0; 
+        
+        // Hiện thông báo bằng 4 thứ tiếng (Dùng alert để test nhanh)
+        showHeritagePopup(); // Gọi Popup đẹp thay vì hiện hộp thoại xấu
+        
+        // Thu thanh nhạc lại để yêu cầu xác thực
+        document.getElementById('music-player-bar').classList.add('translate-y-full');
+    }
+});
+// --- KẾT THÚC CHẾ ĐỘ GIÁM SÁT ---
 function togglePlay() {
     const player = document.getElementById('main-hybrid-player');
     const iconContainer = document.getElementById('play-pause-icon');
@@ -313,10 +362,29 @@ function closePlayer() {
     player.src = ""; // Xóa link nhạc
     playerBar.classList.add('translate-y-full'); // Ẩn thanh công cụ
 }
+function showHeritagePopup() {
+    // Nếu đã có popup rồi thì không tạo thêm
+    if (document.getElementById('heritage-popup')) return;
+    // Thay đoạn nút bấm cũ bằng thiết kế "Phân cấp" này
+const btnHtml = `
+    <div class="flex flex-col gap-4 mt-6">
+        <!-- NÚT CHÍNH: SANG TRỌNG, NỔI BẬT -->
+        <a href="/NFTMusicmarketplace/mint_page.php" 
+           class="bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-black py-5 rounded-full hover:scale-105 transition shadow-[0_0_30px_rgba(0,255,255,0.5)] uppercase tracking-tighter">
+            💎 Mua trực tiếp tại HungLouis (Full Privileges)
+        </a>
+        
+        <!-- NÚT PHỤ: KHIÊM TỐN HƠN -->
+        <a href="https://opensea.io" target="_blank" 
+           class="text-gray-400 text-xs hover:text-white transition underline decoration-gray-600">
+            Hoặc mua qua sàn thứ cấp OpenSea
+        </a>
+    </div>
+`;
 
+
+    document.body.insertAdjacentHTML('beforeend', popupHtml);
+}
 </script>
-
 </body>
 </html>                                                                 
-
-

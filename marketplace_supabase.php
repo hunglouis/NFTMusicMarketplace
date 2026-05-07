@@ -1,4 +1,5 @@
 <?php
+include 'config.php';
 session_start();
 function callSupabase($endpoint) {
     $url = "https://hmvvjjiiaelcsfqgxbxv.supabase.co/rest/v1/" . $endpoint;

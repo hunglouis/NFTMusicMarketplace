@@ -125,7 +125,7 @@
 
         <a href="marketplace.php" class="flex items-center gap-4 px-2 py-3 text-white bg-white/5 rounded-lg border border-white/10">
             <i class="fa-solid fa-compass min-w-[1.2rem] text-center text-sm text-cyan-400"></i>
-            <span class="menu-text font-bold uppercase">Di sản Supabase</span>
+            <span class="menu-text font-bold uppercase">Di sản HungLouis</span>
         </a>
 
         <a href="mint_nft.php" class="flex items-center gap-3 px-2 py-3 text-gray-500 hover:text-emerald-400 transition-all">
