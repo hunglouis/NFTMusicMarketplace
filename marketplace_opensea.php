@@ -56,7 +56,7 @@ function renderPagination($current_page) {
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <base href="/NFTMusicmarketplace/">
+    <base href="/">
     <meta charset="UTF-8">
     <title>OpenSea Heritage | Studio NFT</title>
     <script src="https://cdn.tailwindcss.com"></script>

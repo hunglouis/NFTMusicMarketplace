@@ -97,7 +97,7 @@ function renderPagination($current_page) {
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <base href="/NFTMusicmarketplace/">
+    <base href="/">
     <meta charset="UTF-8">
     <title>CỬA HÀNG NHẠC NFT - MẠNH HÙNG</title>
     <script src="https://cdn.tailwindcss.com"></script>
