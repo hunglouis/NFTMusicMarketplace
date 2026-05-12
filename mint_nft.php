@@ -163,7 +163,7 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
 const urlParams = new URLSearchParams(window.location.search);
 const CURRENT_COLLECTION = urlParams.get('contract'); 
 
-async function mintHeritage() {
+async function mint() {
     if (!CURRENT_COLLECTION) {
         alert("Lỗi: Không tìm thấy địa chỉ bộ sưu tập riêng!");
         return;
@@ -200,7 +200,7 @@ async function mintHeritage() {
     const agree = document.getElementById('agreement');
     const btn = document.getElementById('mint-button');
             // Thêm dòng này dưới đoạn logic nút Vàng của bạn
-            btn.addEventListener('click', mintHeritage);
+            btn.addEventListener('click', mint);
 
     agree.addEventListener('change', function() {
         if (this.checked) {
