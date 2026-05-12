@@ -153,7 +153,7 @@ function renderPagination($current_page) {
                     <div class="card-nft rounded-3xl p-5 flex flex-col h-[520px]">
                                                 <!-- Ảnh NFT -->
                         <div class="relative h-56 w-full mb-4 overflow-hidden rounded-2xl group">
-                            <a href="heritage/<?php echo createSlug($item['name'], $item['id']); ?>" class="block h-full w-full">
+                            <a href="<?php echo createSlug($item['name'], $item['id']); ?>" class="block h-full w-full">
                                 <img src="<?php 
     // Nếu có link ảnh thì hiện, nếu không thì dùng ảnh logo hoặc biểu tượng âm nhạc của bạn
     echo !empty($item['image_url']) ? $item['image_url'] : 'assets/images/louis-music-default.jpg'; 

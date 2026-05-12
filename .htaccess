@@ -2,5 +2,3 @@ RewriteEngine On
 # Chỉ định thư mục gốc của dự án
 RewriteBase /NFTMusicmarketplace/
 
-# Nếu địa chỉ là /heritage/abc, hãy chuyển ngầm về nft_detail.php?slug=abc
-RewriteRule ^heritage/([a-zA-Z0-9-]+)$ nft_detail.php?slug=$1 [L,QSA]
