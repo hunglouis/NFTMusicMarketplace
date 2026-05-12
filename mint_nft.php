@@ -33,8 +33,8 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
         }
     </style>
 </head>
-<body class="p-8 md:p-16">
-    <?php include 'navbar.php'; ?>
+<body class="p-5 md:p-10">
+     <?php if(file_exists('navbar.php')) include 'navbar.php'; ?>
 
     <div class="max-w-4xl mx-auto">
         <!-- TIÊU ĐỀ STUDIO -->
@@ -79,7 +79,7 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
     </h3>
     
     <!-- 1. CỬA NẠP SẢN VẬT (TO VÀ RÕ) -->
-    <div onclick="document.getElementById('file-input').click()" 
+    <div onclick="createNewCollectionOnWeb(); document.getElementById('file-input').click();" 
          style="cursor: pointer; border: 2px dashed rgba(234, 179, 8, 0.2); background: rgba(255,255,255,0.02);"
          class="w-full h-40 rounded-[30px] flex flex-col items-center justify-center group hover:bg-yellow-500/5 transition-all">
         
@@ -159,10 +159,48 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
         }
     }
     window.addEventListener('load', showWallet);
+// Lấy địa chỉ hợp đồng con từ URL (được truyền từ dashboard.php sang)
+const urlParams = new URLSearchParams(window.location.search);
+const CURRENT_COLLECTION = urlParams.get('contract'); 
+
+async function mintHeritage() {
+    if (!CURRENT_COLLECTION) {
+        alert("Lỗi: Không tìm thấy địa chỉ bộ sưu tập riêng!");
+        return;
+    }
+
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    
+    // ABI tối giản để thực hiện lệnh Mint
+    const abi = ["function mint(address to, uint256 tokenId) public"];
+    const contract = new ethers.Contract(CURRENT_COLLECTION, abi, signer);
+
+    try {
+        const userAddress = await signer.getAddress();
+        const tokenId = Math.floor(Date.now() / 1000); // Dùng thời gian làm ID để không trùng
+
+        console.log("Đang khởi sinh di sản tại:", CURRENT_COLLECTION);
+        const tx = await contract.mint(userAddress, tokenId);
+        
+        // Hiển thị trạng thái đang xử lý trên nút bấm
+        const btn = document.getElementById('mint-button');
+        btn.innerText = "ĐANG GHI DẤU DI SẢN...";
+        
+        await tx.wait();
+        alert("Khởi sinh di sản thành công!");
+        window.location.href = "marketplace.php"; // Chuyển về chợ sau khi xong
+    } catch (error) {
+        console.error(error);
+        alert("Giao dịch thất bại!");
+    }
+}
 
     // 3. Logic làm rực sáng nút Vàng
     const agree = document.getElementById('agreement');
     const btn = document.getElementById('mint-button');
+            // Thêm dòng này dưới đoạn logic nút Vàng của bạn
+            btn.addEventListener('click', mintHeritage);
 
     agree.addEventListener('change', function() {
         if (this.checked) {
@@ -295,5 +333,44 @@ function handleFileSelect(input) {
 }
 
 </script>
+<!-- Tải thư viện Ethers.js từ CDN (rất nhanh và nhẹ) -->
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+<script>
+async function createNewCollectionOnWeb() {
+    if (typeof window.ethereum === 'undefined') {
+        alert("Vui lòng cài đặt MetaMask!");
+        return;
+    }
+
+    const FACTORY_ADDRESS = "0x96BBA5cCC21236f869A0D3F05720F607220eE33F";
+    const ABI = [ 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "_implementation", 				"type": "address" 			} 		], 		"stateMutability": "nonpayable", 		"type": "constructor" 	}, 	{ 		"inputs": [], 		"name": "FailedDeployment", 		"type": "error" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "uint256", 				"name": "balance", 				"type": "uint256" 			}, 			{ 				"internalType": "uint256", 				"name": "needed", 				"type": "uint256" 			} 		], 		"name": "InsufficientBalance", 		"type": "error" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "string", 				"name": "name", 				"type": "string" 			}, 			{ 				"internalType": "string", 				"name": "symbol", 				"type": "string" 			} 		], 		"name": "createNewCollection", 		"outputs": [ 			{ 				"internalType": "address", 				"name": "", 				"type": "address" 			} 		], 		"stateMutability": "nonpayable", 		"type": "function" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "uint256", 				"name": "", 				"type": "uint256" 			} 		], 		"name": "deployedCollections", 		"outputs": [ 			{ 				"internalType": "address", 				"name": "", 				"type": "address" 			} 		], 		"stateMutability": "view", 		"type": "function" 	}, 	{ 		"inputs": [], 		"name": "implementation", 		"outputs": [ 			{ 				"internalType": "address", 				"name": "", 				"type": "address" 			} 		], 		"stateMutability": "view", 		"type": "function" 	} ];
+
+    try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        const factoryContract = new ethers.Contract(FACTORY_ADDRESS, ABI, signer);
+
+        // Lấy tên và ký hiệu từ Form PHP của bạn
+        const name = "Music Collection của tôi"; 
+        const symbol = "MC1";
+
+        console.log("Đang mở MetaMask để xác nhận...");
+        const tx = await factoryContract.createNewCollection(name, symbol);
+        
+        alert("Đang triển khai hợp đồng, vui lòng chờ giây lát...");
+        const receipt = await tx.wait();
+
+        alert("Thành công! Địa chỉ hợp đồng mới đã được tạo.");
+        console.log("Giao dịch:", receipt.hash);
+        
+        // Sau khi xong, bạn có thể dùng AJAX để gửi địa chỉ này về lưu vào Database PHP (MySQL/Supabase)
+    } catch (error) {
+        console.error("Lỗi:", error);
+        alert("Người dùng đã hủy hoặc giao dịch thất bại.");
+    }
+}
+</script>
+
 </body>
 </html>

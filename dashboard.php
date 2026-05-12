@@ -1,177 +1,116 @@
-<?php
-if (session_status() !== PHP_SESSION_ACTIVE) {
-  session_start();
-}
-$total_songs = $total_songs ?? 0;
-$balance = $balance ?? 0;
-$songs =  $songs ?? [];
-require_once 'db.php';
-require_once 'finance_logic.php';
-set_time_limit(5);
-
-// TẠM DEBUG: bỏ exit để trang tiếp tục chạy
-// echo isset($_SESSION['user']) ? 'user có' : 'user KHÔNG có';
-// echo '<pre>'; print_r($_SESSION); echo '</pre>';
-// exit;
-
-// GỠ KHÓA TẠM: bỏ kiểm tra admin
-// if (empty($_SESSION['user']) || $_SESSION['user'] !== 'hunglouis') {
-//   die("Bạn chưa được phép vào trang này.");
-// }
-
-// Cho chạy tiếp dù không có session
-$user = $_SESSION['user'] ?? '';
-$user_display = $user;
-?>
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Quỳnh Hương - Genesis Edition</title>
-    <!-- Link làm đẹp giao diện -->
+    <title>Dashboard Thành Viên - Music NFT</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cloudflare.com" rel="stylesheet">
     <style>
-        body { background: radial-gradient(circle at top right, #0891b2, #064e3b, #020617); min-height: 100vh; color: white; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(6, 182, 212, 0.2); }
+        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .contract-item { border-bottom: 1px solid #eee; padding: 10px 0; display: flex; justify-content: space-between; }
+        .btn-mint { background: #28a745; color: white; padding: 5px 10px; border: none; cursor: pointer; border-radius: 5px; }
     </style>
 </head>
 <body class="p-5 md:p-10">
-     <?php if(file_exists('navbar.php')) include 'navbar.php'; ?> <!-- Chèn thanh điều hướng -->
-     <!-- Toàn bộ phần vòng lặp foreach của bạn nằm ở đây -->
-   
+     <?php if(file_exists('navbar.php')) include 'navbar.php'; ?>
 
-     
-<!-- ... Phía trên là Thanh Menu (Navbar) ... -->
-
-<div class="container mx-auto px-6 py-10">
-    <div class="flex items-center gap-4 mb-8">
-        <div class="h-10 w-2 bg-cyan-500 rounded-full"></div>
-        <h1 class="text-3xl font-black text-white uppercase tracking-tighter">
-            Quản lý <span class="text-cyan-400">Hoa Quỳnh</span>
-        </h1>
-    </div>
-
-    <!-- ĐÂY LÀ ĐOẠN MÃ CÁC "Ô CỬA SỔ" NHẬP LIỆU -->
-    <section class="glass p-8 rounded-[2.5rem] shadow-2xl mb-12 border border-cyan-500/20">
-        <h2 class="text-xl font-bold mb-6 text-white flex items-center gap-3">
-            <i class="fas fa-plus-circle text-cyan-400"></i>
-            Thêm tác phẩm mới vào hệ thống
-        </h2>
-
-        <form action="api/save_song.php" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Ô 1: Tên tác phẩm -->
-            <div>
-                <label class="block text-[10px] uppercase tracking-widest text-cyan-500 mb-2 ml-2">Tên tác phẩm</label>
-                <input type="text" name="title" placeholder="Ví dụ: Quỳnh Hương" required
-                       class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl text-white focus:border-cyan-500 outline-none transition">
-            </div>
-
-            <!-- Ô 2: DÁN LINK URL ẢNH (Quan trọng nhất) -->
-            <div>
-                <label class="block text-[10px] uppercase tracking-widest text-cyan-500 mb-2 ml-2">Link URL Ảnh (Từ Supabase)</label>
-                <input type="text" name="image_path" placeholder="https://..." required
-                       class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl text-white focus:border-cyan-500 outline-none transition">
-            </div>
-
-            <!-- Ô 3: Giá hoặc ID -->
-            <div>
-                <label class="block text-[10px] uppercase tracking-widest text-cyan-500 mb-2 ml-2">Giá NFT (ETH)</label>
-                <input type="text" name="price" placeholder="0.05"
-                       class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl text-white focus:border-cyan-500 outline-none transition">
-            </div>
-
-            <!-- Nút bấm lưu -->
-            <div class="md:col-span-3">
-                <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 text-white font-black py-4 rounded-2xl shadow-lg shadow-cyan-500/40 transition transform active:scale-95">
-                    LƯU VÀO CƠ SỞ DỮ LIỆU
-                </button>
-            </div>
-        </form>
-    </section>
-
-    <!-- ... Phía dưới là danh sách các bài hát hiện có ... -->
+<div class="card">
+    <h2>🎵 Dashboard Của Bạn</h2>
+    <p>Ví đang kết nối: <span id="0x8429BC345266D03a433b25B8Fb6301274294D81E">Chưa kết nối</span></p>
+    <h3>Bộ sưu tập của bạn đã sở hữu:</h3>
+    <div id="0xeaE543209f1Cdb5758BE84DebdFe003bD85121C9">Đang tìm kiếm hợp đồng trên Blockchain...</div>
 </div>
 
-    <div class="sidebar">
-        <h3>MENU ADMIN</h3>
-        <hr>
-        <p><a href="marketplace.php" style="color:white; text-decoration:none;">🛒 Xem Chợ Nhạc</a></p>
-        <p><a href="thongke.php" style="color:white; text-decoration:none;">📊 Thống kê</a></p>
-        <p><a href="logout.php" style="color:red; text-decoration:none;">🚪 Thoát</a></p>
-    </div>
+<script>
+const FACTORY_ADDRESS = "0x96BBA5cCC21236f869A0D3F05720F607220eE33F";
+const FACTORY_ABI = [  	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "_implementation", 				"type": "address" 			} 		], 		"stateMutability": "nonpayable", 		"type": "constructor" 	}, 	{ 		"inputs": [], 		"name": "FailedDeployment", 		"type": "error" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "uint256", 				"name": "balance", 				"type": "uint256" 			}, 			{ 				"internalType": "uint256", 				"name": "needed", 				"type": "uint256" 			} 		], 		"name": "InsufficientBalance", 		"type": "error" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "string", 				"name": "name", 				"type": "string" 			}, 			{ 				"internalType": "string", 				"name": "symbol", 				"type": "string" 			} 		], 		"name": "createNewCollection", 		"outputs": [ 			{ 				"internalType": "address", 				"name": "", 				"type": "address" 			} 		], 		"stateMutability": "nonpayable", 		"type": "function" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "uint256", 				"name": "", 				"type": "uint256" 			} 		], 		"name": "deployedCollections", 		"outputs": [ 			{ 				"internalType": "address", 				"name": "", 				"type": "address" 			} 		], 		"stateMutability": "view", 		"type": "function" 	}, 	{ 		"inputs": [], 		"name": "implementation", 		"outputs": [ 			{ 				"internalType": "address", 				"name": "", 				"type": "address" 			} 		], 		"stateMutability": "view", 		"type": "function" 	}];
+const COLLECTION_ABI = [ 	{ 		"inputs": [], 		"stateMutability": "nonpayable", 		"type": "constructor" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "sender", 				"type": "address" 			}, 			{ 				"internalType": "uint256", 				"name": "tokenId", 				"type": "uint256" 			}, 			{ 				"internalType": "address", 				"name": "owner", 				"type": "address" 			} 		], 		"name": "ERC721IncorrectOwner", 		"type": "error" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "operator", 				"type": "address" 			}, 			{ 				"internalType": "uint256", 				"name": "tokenId", 				"type": "uint256" 			} 		], 		"name": "ERC721InsufficientApproval", 		"type": "error" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "approver", 				"type": "address" 			} 		], 		"name": "ERC721InvalidApprover", 		"type": "error" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "operator", 				"type": "address" 			} 		], 		"name": "ERC721InvalidOperator", 		"type": "error" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "owner", 				"type": "address" 			} 		], 		"name": "ERC721InvalidOwner", 		"type": "error" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "receiver", 				"type": "address" 			} 		], 		"name": "ERC721InvalidReceiver", 		"type": "error" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "sender", 				"type": "address" 			} 		], 		"name": "ERC721InvalidSender", 		"type": "error" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "uint256", 				"name": "tokenId", 				"type": "uint256" 			} 		], 		"name": "ERC721NonexistentToken", 		"type": "error" 	}, 	{ 		"anonymous": false, 		"inputs": [ 			{ 				"indexed": true, 				"internalType": "address", 				"name": "owner", 				"type": "address" 			}, 			{ 				"indexed": true, 				"internalType": "address", 				"name": "approved", 				"type": "address" 			}, 			{ 				"indexed": true, 				"internalType": "uint256", 				"name": "tokenId", 				"type": "uint256" 			} 		], 		"name": "Approval", 		"type": "event" 	}, 	{ 		"anonymous": false, 		"inputs": [ 			{ 				"indexed": true, 				"internalType": "address", 				"name": "owner", 				"type": "address" 			}, 			{ 				"indexed": true, 				"internalType": "address", 				"name": "operator", 				"type": "address" 			}, 			{ 				"indexed": false, 				"internalType": "bool", 				"name": "approved", 				"type": "bool" 			} 		], 		"name": "ApprovalForAll", 		"type": "event" 	}, 	{ 		"anonymous": false, 		"inputs": [ 			{ 				"indexed": true, 				"internalType": "address", 				"name": "from", 				"type": "address" 			}, 			{ 				"indexed": true, 				"internalType": "address", 				"name": "to", 				"type": "address" 			}, 			{ 				"indexed": true, 				"internalType": "uint256", 				"name": "tokenId", 				"type": "uint256" 			} 		], 		"name": "Transfer", 		"type": "event" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "to", 				"type": "address" 			}, 			{ 				"internalType": "uint256", 				"name": "tokenId", 				"type": "uint256" 			} 		], 		"name": "approve", 		"outputs": [], 		"stateMutability": "nonpayable", 		"type": "function" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "owner", 				"type": "address" 			} 		], 		"name": "balanceOf", 		"outputs": [ 			{ 				"internalType": "uint256", 				"name": "", 				"type": "uint256" 			} 		], 		"stateMutability": "view", 		"type": "function" 	}, 	{ 		"inputs": [], 		"name": "creator", 		"outputs": [ 			{ 				"internalType": "address", 				"name": "", 				"type": "address" 			} 		], 		"stateMutability": "view", 		"type": "function" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "uint256", 				"name": "tokenId", 				"type": "uint256" 			} 		], 		"name": "getApproved", 		"outputs": [ 			{ 				"internalType": "address", 				"name": "", 				"type": "address" 			} 		], 		"stateMutability": "view", 		"type": "function" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "string", 				"name": "name", 				"type": "string" 			}, 			{ 				"internalType": "string", 				"name": "symbol", 				"type": "string" 			}, 			{ 				"internalType": "address", 				"name": "_creator", 				"type": "address" 			} 		], 		"name": "initialize", 		"outputs": [], 		"stateMutability": "nonpayable", 		"type": "function" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "owner", 				"type": "address" 			}, 			{ 				"internalType": "address", 				"name": "operator", 				"type": "address" 			} 		], 		"name": "isApprovedForAll", 		"outputs": [ 			{ 				"internalType": "bool", 				"name": "", 				"type": "bool" 			} 		], 		"stateMutability": "view", 		"type": "function" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "to", 				"type": "address" 			}, 			{ 				"internalType": "uint256", 				"name": "tokenId", 				"type": "uint256" 			} 		], 		"name": "mint", 		"outputs": [], 		"stateMutability": "nonpayable", 		"type": "function" 	}, 	{ 		"inputs": [], 		"name": "name", 		"outputs": [ 			{ 				"internalType": "string", 				"name": "", 				"type": "string" 			} 		], 		"stateMutability": "view", 		"type": "function" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "uint256", 				"name": "tokenId", 				"type": "uint256" 			} 		], 		"name": "ownerOf", 		"outputs": [ 			{ 				"internalType": "address", 				"name": "", 				"type": "address" 			} 		], 		"stateMutability": "view", 		"type": "function" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "from", 				"type": "address" 			}, 			{ 				"internalType": "address", 				"name": "to", 				"type": "address" 			}, 			{ 				"internalType": "uint256", 				"name": "tokenId", 				"type": "uint256" 			} 		], 		"name": "safeTransferFrom", 		"outputs": [], 		"stateMutability": "nonpayable", 		"type": "function" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "from", 				"type": "address" 			}, 			{ 				"internalType": "address", 				"name": "to", 				"type": "address" 			}, 			{ 				"internalType": "uint256", 				"name": "tokenId", 				"type": "uint256" 			}, 			{ 				"internalType": "bytes", 				"name": "data", 				"type": "bytes" 			} 		], 		"name": "safeTransferFrom", 		"outputs": [], 		"stateMutability": "nonpayable", 		"type": "function" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "operator", 				"type": "address" 			}, 			{ 				"internalType": "bool", 				"name": "approved", 				"type": "bool" 			} 		], 		"name": "setApprovalForAll", 		"outputs": [], 		"stateMutability": "nonpayable", 		"type": "function" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "bytes4", 				"name": "interfaceId", 				"type": "bytes4" 			} 		], 		"name": "supportsInterface", 		"outputs": [ 			{ 				"internalType": "bool", 				"name": "", 				"type": "bool" 			} 		], 		"stateMutability": "view", 		"type": "function" 	}, 	{ 		"inputs": [], 		"name": "symbol", 		"outputs": [ 			{ 				"internalType": "string", 				"name": "", 				"type": "string" 			} 		], 		"stateMutability": "view", 		"type": "function" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "uint256", 				"name": "tokenId", 				"type": "uint256" 			} 		], 		"name": "tokenURI", 		"outputs": [ 			{ 				"internalType": "string", 				"name": "", 				"type": "string" 			} 		], 		"stateMutability": "view", 		"type": "function" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "from", 				"type": "address" 			}, 			{ 				"internalType": "address", 				"name": "to", 				"type": "address" 			}, 			{ 				"internalType": "uint256", 				"name": "tokenId", 				"type": "uint256" 			} 		], 		"name": "transferFrom", 		"outputs": [], 		"stateMutability": "nonpayable", 		"type": "function" 	}];
+const MARKET_ADDR = "0x624dce1e5da13ad6f45e897280d1a3f8b36b4af3"; // ĐỊA CHỈ HỢP ĐỒNG MARKETPLACE BẠN VỪA DEPLOY
 
-    <div class="main-content">
-        <h1>🎙️ TRUNG TÂM ĐIỀU HÀNH STUDIO</h1>
+async function listHeritage(contractAddr, tokenId) {
+    const price = prompt("Nhập giá niêm yết (MATIC):", "0.1");
+    if (!price) return;
+
+    try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        const userAddr = await signer.getAddress();
+
+        // 1. APPROVE: Cho phép sàn quản lý NFT này
+        const nftContract = new ethers.Contract(contractAddr, ["function setApprovalForAll(address operator, bool approved) public"], signer);
+        console.log("Đang cấp quyền cho sàn...");
+        const approveTx = await nftContract.setApprovalForAll(MARKET_ADDR, true);
+        await approveTx.wait();
+
+        // 2. LIST: Gửi lệnh lên Marketplace Contract
+        const marketContract = new ethers.Contract(MARKET_ADDR, [
+            "function listNFT(address _nftContract, uint256 _tokenId, uint256 _price) external"
+        ], signer);
         
-        <div class="stat-card">
-  <div style="color: #8b949e;">Tổng tác phẩm</div>
-  <div style="font-size: 24px; font-weight: bold;">
-    <?php echo $total_songs ?? 0; ?>
-  </div>
-</div>
+        const priceWei = ethers.parseEther(price);
+        console.log("Đang đưa di sản lên sàn...");
+        const listTx = await marketContract.listNFT(contractAddr, tokenId, priceWei);
+        await listTx.wait();
 
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Tên tác phẩm</th>
-                    <th>Giá niêm yết</th>
-                    <th>File Demo (Supabase)</th>
-                    <th>Trạng thái</th>
-                    <th>Thao tác</th>
-                    <th>Cập nhật Ảnh (Link Supabase)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($songs as $s) : ?>
-  <tr>
-    <td>#<?php echo $s['id']; ?></td>
-    <td style="font-weight: bold;"><?php echo $s['name']; ?></td>
-    <td><?php echo number_format($s['price']); ?> PHP</td>
-    <td style="font-size: 11px; color: #8b949e;"><?php echo $s['demo_file']; ?></td>
-    <td><span class="badge-active">On Cloud</span></td>
-    <td>
-      <a href="player.php?id=<?php echo $s['id']; ?>" class="btn-edit">Nghe thử</a> | 
-      <a href="#" class="btn-edit" style="color: #d73a49;">Gỡ bỏ</a>
-    </td>
+        // 3. SYNC: Lưu vào bảng market_listings trên Supabase
+        const { data, error } = await supabase.from('market_listings').insert([{
+            contract_address: contractAddr,
+            token_id: tokenId,
+            seller_address: userAddr,
+            price_matic: parseFloat(price),
+            status: 'active'
+        }]);
 
-    <td>
-      <form method="POST" action="update_image.php" style="display: flex; gap: 5px;">
-        <input type="hidden" name="song_id" value="<?php echo $s['id']; ?>">
-        <input
-          type="text"
-          name="new_image_url"
-          placeholder="Dán link ảnh..."
-          style="background: #0d1117; color: white; border: 1px solid #30363d; padding: 5px; border-radius: 4px; font-size: 11px;"
-        >
-        <button type="submit" style="background: #238636; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px;">
-          Lưu
-        </button>
-      </form>
-    </td>
+        if (error) throw error;
 
-    <td>
-      <?php if(!empty($s['image_url'])): ?>
-        <img src="<?php echo $s['image_url']; ?>" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; margin-right: 10px; border: 1px solid #30363d;">
-      <?php else: ?>
-        <div style="width: 50px; height: 50px; background: #161b22; display: inline-block; vertical-align: middle; border-radius: 5px; margin-right: 10px;"></div>
-      <?php endif; ?>
+        alert("✅ NIÊM YẾT THÀNH CÔNG! Di sản của bạn đã lên kệ.");
+        location.reload();
 
-      <span style="font-weight: bold;"><?php echo $s['title']; ?></span>
-    </td>
-  </tr>
-<?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-
-
-    
-    echo "<script>alert('Đã đồng bộ thành công: OpenSea <=> Polygon <=> Supabase <=> Localhost');
-    </script>";
+    } catch (err) {
+        console.error(err);
+        alert("❌ Lỗi niêm yết: " + err.message);
+    }
 }
+
+
+async function initDashboard() {
+    if (!window.ethereum) return alert("Hãy cài MetaMask");
+    
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    const userAddress = await signer.getAddress();
+    document.getElementById('walletAddress').innerText = userAddress;
+
+    const factoryContract = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, provider);
+    let html = "";
+    let i = 0;
+
+    // Quét toàn bộ nhà máy để tìm con của ví này
+    while (true) {
+        try {
+            const contractAddr = await factoryContract.deployedCollections(i);
+            const collectionContract = new ethers.Contract(contractAddr, COLLECTION_ABI, provider);
+            
+            // Kiểm tra xem ai là chủ hợp đồng này
+            const creator = await collectionContract.creator();
+            
+            if (creator.toLowerCase() === userAddress.toLowerCase()) {
+                const name = await collectionContract.name();
+                html += `
+                <div class="contract-item">
+                    <span><strong>${name}</strong> (${contractAddr.substring(0,6)}...${contractAddr.substring(38)})</span>
+                    <button class="btn-mint" onclick="window.location.href='mint_page.php?address=${contractAddr}'">Đúc NFT (Mint)</button>
+                </div>`;
+            }
+            i++;
+        } catch (e) { break; }
+    }
+
+    document.getElementById('myCollections').innerHTML = html || "Bạn chưa có bộ sưu tập nào. Hãy tạo mới!";
+}
+
+window.onload = initDashboard;
+</script>
 
 </body>
 </html>

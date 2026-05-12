@@ -152,7 +152,7 @@ function copyPageLink() {
 
 
                 <!-- Nút Mua -->
-                <button class="w-full bg-white text-black hover:bg-cyan-500 hover:text-white font-black py-5 rounded-2xl transition-all duration-500 shadow-xl text-xs uppercase tracking-widest">
+                <button onclick="buyNFTWithToken(contractAddress, tokenId, price, tokenType)" class="w-full bg-white text-black hover:bg-cyan-500 hover:text-white font-black py-5 rounded-2xl transition-all duration-500 shadow-xl text-xs uppercase tracking-widest">
                     Sở hữu tác phẩm này
                 </button>
             </div>
@@ -164,6 +164,28 @@ function copyLink() {
     navigator.clipboard.writeText(window.location.href);
     alert("Đã sao chép đường dẫn tác phẩm!");
 }
+async function buyNFTWithToken(contractAddress, tokenId, price, tokenType) {
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    
+    // Nếu dùng MATIC trực tiếp
+    if (tokenType === "MATIC") {
+        const tx = await marketplaceContract.buyWithMatic(contractAddress, tokenId, {
+            value: ethers.parseEther(price.toString())
+        });
+        await tx.wait();
+    } 
+    // Nếu dùng USDT/USDC
+    else {
+        // Bước 1: Người mua phải Approve cho Sàn sử dụng USDT của họ
+        const usdtContract = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, signer);
+        await usdtContract.approve(MARKETPLACE_ADDRESS, ethers.parseUnits(price, 6));
+        
+        // Bước 2: Thực hiện mua trên Sàn
+        await marketplaceContract.buyWithToken(contractAddress, tokenId, price, USDT_ADDRESS);
+    }
+}
+
 </script>    
 </body>
 </html>

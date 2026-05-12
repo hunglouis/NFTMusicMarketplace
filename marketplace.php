@@ -49,13 +49,13 @@ if (empty($all_data)) {
         [
             "id" => "0",
             "name" => "Hàng mẫu: Quỳnh Hương 01",
-            "price" => "0.05",
+            "floor_price" => "0.05",
             "image_url" => "https://vnecdn.net"
         ],
         [
             "id" => "0",
             "name" => "Hàng mẫu: Ngày Tình Xa",
-            "price" => "0.1",
+            "floor_price" => "0.1",
             "image_url" => "https://scdn.co"
         ]
     ];
@@ -97,7 +97,6 @@ function renderPagination($current_page) {
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <base href="/">
     <meta charset="UTF-8">
     <title>CỬA HÀNG NHẠC NFT - MẠNH HÙNG</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -212,17 +211,17 @@ function renderPagination($current_page) {
                         <div class="flex-grow">
                            
                         <h3 class="text-lg font-bold text-white line-clamp-2 mb-2 leading-tight">
-                                <?php echo $item['name'] ?: 'Tác phẩm chưa đặt tên'; ?>
+                                <?php echo $item['collection_name'] ?: 'Tác phẩm chưa đặt tên'; ?>
                             </h3>
                             <div class="flex justify-between items-center bg-white/5 p-3 rounded-xl">
                                 <span class="text-gray-400 text-sm">Giá niêm yết</span>
-                                <span class="text-emerald-400 font-black">💰 <?php echo $item['price']; ?> MATIC</span>
+                                <span class="text-emerald-400 font-black">💰 <?php echo $item['floor_price']; ?> MATIC</span>
                             </div>
                         </div>
 
                         <!-- Nút hành động -->
                         <div class="grid grid-cols-2 gap-3 mt-5">
-                            <button onclick="playMusic('<?php echo $item['audio_url'] ?: $item['image_url']; ?>', '<?php echo addslashes($item['name']); ?>', '<?php echo $item['image_url']; ?>')" 
+                            <button onclick="playMusic('<?php echo $item['image_url']; ?>', '<?php echo addslashes($item['collection_name']); ?>', '<?php echo $item['image_url']; ?>')" 
                                 class="bg-cyan-600 hover:bg-cyan-500 text-white py-2 px-4 rounded-lg text-xs font-bold transition-all flex items-center gap-2">
                                     ▶ Nghe/Xem thử
                             </button>
@@ -415,10 +414,30 @@ const btnHtml = `
         </a>
     </div>
 `;
-
-
     document.body.insertAdjacentHTML('beforeend', popupHtml);
 }
+async function buyNFTWithToken(contractAddress, tokenId, floor_price, tokenType) {
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    
+    // Nếu dùng MATIC trực tiếp
+    if (tokenType === "MATIC") {
+        const tx = await marketplaceContract.buyWithMatic(contractAddress, tokenId, {
+            value: ethers.parseEther(floor_price.toString())
+        });
+        await tx.wait();
+    } 
+    // Nếu dùng USDT/USDC
+    else {
+        // Bước 1: Người mua phải Approve cho Sàn sử dụng USDT của họ
+        const usdtContract = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, signer);
+        await usdtContract.approve(MARKETPLACE_ADDRESS, ethers.parseUnits(floor_price, 6));
+        
+        // Bước 2: Thực hiện mua trên Sàn
+        await marketplaceContract.buyWithToken(contractAddress, tokenId, floor_price, USDT_ADDRESS);
+    }
+}
+
 </script>
 </body>
 </html>

@@ -61,3 +61,12 @@ body {
 [ nút upload ]
 
 [ danh sách nhạc bên dưới ]
+.btn-list {
+    background-color: #ffc107; /* Màu vàng giống nút Khởi sinh của bạn */
+    color: #000;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold
+}

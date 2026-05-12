@@ -1,9 +1,9 @@
 <?php
 include 'config.php';
 session_start();
-// --- 1. PHẦN XỬ LÝ DỮ LIỆU (Giữ nguyên logic cũ của bạn) ---
-$supabaseUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co"; 
-$apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw";
+// Khai báo các thông số kết nối trực tiếp
+$supabaseUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
+$apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw"; 
 
 // --- BỘ ĐẾM DI SẢN TỰ ĐỘNG ---
 function getTotalCount($tableName) {
@@ -29,18 +29,58 @@ $totalHeritage = $countHungLouis + $countItems;
 
 // -----------------------------
 
+// 1. GỌI DỮ LIỆU THẬT TỪ SUPABASE
+$fullUrl = $supabaseUrl . "/rest/v1/hunglouis?select=*&order=id.asc&limit=50";
+$ch = curl_init($fullUrl);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "apikey: " . $apiKey,
+    "Authorization: Bearer " . $apiKey,
+    "Content-Type: application/json"
+]);
+$response = curl_exec($ch);
+$all_data = json_decode($response, true);
+curl_close($ch);
 
+// 2. NẾU SUPABASE TRỐNG, TỰ ĐỘNG HIỆN HÀNG MẪU (Để bạn yên lòng dàn trang)
+if (empty($all_data)) {
+    $all_data = [
+        [
+            "id" => "0",
+            "collection_name" => "Hàng mẫu: Quỳnh Hương 01",
+            "floor_price" => "0.05",
+            "image_url" => "https://vnecdn.net"
+        ],
+        [
+            "id" => "0",
+            "collection_name" => "Hàng mẫu: Ngày Tình Xa",
+            "floor_price" => "0.1",
+            "image_url" => "https://scdn.co"
+        ]
+    ];
+}
+
+$user = $_SESSION['user'] ?? 'Nhạc sĩ Mạnh Hùng';
+
+// 1. Cấu hình số món trên mỗi trang
 $items_per_page = 12;
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($current_page < 1) $current_page = 1;
+// 3. Tính toán vị trí bắt đầu lấy dữ liệu (Offset)
 $offset = ($current_page - 1) * $items_per_page;
 
-$ch = curl_init("$supabaseUrl/rest/v1/items?select=*&order=item_id.asc&limit=50");
+// 4. Lấy dữ liệu từ Supabase (Chỉ lấy 12 món bắt đầu từ Offset)
+// Thêm header "Range: offset-limit" để Supabase hiểu
+$ch = curl_init("$supabaseUrl/rest/v1/hunglouis?select=*&order=created_at.desc");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, ["apikey: $apiKey", "Authorization: Bearer $apiKey", "Range: $offset-" . ($offset + $items_per_page - 1)]);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "apikey: $apiKey",
+    "Authorization: Bearer $apiKey",
+    "Range: $offset-" . ($offset + $items_per_page - 1)
+]);
 $items = json_decode(curl_exec($ch), true);
 curl_close($ch);
-if (!is_array($items)) { $items = []; }
-
 // Hàm nút bấm thiết kế lại: Sáng sủa và Sang trọng
 function renderPagination($current_page) {
     echo '<div style="display: flex; justify-content: center; align-items: center; gap: 25px; margin: 50px 0;">';
@@ -53,12 +93,12 @@ function renderPagination($current_page) {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <base href="/">
     <meta charset="UTF-8">
-    <title>OpenSea Heritage | Studio NFT</title>
+    <title>CỬA HÀNG NHẠC NFT - MẠNH HÙNG</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -127,29 +167,26 @@ function renderPagination($current_page) {
             transition: 0.4s;
         }
 
+
     </style>
 </head>
-
 <body class="p-5 md:p-10">
      <?php if(file_exists('navbar.php')) include 'navbar.php'; ?>
- 
-    <!-- 2. NỘI DUNG CHÍNH (Rực sáng và Hoành tráng) -->
+            <!-- 2. NỘI DUNG CHÍNH (Rực sáng và Hoành tráng) -->
           
         <div style="margin-bottom: 60px;">
-            <h1 class="text-white font-black text-5xl uppercase mb-2">DI SẢN TỪ OPENSEA</h1>
+            <h1 class="text-white font-black text-5xl uppercase mb-2">DI SẢN TỪ HUNGLOUIS</h1>
             <p class="text-cyan-400 text-xs tracking-[0.3em] uppercase opacity-70">
-                        KHO DI SẢN: <?php echo $totalHeritage; ?> TÁC PHẨM | BLOCKCHAIN POLYGON
+                     KHO DI SẢN: <?php echo $totalHeritage; ?> TÁC PHẨM | BLOCKCHAIN POLYGON
             </p>
 
         </div>
-
-        <!-- 🧭 NÚT CHUYỂN TRANG ĐẦU -->
+         <!-- 🧭 NÚT CHUYỂN TRANG ĐẦU -->
         <?php renderPagination($current_page); ?>
-
-        <!-- 🖼️ LƯỚI NFT -->
+            <!-- GRID HIỂN THỊ HÀNG HÓA -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            <?php if (!empty($items) && is_array($items)): ?>
-                <?php foreach ($items as $item): ?>
+            <?php if (!empty($all_data) && is_array($all_data)): ?>
+                <?php foreach ($all_data as $item): ?>
                     <div class="card-nft rounded-3xl p-5 flex flex-col h-[520px]">
                                                 <!-- Ảnh NFT -->
                         <div class="relative h-56 w-full mb-4 overflow-hidden rounded-2xl group">
@@ -161,7 +198,7 @@ function renderPagination($current_page) {
 
                                 
                                 <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-cyan-400">
-                                    #<?php  echo $item['id']; ?>
+                                    #<?php echo $item['id']; ?>
                                 </div>
 
                                 <div class="absolute inset-0 bg-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -174,40 +211,29 @@ function renderPagination($current_page) {
                         <div class="flex-grow">
                            
                         <h3 class="text-lg font-bold text-white line-clamp-2 mb-2 leading-tight">
-                                <?php  $item['name'] ?: 'Tác phẩm chưa đặt tên'; ?>
+                                <?php echo $item['collection_name'] ?: 'Tác phẩm chưa đặt tên'; ?>
                             </h3>
-                            <!-- KHUNG NỘI DUNG DƯỚI ẢNH -->
-<div style="padding: 20px; background: rgba(0,0,0,0.2); border-radius: 0 0 20px 20px;">
-    
-    <!-- Dòng Giá niêm yết -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <span style="font-size: 11px; color: #555; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">Giá niêm yết</span>
-        <div style="display: flex; align-items: center; gap: 5px;">
-            <span style="color: #ffcc00; font-weight: 900; font-size: 20px; text-shadow: 0 0 10px rgba(255,204,0,0.3);">
-                <?php echo number_format($item['price'] ?? 0, 1); ?>
-            </span>
-            <span style="color: #00ffff; font-size: 12px; font-weight: bold;">MATIC</span>
-        </div>
-    </div>
+                            <div class="flex justify-between items-center bg-white/5 p-3 rounded-xl">
+                                <span class="text-gray-400 text-sm">Giá niêm yết</span>
+                                <!-- Dòng mới giúp JavaScript nhận diện đúng món hàng -->
+                                <span class="real-price" 
+                                    data-contract="<?php echo $item['contract_address']; ?>" 
+                                    data-id="<?php echo $item['token_id']; ?>">
+                                    <?php echo $item['floor_price']; ?> MATIC
+                                </span>
 
-    <!-- Hàng nút bấm (Ép nằm ngang tăm tắp) -->
-    <div style="display: flex; gap: 10px; width: 100%;">
-        <!-- Nút Nghe/Xem thử -->
-        <button onclick="playMusic('<?php echo $item['image_url']; ?>', '<?php echo addslashes($item['name']); ?>', '<?php echo $item['image_url']; ?>')" 
-                style="flex: 1; background: #008888; color: white; border: none; padding: 12px 5px; border-radius: 10px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 5px;">
-            <i class="fas fa-play-circle"></i> Nghe/Xem thử
-        </button>
+                            </div>
+                        </div>
 
-        <!-- Nút Sở hữu ngay -->
-        <a href="nft-details.php?id=<?php echo $item['id']; ?>" 
-           style="flex: 1; background: #ffffff; color: #000; text-decoration: none; padding: 12px 5px; border-radius: 10px; font-size: 11px; font-weight: bold; transition: 0.3s; display: flex; align-items: center; justify-content: center; text-align: center;">
-            Sở hữu ngay
-        </a>
-    </div>
-</div>
+                        <!-- Nút hành động -->
+                        <div class="grid grid-cols-2 gap-3 mt-5">
+                            <button onclick="playMusic('<?php echo $item['image_url']; ?>', '<?php echo addslashes($item['collection_name']); ?>', '<?php echo $item['image_url']; ?>')" 
+                                class="bg-cyan-600 hover:bg-cyan-500 text-white py-2 px-4 rounded-lg text-xs font-bold transition-all flex items-center gap-2">
+                                    ▶ Nghe/Xem thử
+                            </button>
 
                             <form method="POST">
-                                <input type="hidden" name="song_id" value="<?php $item['id']; ?>">
+                                <input type="hidden" name="song_id" value="<?php echo $item['id']; ?>">
                                 <button name="buy_nft" class="w-full bg-white text-black hover:bg-emerald-400 hover:text-white py-2.5 rounded-xl text-sm font-bold transition-all">
                                     Sở hữu ngay
                                 </button>
@@ -216,19 +242,20 @@ function renderPagination($current_page) {
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <div style="grid-column: span 4; text-align: center; padding: 100px; color: #333;">
-                    <i class="fas fa-box-open" style="font-size: 50px; margin-bottom: 20px;"></i>
-                    <p>Kho hàng đang trống, hãy kiểm tra lại kết nối Supabase!</p>
+                <!-- Thông báo khi kho hàng trống -->
+                <div class="col-span-full text-center py-20 bg-white/5 rounded-3xl border border-dashed border-gray-700">
+                    <p class="text-gray-500 text-xl">Kho hàng hiện đang trống...</p>
+                    <a href="?auto_quynh=1" class="mt-4 inline-block text-cyan-400 underline italic">Tự động nhập 12 đóa Quỳnh Hương?</a>
+                    <a href="nft_detail.php?id=<?php echo $item['id']; ?>"> ... </a>
                 </div>
             <?php endif; ?>
-        </div>
-
-        <!-- 🧭 NÚT CHUYỂN TRANG CUỐI -->
+                    <!-- 🧭 NÚT CHUYỂN TRANG CUỐI -->
         <?php renderPagination($current_page); ?>
-   </div>
+    </div>
+          
 
-<!-- Thông báo mua hàng -->
-    <?php if (isset($thongbao))  "<div class='fixed bottom-5 right-5 p-4 rounded-2xl bg-black/80 border border-cyan-500 shadow-2xl'>$thongbao</div>"; ?>
+    <!-- Thông báo mua hàng -->
+    <?php if (isset($thongbao)) echo "<div class='fixed bottom-5 right-5 p-4 rounded-2xl bg-black/80 border border-cyan-500 shadow-2xl'>$thongbao</div>"; ?>
 
     <!-- Music Player Bar -->
     <div id="music-player-bar" class="fixed bottom-0 left-0 w-full bg-black/95 backdrop-blur-md border-t border-cyan-500/50 p-4 transform translate-y-full transition-all duration-500 z-[100]">
@@ -323,13 +350,14 @@ mainPlayer.addEventListener('timeupdate', function() {
         mainPlayer.currentTime = 0; 
         
         // Hiện thông báo bằng 4 thứ tiếng (Dùng alert để test nhanh)
-        showHeritagePopup(); // Gọi Popup đẹp thay vì hiện hộp thoại xấu
+        alert("🔒 [Louis Music] Bạn đã nghe hết 45s thử nghiệm. Vui lòng sở hữu NFT để mở khóa toàn bộ di sản.");
         
         // Thu thanh nhạc lại để yêu cầu xác thực
         document.getElementById('music-player-bar').classList.add('translate-y-full');
     }
 });
 // --- KẾT THÚC CHẾ ĐỘ GIÁM SÁT ---
+
 function togglePlay() {
     const player = document.getElementById('main-hybrid-player');
     const iconContainer = document.getElementById('play-pause-icon');
@@ -362,6 +390,17 @@ function closePlayer() {
     player.src = ""; // Xóa link nhạc
     playerBar.classList.add('translate-y-full'); // Ẩn thanh công cụ
 }
+const audio = document.getElementById('myAudio');
+const previewTime = 45; // 45 giây nghe thử
+
+audio.addEventListener('timeupdate', function() {
+    // Nếu người dùng chưa xác thực Ví (không có NFT)
+    if (!userHasNFT && audio.currentTime >= previewTime) {
+        audio.pause();
+        audio.currentTime = 0;
+        showHeritagePopup();
+    }
+});
 function showHeritagePopup() {
     // Nếu đã có popup rồi thì không tạo thêm
     if (document.getElementById('heritage-popup')) return;
@@ -381,8 +420,6 @@ const btnHtml = `
         </a>
     </div>
 `;
-
-
     document.body.insertAdjacentHTML('beforeend', popupHtml);
 }
 async function buyNFTWithToken(contractAddress, tokenId, price, tokenType) {
@@ -408,5 +445,55 @@ async function buyNFTWithToken(contractAddress, tokenId, price, tokenType) {
 }
 
 </script>
+<script>
+async function updateRealPrices() {
+    // 1. Gọi trực tiếp bảng market_listings để lấy danh sách đang bán
+    const supabaseUrl = "<?php echo $supabaseUrl; ?>";
+    const apiKey = "<?php echo $apiKey; ?>";
+    
+    const response = await fetch(`${supabaseUrl}/rest/v1/market_listings?status=eq.active`, {
+        headers: { "apikey": apiKey, "Authorization": `Bearer ${apiKey}` }
+    });
+    const listings = await response.json();
+
+    // 2. Cập nhật giá lên giao diện
+    listings.forEach(item => {
+        // Tìm cái thẻ sản phẩm có đúng contract và tokenId
+        // (Bạn cần thêm class vào chỗ hiện giá để JS tìm được nhé)
+        const priceTag = document.querySelector(`[data-contract="${item.contract_address}"][data-id="${item.token_id}"]`);
+        if (priceTag) {
+            priceTag.innerText = item.price_matic + " MATIC";
+        }
+    });
+}
+
+window.addEventListener('load', updateRealPrices);
+</script>
+<script>
+async function syncMarketPrices() {
+    const supabaseUrl = "<?php echo $supabaseUrl; ?>";
+    const apiKey = "<?php echo $apiKey; ?>";
+    
+    try {
+        const res = await fetch(`${supabaseUrl}/rest/v1/market_listings?status=eq.active`, {
+            headers: { "apikey": apiKey, "Authorization": `Bearer ${apiKey}` }
+        });
+        const activeListings = await res.json();
+
+        activeListings.forEach(list => {
+            // Tìm đúng vị trí thẻ giá của NFT này để ghi đè giá mới
+            const el = document.querySelector(`.real-price[data-contract="${list.contract_address}"][data-id="${list.token_id}"]`);
+            if (el) {
+                el.innerHTML = `<strong>${list.price_matic} MATIC</strong>`;
+                el.style.color = "#ffc107"; // Đổi màu vàng cho giá đang bán trên sàn
+            }
+        });
+    } catch (e) { console.error("Lỗi cập nhật giá:", e); }
+}
+
+// Chạy lệnh ngay khi trang web tải xong
+window.addEventListener('load', syncMarketPrices);
+</script>
+
 </body>
-</html>                                                                 
+</html>

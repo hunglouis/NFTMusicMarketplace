@@ -108,6 +108,12 @@
         </a>
 
 
+        <a href="dashboard.php" class="flex items-center gap-4 px-2 py-3 text-gray-500 hover:text-cyan-400 transition-all group">
+            <i class="fa-solid fa-house min-w-[1.2rem] text-center text-sm"></i>
+            <span class="menu-text font-bold uppercase">Dashboard của bạn</span>
+        </a>
+
+
         <a href="collections.php" class="flex items-center gap-4 px-2 py-3 text-gray-500 hover:text-cyan-400 transition-all group">
             <i class="fa-solid fa-house min-w-[1.2rem] text-center text-sm"></i>
             <span class="menu-text font-bold uppercase">Bộ Sưu Tập</span>
@@ -165,6 +171,12 @@
             <i class="fa-solid fa-circle-nodes min-w-[1.2rem] text-center text-sm"></i>
             <span class="menu-text font-bold uppercase">OpenSea</span>
         </a>
+
+        <a href="marketplace_v2.php" class="flex items-center gap-3 px-2 py-3 text-gray-500 hover:text-yellow-500 transition-all">
+            <i class="fa-solid fa-circle-nodes min-w-[1.2rem] text-center text-sm"></i>
+            <span class="menu-text font-bold uppercase">Marketplace_v2</span>
+        </a>
+
 
     </nav>
 
