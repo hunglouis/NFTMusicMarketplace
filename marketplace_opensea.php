@@ -25,7 +25,7 @@ function getTotalCount($tableName) {
 // BÂY GIỜ GỌI LỆNH NÀY SẼ CỰC KỲ AN TOÀN
 $countHungLouis = getTotalCount('hunglouis');
 $countItems = getTotalCount('items');
-$totalHeritage = $countHungLouis + $countItems;
+$total = $countHungLouis + $countItems;
 
 // -----------------------------
 
@@ -58,7 +58,7 @@ function renderPagination($current_page) {
 <head>
     <base href="/">
     <meta charset="UTF-8">
-    <title>OpenSea Heritage | Studio NFT</title>
+    <title>OpenSea | Studio NFT</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -138,7 +138,7 @@ function renderPagination($current_page) {
         <div style="margin-bottom: 60px;">
             <h1 class="text-white font-black text-5xl uppercase mb-2">DI SẢN TỪ OPENSEA</h1>
             <p class="text-cyan-400 text-xs tracking-[0.3em] uppercase opacity-70">
-                        KHO DI SẢN: <?php echo $totalHeritage; ?> TÁC PHẨM | BLOCKCHAIN POLYGON
+                        KHO DI SẢN: <?php echo $total; ?> TÁC PHẨM | BLOCKCHAIN POLYGON
             </p>
 
         </div>
@@ -323,7 +323,7 @@ mainPlayer.addEventListener('timeupdate', function() {
         mainPlayer.currentTime = 0; 
         
         // Hiện thông báo bằng 4 thứ tiếng (Dùng alert để test nhanh)
-        showHeritagePopup(); // Gọi Popup đẹp thay vì hiện hộp thoại xấu
+        showPopup(); // Gọi Popup đẹp thay vì hiện hộp thoại xấu
         
         // Thu thanh nhạc lại để yêu cầu xác thực
         document.getElementById('music-player-bar').classList.add('translate-y-full');
@@ -362,9 +362,9 @@ function closePlayer() {
     player.src = ""; // Xóa link nhạc
     playerBar.classList.add('translate-y-full'); // Ẩn thanh công cụ
 }
-function showHeritagePopup() {
+function showPopup() {
     // Nếu đã có popup rồi thì không tạo thêm
-    if (document.getElementById('heritage-popup')) return;
+    if (document.getElementById('-popup')) return;
     // Thay đoạn nút bấm cũ bằng thiết kế "Phân cấp" này
 const btnHtml = `
     <div class="flex flex-col gap-4 mt-6">

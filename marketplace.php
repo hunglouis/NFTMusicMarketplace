@@ -25,7 +25,7 @@ function getTotalCount($tableName) {
 // BÂY GIỜ GỌI LỆNH NÀY SẼ CỰC KỲ AN TOÀN
 $countHungLouis = getTotalCount('hunglouis');
 $countItems = getTotalCount('items');
-$totalHeritage = $countHungLouis + $countItems;
+$total = $countHungLouis + $countItems;
 
 // -----------------------------
 
@@ -177,7 +177,7 @@ function renderPagination($current_page) {
         <div style="margin-bottom: 60px;">
             <h1 class="text-white font-black text-5xl uppercase mb-2">DI SẢN TỪ HUNGLOUIS</h1>
             <p class="text-cyan-400 text-xs tracking-[0.3em] uppercase opacity-70">
-                     KHO DI SẢN: <?php echo $totalHeritage; ?> TÁC PHẨM | BLOCKCHAIN POLYGON
+                     KHO DI SẢN: <?php echo $total; ?> TÁC PHẨM | BLOCKCHAIN POLYGON
             </p>
 
         </div>
@@ -190,7 +190,7 @@ function renderPagination($current_page) {
                     <div class="card-nft rounded-3xl p-5 flex flex-col h-[520px]">
                                                 <!-- Ảnh NFT -->
                         <div class="relative h-56 w-full mb-4 overflow-hidden rounded-2xl group">
-                            <a href="heritage/<?php echo createSlug($item['name'], $item['id']); ?>" class="block h-full w-full">
+                            <a href="<?php echo createSlug($item['name'], $item['id']); ?>" class="block h-full w-full">
                                 <img src="<?php 
     // Nếu có link ảnh thì hiện, nếu không thì dùng ảnh logo hoặc biểu tượng âm nhạc của bạn
     echo !empty($item['image_url']) ? $item['image_url'] : 'assets/images/louis-music-default.jpg'; 
@@ -392,12 +392,12 @@ audio.addEventListener('timeupdate', function() {
     if (!userHasNFT && audio.currentTime >= previewTime) {
         audio.pause();
         audio.currentTime = 0;
-        showHeritagePopup();
+        showPopup();
     }
 });
-function showHeritagePopup() {
+function showPopup() {
     // Nếu đã có popup rồi thì không tạo thêm
-    if (document.getElementById('heritage-popup')) return;
+    if (document.getElementById('popup')) return;
     // Thay đoạn nút bấm cũ bằng thiết kế "Phân cấp" này
 const btnHtml = `
     <div class="flex flex-col gap-4 mt-6">

@@ -15,7 +15,7 @@ $parts = explode('-', $slug);
 $id_to_find = end($parts); // Lấy phần cuối cùng (0ec566982e88)
 
 // 2. Sửa lại hàm truy vấn để chấp nhận cả chữ và số (UUID)
-function getHeritageById($url, $apiKey, $table, $id) {
+function getById($url, $apiKey, $table, $id) {
     // Chúng ta dùng 'eq' (bằng) để tìm chính xác cái ID dài đó
     $ch = curl_init("$url/rest/v1/$table?id=eq.$id&select=*");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -28,9 +28,9 @@ function getHeritageById($url, $apiKey, $table, $id) {
 }
 //3. Gọi lệnh tìm kiếm (Bỏ kiểm tra is_numeric để chấp nhận ID dài)
 if ($id_to_find) {
-    $item = getHeritageById($supabaseUrl, $apiKey, 'hunglouis', $id_to_find);
+    $item = getById($supabaseUrl, $apiKey, 'hunglouis', $id_to_find);
     if (!$item) {
-        $item = getHeritageById($supabaseUrl, $apiKey, 'items', $id_to_find);
+        $item = getById($supabaseUrl, $apiKey, 'items', $id_to_find);
     }
 }
 
