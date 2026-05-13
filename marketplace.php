@@ -30,7 +30,7 @@ $total = $countHungLouis + $countItems;
 // -----------------------------
 
 // 1. GỌI DỮ LIỆU THẬT TỪ SUPABASE
-$fullUrl = $supabaseUrl . "/rest/v1/hunglouis?select=*&order=id.asc&limit=50";
+$fullUrl = $supabaseUrl . "/rest/v1/items?select=*&order=id.asc&limit=50";
 $ch = curl_init($fullUrl);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -72,7 +72,7 @@ $offset = ($current_page - 1) * $items_per_page;
 
 // 4. Lấy dữ liệu từ Supabase (Chỉ lấy 12 món bắt đầu từ Offset)
 // Thêm header "Range: offset-limit" để Supabase hiểu
-$ch = curl_init("$supabaseUrl/rest/v1/hunglouis?select=*&order=created_at.desc");
+$ch = curl_init("$supabaseUrl/rest/v1/items?select=*&order=created_at.desc");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     "apikey: $apiKey",
@@ -215,7 +215,7 @@ function renderPagination($current_page) {
                             </h3>
                             <div class="flex justify-between items-center bg-white/5 p-3 rounded-xl">
                                 <span class="text-gray-400 text-sm">Giá niêm yết</span>
-                                <span class="text-emerald-400 font-black">💰 <?php echo $item['floor_price']; ?> MATIC</span>
+                                <span class="text-emerald-400 font-black">💰 <?php echo $item['price']; ?> MATIC</span>
                             </div>
                         </div>
 

@@ -188,12 +188,12 @@ if (!$my_cols) $my_cols = [];
                                     </div>
                                 </div>
                             </td>
-                            <td style="font-weight: 700;"><?php echo $c['floor_price']; ?> <span style="color: #64748b; font-weight: 400;">MATIC</span></td>
+                            <td style="font-weight: 700;"><?php echo $c['price']; ?> <span style="color: #64748b; font-weight: 400;">MATIC</span></td>
                             <td style="font-weight: 700;"><?php echo $c['volume_total']; ?> <span style="color: #64748b; font-weight: 400;">MATIC</span></td>
                             <td style="text-align: right;">
                                 <a href="https://polygonscan.com<?php echo $c['contract_address']; ?>" target="_blank" class="address-tag">
                                     <?php echo substr($c['contract_address'], 0, 6); ?>...<?php echo substr($c['contract_address'], -4); ?>
-                                    <?php echo number_format($c['floor_price'] ?? 0, 2); ?> MATIC
+                                    <?php echo number_format($c['price'] ?? 0, 2); ?> MATIC
                                     <i class="fas fa-external-link-alt" style="margin-left: 5px; font-size: 10px;"></i>
                                 </a>
                             </td>

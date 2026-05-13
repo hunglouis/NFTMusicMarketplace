@@ -7,11 +7,11 @@ $supabaseUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
 $apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw"; 
 
 // 2. Cấu hình bảng dữ liệu
-$tableName = "hunglouis";
-$params = "select=id,name,image_url,hunglouis_id,price&order=id.asc&limit=50";
+$tableName = "items";
+$params = "select=id,name,image_url,itemCID,price&order=id.asc&limit=50";
 
 // 3. Xây dựng URL hoàn chỉnh
-$fullUrl = $supabaseUrl . "/rest/v1/hunglouis?select=*&order=id.asc";
+$fullUrl = $supabaseUrl . "/rest/v1/" . $tableName . "?" . $params;
 
 // 4. Thực thi lấy dữ liệu
 $ch = curl_init($fullUrl);

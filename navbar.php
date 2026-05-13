@@ -157,6 +157,13 @@
         </a>
 
 
+        <a href="profile.php" class="flex items-center gap-3 px-2 py-3 text-gray-500 hover:text-yellow-500 transition-all">
+            <i class="fa-solid fa-circle-nodes min-w-[1.2rem] text-center text-sm"></i>
+            <span class="menu-text font-bold uppercase">PROFILE</span>
+        </a>    
+
+
+
         <a href="https://musicnftstudiomanhhung.online/" class="flex items-center gap-3 px-2 py-3 text-gray-500 hover:text-yellow-500 transition-all">
             <i class="fa-solid fa-circle-nodes min-w-[1.2rem] text-center text-sm"></i>
             <span class="menu-text font-bold uppercase">MusicNftStudio</span>

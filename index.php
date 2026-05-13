@@ -50,7 +50,7 @@
             <a href="marketplace_supabase.php" class="px-10 py-4 bg-yellow-500 text-black font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl hover:scale-105 transition-all shadow-xl shadow-yellow-500/10">Vào Marketplace</a>
             <p class="text-[10px] text-gray-500 leading-relaxed">Bắt đầu xem kệ hàng và sở hữu những sản vật quý giá.</p>
             <div class="step-num text-xs">05</div>
-            <a href="users_pro.php" class="px-10 py-4 bg-white/5 border border-white/10 text-white font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl hover:bg-white/10 transition-all">Cài đặt hồ sơ</a>
+            <a href="profile.php" class="px-10 py-4 bg-white/5 border border-white/10 text-white font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl hover:bg-white/10 transition-all">Cài đặt hồ sơ</a>
             <p class="text-[10px] text-gray-500 leading-relaxed">Bắt đầu xem kệ hàng và sở hữu những sản vật quý giá.</p>
         </div>
     </div>
