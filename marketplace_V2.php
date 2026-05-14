@@ -36,7 +36,7 @@ if (!is_array($market_items)) { $market_items = []; }
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="assets/style.css"> <!-- Sử dụng lại file CSS của bạn -->
     <!-- Nhúng thư viện Ethers.js ở đầu trang -->
-    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
 </head>
 <body class="p-5 md:p-10">
      <?php if(file_exists('navbar.php')) include 'navbar.php'; ?>

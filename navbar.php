@@ -179,7 +179,7 @@
             <span class="menu-text font-bold uppercase">OpenSea</span>
         </a>
 
-        <a href="marketplace_v2.php" class="flex items-center gap-3 px-2 py-3 text-gray-500 hover:text-yellow-500 transition-all">
+        <a href="marketplace_V2.php" class="flex items-center gap-3 px-2 py-3 text-gray-500 hover:text-yellow-500 transition-all">
             <i class="fa-solid fa-circle-nodes min-w-[1.2rem] text-center text-sm"></i>
             <span class="menu-text font-bold uppercase">NFT TRANSACTION CENTER</span>
         </a>
