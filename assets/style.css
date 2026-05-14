@@ -556,4 +556,117 @@ body {
     max-width: 100% !important; /* Cho phép card co giãn tự do theo độ rộng của cột Grid */
     box-sizing: border-box;
 }
+/* Ép khung chứa tổng của chợ rộng tối đa màn hình */
+.marketplace-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+    display: block !important;
+}
+
+/* Ép lưới Grid của chợ tự động tính toán số cột để chen kín màn hình */
+.marketplace-wrapper .nft-grid, .nft-grid {
+    display: grid !important;
+    /* Cứ màn hình rộng ra là tự động nhét thêm nhiều card trên một hàng ngang */
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
+    gap: 24px !important;
+    padding: 24px 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Đảm bảo các ô card nhạc co giãn tự do theo khung lưới rộng */
+.marketplace-wrapper .music-card, .music-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+}
+/* Dải bảng thống kê thông số phong cách Web3 */
+.market-stats-band {
+    background-color: #121214 !important; /* Nền tối sâu */
+    border-top: 3px solid #0284c7 !important; /* Dải viền xanh cyan công nghệ phía trên */
+    border-bottom: 3px solid #0284c7 !important; /* Dải viền xanh phía dưới */
+    padding: 16px 24px !important;
+    margin-bottom: 30px !important;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Từng dòng thông số bên trong */
+.stat-item {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #e4e4e7;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+}
+
+.stat-icon {
+    margin-right: 8px;
+    font-size: 12px;
+}
+
+.stat-label {
+    color: #a1a1aa; /* Màu chữ xám nhẹ cho nhãn tiêu đề */
+    margin-right: 6px;
+}
+
+.stat-value {
+    color: #ffffff; /* Màu chữ trắng đậm cho con số kết quả */
+    font-weight: 600;
+}
+
+/* Định dạng riêng cho chuỗi địa chỉ ví Web3 */
+.stat-value.wallet-text {
+    font-family: monospace !important;
+    color: #38bdf8 !important; /* Màu xanh nước biển nhạt giúp ví nổi bật */
+    word-break: break-all; /* Tự động xuống dòng nếu màn hình điện thoại bị hẹp */
+}
+/* Khung chứa ảnh tỉ lệ vuông */
+.card-media {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    background-color: #0a0a0b;
+    overflow: hidden;
+}
+
+/* Hiệu ứng zoom nhẹ ảnh bìa khi rê chuột vào */
+.music-card:hover .nft-thumb-img {
+    transform: scale(1.04);
+}
+
+/* Nút bấm ẩn mặc định, tự nổi lên khi hover vào music-card */
+.play-btn-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    background-color: rgba(37, 99, 235, 0.95) !important; /* Xanh công nghệ */
+    color: #ffffff !important;
+    border: none !important;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none; /* Tránh việc chuột click trúng nút làm hỏng sự kiện hover của card */
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+/* Khi người dùng hover chuột vào ô nhạc, nút Play xuất hiện */
+.music-card:hover .play-btn-overlay {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
 

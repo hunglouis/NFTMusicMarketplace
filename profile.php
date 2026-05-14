@@ -34,6 +34,19 @@ curl_close($ch);
 $all_items = json_decode($all_response, true);
 if (!is_array($all_items)) { $all_items = []; }
 
+// Tải lịch sử giao dịch liên quan đến ví này (với tư cách là người gửi hoặc người nhận)
+$activityUrl = $supabaseUrl . "/rest/v1/activities?or=(from_address.eq." . urlencode($currentWallet) . ",to_address.eq." . urlencode($currentWallet) . ")&order=created_at.desc";
+
+$ch2 = curl_init();
+curl_setopt($ch2, CURLOPT_URL, $activityUrl);
+curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch2, CURLOPT_HTTPHEADER, ["apikey: " . $supabaseAnonKey, "Authorization: Bearer " . $supabaseAnonKey]);
+$act_response = curl_exec($ch2);
+curl_close($ch2);
+
+$activities = json_decode($act_response, true);
+if (!is_array($activities)) { $activities = []; }
+
 // 4. THUẬT TOÁN TỰ LỌC TẠI SÂN NHÀ PHP
 $filtered_items = []; // Mảng chứa kết quả sau khi tự lọc
 
@@ -89,7 +102,7 @@ body.nft-dark-mode {
     <!-- 1. Vùng ảnh Banner -->
     <div class="profile-banner">
         <!-- Thay link ảnh bằng banner thật của bạn nếu có -->
-        <img src="https://unsplash.com" alt="Banner">
+        <img src= "G:/NFTMUSICMARKETPLACE/UPLOADS/HUNG(1)JPG" alt="Banner">
     </div>
 
     <!-- 2. Khối thông tin cá nhân -->
@@ -110,7 +123,7 @@ body.nft-dark-mode {
                 <span class="copy-icon" title="Sao chép địa chỉ ví">📋</span>
                 <!-- Dưới phần hiển thị mã ví rút gọn, bạn thêm nút này -->
                 <button id="change-wallet-btn" style="background: #1e1e24; border: 1px solid #3f3f46; color: #fff; padding: 6px 12px; border-radius: 20px; cursor: pointer; margin-left: 10px; font-size: 13px;">
-                    🔄 Đổi ví khác
+                    🔄 Kết nối ví
                 </button>
             </div>
         </div>
@@ -127,18 +140,115 @@ body.nft-dark-mode {
         <a href="?tab=created" class="<?= $currentTab == 'created' ? 'active' : '' ?>">Created</a>
         <a href="?tab=activity" class="<?= $currentTab == 'activity' ? 'active' : '' ?>">Activity</a>
     </div>
-
+    
         <!-- NFT Grid Area -->
 
 <!-- CHÉP ĐOẠN CODE KIỂM TRA VÀO ĐÂY -->
 <div style="background: #1c1c1f; padding: 15px; margin-bottom: 20px; border-radius: 8px; font-size: 13px; color: #a1a1aa;">
     <p>🔹 Ví hiện tại của bạn: <strong><?= $currentWallet ?></strong></p>
-    <p>🔹 Tổng số item tải về từ Supabase: <strong><?= count($all_items) ?></strong> bài hát.</p>
-    <p>🔹 Số item sau khi tự lọc theo ví này: <strong><?= count($filtered_items) ?></strong> bài hát.</p>
+    <p>🔹 Tổng số item tải về từ Supabase: <strong><?= count($all_items) ?></strong> vật phẩm.</p>
+    <p>🔹 Số item sau khi tự lọc theo ví này: <strong><?= count($filtered_items) ?></strong> vật phẩm.</p>
 </div>
 
 
-<div class="nft-grid">
+
+
+    <!-- 1. BẮT ĐẦU VÙNG HIỂN THỊ LƯỚI / BẢNG -->
+<div class="nft-grid-container" style="width: 100%;">
+
+    <?php if ($currentTab === 'activity'): ?>
+        <!-- THÀNH PHẦN A: BẢNG LỊCH SỬ TIMELINE -->
+        <div class="activity-table" style="width: 100%; background: #18181c; border: 1px solid #262629; border-radius: 12px; overflow: hidden; padding: 10px; box-sizing: border-box;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; color: #fff;">
+                <thead style="background: #121214; color: #a1a1aa;">
+                    <tr>
+                        <th style="padding: 12px;">Sự kiện</th>
+                        <th style="padding: 12px;">Vật phẩm</th>
+                        <th style="padding: 12px;">Giá</th>
+                        <th style="padding: 12px;">Từ ví</th>
+                        <th style="padding: 12px;">Đến ví</th>
+                        <th style="padding: 12px;">Thời gian</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($activities) && is_array($activities)): ?>
+                        <?php foreach ($activities as $act): ?>
+                            <tr style="border-bottom: 1px solid #262629;">
+                                <td style="padding: 12px; font-weight: bold; color: <?= $act['event_type']=='List' ? '#27ae60' : ($act['event_type']=='Transfer' ? '#2980b9' : '#e74c3c') ?>"><?= htmlspecialchars($act['event_type']) ?></td>
+                                <td style="padding: 12px;">Token #<?= htmlspecialchars($act['token_id']) ?></td>
+                                <td style="padding: 12px;"><?= $act['price'] > 0 ? htmlspecialchars($act['price']) . " ETH" : "--" ?></td>
+                                <td style="padding: 12px; color: #a1a1aa;"><?= substr(htmlspecialchars($act['from_address']), 0, 6) ?>...</td>
+                                <td style="padding: 12px; color: #a1a1aa;"><?= $act['to_address'] ? substr(htmlspecialchars($act['to_address']), 0, 6) . "..." : "--" ?></td>
+                                <td style="padding: 12px; font-size: 12px; color: #666;"><?= substr(htmlspecialchars($act['created_at']), 0, 10) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr><td colspan="6" style="padding: 20px; text-align: center; color: #666;">Chưa ghi nhận lịch sử hoạt động nào.</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+    <?php else: ?>
+        <!-- THÀNH PHẦN B: LƯỚI HIỂN THỊ 60 BÀI HÁT (Collected / Created) -->
+        <div class="nft-grid">
+            <?php if (!empty($filtered_items) && is_array($filtered_items)): ?>
+                <?php foreach ($filtered_items as $item): ?>
+                    <!-- Tìm thẻ div bọc ngoài của từng ô card nhạc và sửa lại thành cấu trúc này -->
+<div class="music-card" 
+     data-audio="<?= htmlspecialchars($item['audio_url'] ?? 'assets/default-preview.mp3') ?>" 
+     onmouseenter="playPreview(this)" 
+     onmouseleave="stopPreview(this)">
+     
+    <div class="card-media">
+    <?php 
+    $mediaUrl = htmlspecialchars($item['image_url'] ?? 'assets/default-music.png');
+    
+    // Thuật toán PHP tự cắt đuôi file để kiểm tra định dạng
+    $fileExtension = strtolower(pathinfo($mediaUrl, PATHINFO_EXTENSION));
+    $videoExtensions = ['mp4', 'webm', 'ogg', 'mov'];
+    $isVideo = in_array($fileExtension, $videoExtensions);
+    ?>
+
+    <?php if ($isVideo): ?>
+        <!-- TRƯỜNG HỢP 1: NẾU LÀ MUSIC VIDEO (MV) -->
+        <!-- Hiện ảnh đại diện tĩnh mặc định trước, khi hover sẽ hiện video -->
+        <img src="assets/default-video-cover.png" class="nft-thumb-img video-poster" alt="MV Poster">
+        
+        <!-- Thẻ video ẩn chạy ngầm, tắt tiếng mặc định (muted) để lách luật trình duyệt -->
+        <video src="<?= $mediaUrl ?>" class="nft-video-preview" loop muted playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none;"></video>
+    <?php else: ?>
+        <!-- TRƯỜNG HỢP 2: NẾU CHỈ LÀ FILE ẢNH/AUDIO THƯỜNG -->
+        <img src="<?= $mediaUrl ?>" class="nft-thumb-img" alt="Cover" onerror="this.onerror=null; this.src='assets/default-music.png';">
+    <?php endif; ?>
+
+    <!-- Nút Play ở giữa ảnh giữ nguyên -->
+    <button class="play-btn-overlay">▶</button>
+</div>
+
+    
+    <div class="card-body">
+        <h4><?= htmlspecialchars($item['name'] ?? 'Chưa đặt tên') ?></h4>
+                            <div class="owner-actions">
+                                <?php 
+                                $nft = $item; 
+                                include 'includes/nft_buttons.php'; 
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="empty-state" style="text-align: center; padding: 40px 0; color: #a1a1aa; width: 100%;">
+                    <p>🎵 Không tìm thấy bản nhạc nào trong mục này.</p>
+                </div>
+            <?php endif; ?>
+        </div> <!-- Đóng nft-grid -->
+
+    <?php endif; ?> <!-- ĐÓNG LỆNH RẼ NHÁNH CHÍNH CHUẨN XÁC TẠI ĐÂY -->
+
+</div> <!-- Đóng nft-grid-container -->
+
     <?php if (!empty($filtered_items) && is_array($filtered_items)): ?>
         <?php foreach ($filtered_items as $item): ?>
             <!-- ĐẢM BẢO THẺ KHỞI ĐẦU music-card NẰM BÊN TRONG VÒNG LẶP -->
@@ -248,6 +358,8 @@ $tokenId = htmlspecialchars($item['token_id'] ?? '0');
 </div>
 
 <!-- Dán đoạn mã Script này vào cuối file profile.php (ngay trước thẻ </body>) -->
+ <!-- Nhúng thư viện Ethers.js phiên bản 5.7.2 ổn định -->
+<script src="cloudflare.com" type="text/javascript"></script>
 <script>
 // 1. Hàm bật mở khung Popup Tặng / Cho
 function transferGift(tokenId) {
@@ -287,21 +399,38 @@ if (window.ethereum) {
     });
 
     // Xử lý khi nhấn nút bấm "Đổi ví khác" trên UI của bạn
+    // Tìm nút đổi ví và cập nhật lại logic bắt buộc mở bảng chọn tài khoản
     const changeBtn = document.getElementById('change-wallet-btn');
     if (changeBtn) {
         changeBtn.addEventListener('click', async () => {
+            if (!window.ethereum) {
+                alert("Vui lòng cài đặt tiện ích MetaMask!");
+                return;
+            }
             try {
-                const accounts = await window.ethereum.request({ 
-                    method: 'wallet_requestPermissions', 
-                    permissions: [{ eth_accounts: {} }] 
+                console.log("Đang bắt buộc MetaMask hiển thị hộp thoại đổi tài khoản...");
+                
+                // LỆNH 1: Ép MetaMask phải hiển thị lại bảng phân quyền tài khoản (Bắt buộc hiện Popup)
+                await window.ethereum.request({
+                    method: 'wallet_requestPermissions',
+                    params: [{ eth_accounts: {} }] // Tham số params bắt buộc bọc trong mảng [] để không bị lỗi ngầm
                 });
-                const accountList = await window.ethereum.request({ method: 'eth_accounts' });
-                updatePHPSession(accountList);
+
+                // LỆNH 2: Sau khi người dùng tích chọn ví mới, đòi lấy danh sách tài khoản vừa chọn
+                const accounts = await window.ethereum.request({ 
+                    method: 'eth_requestAccounts' 
+                });
+                
+                if (accounts && accounts.length > 0) {
+                    // Đẩy ví mới về cho file PHP lưu vào Session để tự động lọc lại 60 bài
+                    updatePHPSession(accounts[0]);
+                }
             } catch (err) {
-                console.log("Hủy đổi ví");
+                console.warn("Người dùng đã tắt hộp thoại MetaMask hoặc từ chối đổi ví:", err);
             }
         });
     }
+
 }
 
 async function executeGiftNFT() {
@@ -379,50 +508,50 @@ async function executeSellNFT() {
     const tokenId = document.getElementById('sell-token-id').value;
 
     if (!priceInput || isNaN(priceInput) || parseFloat(priceInput) <= 0) {
-        alert('Vui lòng nhập mức giá bán hợp lệ!');
+        alert('Vui lòng nhập mức giá bán hợp lệ và lớn hơn 0!');
         return;
     }
 
     if (!window.ethereum) {
-        alert("Vui lòng cài đặt MetaMask!");
+        alert("Vui lòng cài đặt và đăng nhập ví MetaMask!");
         return;
     }
 
     try {
-        alert('Bước 1: Vui lòng xác nhận trên MetaMask để cấp quyền và đăng bán lên Blockchain...');
-
-        // 1. Kết nối ví thông qua thư viện Ethers
+        // --- 1. THIẾT LẬP KẾT NỐI WEb3 ---
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
 
-        // 2. Điền chính xác địa chỉ các hợp đồng đã deploy của bạn vào đây
-        const NFT_CONTRACT_ADDRESS = "0xĐịa_Chỉ_Hợp_Đồng_StudioNFT_Hoặc_MusicNFT_Của_Bài_Hát";
-        const MARKETPLACE_ADDRESS = "0xĐịa_Chỉ_Hợp_Đồng_NFTMarketplace_Đã_Deploy_Của_Bạn";
+        // ⚠️ BẠN ĐIỀN CHÍNH XÁC ĐỊA CHỈ HAI SMART CONTRACT ĐÃ DEPLOY VÀO ĐÂY
+        const NFT_CONTRACT_ADDRESS = "0xĐịa_Chỉ_Hợp_Đồng_Gốc_Của_Bài_Hát_NFT";
+        const MARKETPLACE_ADDRESS = "0xĐịa_Chỉ_Hợp_Đồng_NFTMarketplace_Của_Bạn";
 
-        // Chuyển đổi giá tiền từ ETH sang định dạng Wei (Ví dụ: 0.1 ETH = 10^17 Wei)
+        // Chuyển đổi giá từ ETH sang Wei (Định dạng số lớn của Blockchain)
         const priceInWei = ethers.utils.parseEther(priceInput);
 
-        // 3. GỌI CONTRACT NFT GỐC ĐỂ PHÊ DUYỆT (APPROVE) CHO CHỢ ĐƯỢC QUYỀN CHUYỂN BÀI HÁT
+        alert('Bước 1/2: Vui lòng ký trên MetaMask để cấp quyền (Approve) cho chợ nhạc...');
+
+        // --- 2. GỌI LỆNH APPROVE TRÊN NFT CONTRACT GỐC ---
         const nftABI = ["function approve(address to, uint256 tokenId) external"];
         const nftContract = new ethers.Contract(NFT_CONTRACT_ADDRESS, nftABI, signer);
         
-        console.log("Đang gọi lệnh Approve...");
         const approveTx = await nftContract.approve(MARKETPLACE_ADDRESS, tokenId);
-        await approveTx.wait(); // Chờ Blockchain xác nhận quyền approve
+        console.log("Đang đào lệnh Approve... Hash:", approveTx.hash);
+        await approveTx.wait(); // Chờ Blockchain xác nhận
 
-        // 4. GỌI HÀM listItem TRÊN SMART CONTRACT MARKETPLACE CỦA BẠN
+        alert('Bước 2/2: Tiếp tục ký giao dịch để đưa bài hát lên sàn Blockchain (listItem)...');
+
+        // --- 3. GỌI HÀM listItem TRÊN CONTRACT MARKETPLACE ---
         const marketplaceABI = [
             "function listItem(address nftContract, uint256 tokenId, uint256 price) external"
         ];
         const marketplaceContract = new ethers.Contract(MARKETPLACE_ADDRESS, marketplaceABI, signer);
 
-        console.log("Đang gọi hàm listItem trên Marketplace...");
         const listTx = await marketplaceContract.listItem(NFT_CONTRACT_ADDRESS, tokenId, priceInWei);
-        
-        alert("Giao dịch đang được xử lý trên mạng lưới... Vui lòng đợi trong giây lát.");
-        await listTx.wait(); // Chờ Blockchain đào xong block chứa lệnh niêm yết
+        console.log("Đang đào lệnh Niêm Yết... Hash:", listTx.hash);
+        await listTx.wait(); // Chờ Block đào xong (On-chain thành công!)
 
-        // 5. SAU KHI BLOCKCHAIN GHI NHẬN THÀNH CÔNG -> CẬP NHẬT DATABASE SÂN NHÀ (SUPABASE)
+        // --- 4. CẬP NHẬT DATABASE NỘI BỘ (SUPABASE) & GHI LỊCH SỬ ---
         const response = await fetch('api/process_sell.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -435,18 +564,19 @@ async function executeSellNFT() {
 
         const result = await response.json();
         if (result.status === 'success') {
-            alert('🏷️ Chúc mừng! Bản nhạc đã được niêm yết lên Blockchain và đồng bộ lên sàn thành công!');
+            alert('🏷️ Tuyệt vời! Bản nhạc đã được treo bán thực tế trên Blockchain và đồng bộ lên sàn thành công!');
             closeSellModal();
             window.location.reload();
         } else {
-            alert('Cảnh báo: Đã lưu on-chain nhưng database không đồng bộ được: ' + result.message);
+            alert('Cảnh báo: Giao dịch Blockchain đã xong nhưng Database chưa đồng bộ: ' + result.message);
         }
 
     } catch (error) {
         console.error("Lỗi giao dịch Web3:", error);
-        alert("Thao tác thất bại! Chi tiết lỗi: " + (error.reason || error.message));
+        alert("Giao dịch thất bại hoặc bạn đã từ chối ký ví! Chi tiết: " + (error.reason || error.message));
     }
 }
+
 async function executeCancelSale(tokenId) {
     if (!confirm('Bạn có chắc chắn muốn hủy niêm yết và gỡ bản nhạc này xuống khỏi Marketplace không?')) {
         return;
@@ -504,6 +634,84 @@ async function executeCancelSale(tokenId) {
         alert("Thao tác thất bại! Chi tiết: " + (error.reason || error.message));
     }
 }
+// Biến tạm quản lý luồng phát thử nhạc âm thanh công cộng
+let currentAudio = null;
+let currentCard = null;
+let previewTimeout = null;
+
+function playPreview(cardElement) {
+    // 1. Nếu đang có một bài khác phát, dọn dẹp và tắt bài cũ trước
+    if (currentCard && currentCard !== cardElement) {
+        stopPreview(currentCard);
+    }
+
+    currentCard = cardElement;
+    
+    // Đổi biểu tượng nút bấm ở giữa ảnh sang hình Pause ⏸
+    const playButton = cardElement.querySelector('.play-btn-overlay');
+    if (playButton) playButton.innerHTML = '⏸';
+
+    // 2. TÌM XEM CARD NÀY LÀ MV (VIDEO) HAY LÀ ẢNH THƯỜNG
+    const videoPreview = cardElement.querySelector('.nft-video-preview');
+
+    if (videoPreview) {
+        // --- TRƯỜNG HỢP A: ĐỐI VỚI MUSIC VIDEO (MV) ---
+        videoPreview.style.display = 'block'; // Hiện khung hình lên
+        videoPreview.currentTime = 0;         // Tua video về giây đầu tiên
+        
+        // MẤU CHỐT: Mở âm thanh trực tiếp của video bằng lệnh JavaScript
+        videoPreview.muted = false;           
+        videoPreview.volume = 1.0;            // Đặt âm lượng lớn nhất
+        
+        // Kích hoạt phát cả Hình lẫn Tiếng đồng bộ
+        videoPreview.play().catch(error => {
+            console.warn("Chrome chặn tiếng do chưa click tương tác: ", error.message);
+            // Nếu bị chặn, video vẫn chạy hình, người dùng chỉ cần click 1 cái vào màn hình là lần sau sẽ có tiếng
+        });
+    } else {
+        // --- TRƯỜNG HỢP B: ĐỐI VỚI BÀI HÁT ẢNH TĨNH THƯỜNG ---
+        const audioUrl = cardElement.getAttribute('data-audio');
+        if (audioUrl && (!window.currentAudio)) {
+            window.currentAudio = new Audio(audioUrl);
+            window.currentAudio.play().catch(err => console.log("Chờ tương tác"));
+        }
+    }
+
+    // BỘ ĐẾM THỜI GIAN: Đúng 45 giây tự động gọi hàm ngắt cả hình lẫn tiếng
+    clearTimeout(previewTimeout);
+    previewTimeout = setTimeout(() => {
+        if (currentCard === cardElement) {
+            stopPreview(cardElement);
+        }
+    }, 45000); // 45 giây để người dùng có đủ thời gian thưởng thức preview
+}
+
+function stopPreview(cardElement) {
+    if (currentCard === cardElement) {
+        // 1. Tắt và ẩn Video nếu là MV
+        const videoPreview = cardElement.querySelector('.nft-video-preview');
+        if (videoPreview) {
+            videoPreview.pause();
+            videoPreview.muted = true; // Khóa tiếng lại trước khi ẩn
+            videoPreview.style.display = 'none'; // Ẩn khung hình video đi
+        }
+
+        // 2. Tắt Audio nếu là bài hát thường
+        if (window.currentAudio) {
+            window.currentAudio.pause();
+            window.currentAudio = null;
+        }
+
+        // Trả icon nút bấm ở giữa ảnh về lại hình tam giác ▶ ban đầu
+        const playButton = cardElement.querySelector('.play-btn-overlay');
+        if (playButton) playButton.innerHTML = '▶';
+        
+        currentCard = null;
+        clearTimeout(previewTimeout);
+    }
+}
+
+
 
 
 </script>

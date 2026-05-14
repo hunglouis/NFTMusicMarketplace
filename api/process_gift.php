@@ -40,6 +40,11 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 if ($httpCode >= 200 && $httpCode < 300) {
+    // Chèn vào trước dòng echo json_encode(['status' => 'success']);
+    include 'log_activity.php';
+    // Lấy tên vật phẩm từ DB trước hoặc truyền từ JS sang (ví dụ tạm thời là $itemName)
+    saveActivity($tokenId, "Bản nhạc NFT", "Transfer", $_SESSION['user_wallet'], $newOwner, 0);
+
     echo json_encode(['status' => 'success', 'message' => 'Cập nhật database thành công']);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Lỗi kết nối Supabase, mã lỗi: ' . $httpCode]);

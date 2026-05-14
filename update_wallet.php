@@ -3,14 +3,33 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$data = json_decode(file_get_contents('php://input'), true);
+// Bật thông báo lỗi để dễ theo dõi nếu hệ thống bị nghẽn
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// Chỉ cập nhật nếu chuỗi ví gửi lên có dữ liệu thực sự và độ dài chuẩn ví Web3
-if (isset($data['wallet']) && !empty($data['wallet']) && strlen($data['wallet']) > 10) {
-    $_SESSION['user_wallet'] = trim($data['wallet']);
-    echo json_encode(['status' => 'success', 'wallet' => $_SESSION['user_wallet']]);
+// Nhận dữ liệu chuỗi JSON gửi từ JavaScript lên
+$json_input = file_get_contents('php://input');
+$data = json_decode($json_input, true);
+
+header('Content-Type: application/json');
+
+if (isset($data['wallet']) && !empty($data['wallet'])) {
+    // Làm sạch chuỗi ví và ép về chữ thường hoàn toàn
+    $new_wallet = strtolower(trim($data['wallet']));
+    
+    // GHI ĐÈ VÍ MỚI VÀO SESSION PHP
+    $_SESSION['user_wallet'] = $new_wallet;
+    
+    echo json_encode([
+        'status' => 'success', 
+        'wallet' => $_SESSION['user_wallet'],
+        'message' => 'Session đã được cập nhật thành công ví mới'
+    ]);
 } else {
-    // Nếu dữ liệu trống, giữ nguyên ví cũ trong session chứ không xóa bỏ
-    echo json_encode(['status' => 'ignored', 'message' => 'Giữ nguyên ví cũ do dữ liệu gửi lên trống']);
+    echo json_encode([
+        'status' => 'error', 
+        'message' => 'Dữ liệu ví gửi lên hệ thống không hợp lệ hoặc bị trống'
+    ]);
 }
+exit();
 ?>

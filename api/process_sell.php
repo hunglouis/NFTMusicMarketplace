@@ -36,6 +36,9 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 if ($httpCode >= 200 && $httpCode < 300) {
+    include 'log_activity.php';
+    $event = $isListed ? "List" : "Cancel";
+    saveActivity($tokenId, "Bản nhạc NFT", $event, $_SESSION['user_wallet'], null, $price);
     echo json_encode(['status' => 'success']);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Lỗi kết nối database']);

@@ -175,7 +175,7 @@ function renderPagination($current_page) {
             <!-- 2. NỘI DUNG CHÍNH (Rực sáng và Hoành tráng) -->
           
         <div style="margin-bottom: 60px;">
-            <h1 class="text-white font-black text-5xl uppercase mb-2">DI SẢN TỪ HUNGLOUIS</h1>
+            <h1 class="text-white font-black text-5xl uppercase mb-2">GALLERIES FROM HUNGLOUIS</h1>
             <p class="text-cyan-400 text-xs tracking-[0.3em] uppercase opacity-70">
                      KHO DI SẢN: <?php echo $total; ?> TÁC PHẨM | BLOCKCHAIN POLYGON
             </p>
