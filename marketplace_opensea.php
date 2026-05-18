@@ -117,7 +117,9 @@ function renderPagination($current_page)
     <?php renderPagination($current_page); ?>
 
     <!-- 🖼️ LƯỚI NFT -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    <!-- Khung lưới chứa sản phẩm: Ép giao diện tự động chia cột theo kích thước màn hình -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto;">
+
         <?php if (!empty($items) && is_array($items)): ?>
             <?php foreach ($items as $item): ?>
                 <?php
@@ -204,82 +206,80 @@ function renderPagination($current_page)
                                         <!-- Nút Sở hữu ngay -->
                                         <a href="nft-details.php?id=<?php echo $item['id']; ?>"
                                             style="flex: 1; background: #ffffff; color: #000; text-decoration: none; padding: 12px 5px; border-radius: 10px; font-size: 11px; font-weight: bold; transition: 0.3s; display: flex; align-items: center; justify-content: center; text-align: center;">
-                                            Sở hữu ngay
+                                            XEM NGAY
                                         </a>
                                     </div>
+
                                 </div>
 
-                                <form method="POST">
-                                    <input type="hidden" name="song_id" value="<?php $item['id']; ?>">
-                                    <button name="buy_nft" class="w-full bg-white text-black hover:bg-emerald-400 hover:text-white py-2.5 rounded-xl text-sm font-bold transition-all">
-                                        Sở hữu ngay
-                                    </button>
-                                </form>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <div style="grid-column: span 4; text-align: center; padding: 100px; color: #333;">
-                        <i class="fas fa-box-open" style="font-size: 50px; margin-bottom: 20px;"></i>
-                        <p>Kho hàng đang trống, hãy kiểm tra lại kết nối Supabase!</p>
-                    </div>
-                <?php endif; ?>
-                    </div>
-
-                    <!-- 🧭 NÚT CHUYỂN TRANG CUỐI -->
-                    <?php renderPagination($current_page); ?>
-                </div>
-
-                <!-- Thông báo mua hàng -->
-                <?php if (isset($thongbao))  "<div class='fixed bottom-5 right-5 p-4 rounded-2xl bg-black/80 border border-cyan-500 shadow-2xl'>$thongbao</div>"; ?>
-
-                <!-- Music Player Bar -->
-                <div id="music-player-bar" class="fixed bottom-0 left-0 w-full bg-black/95 backdrop-blur-md border-t border-cyan-500/50 p-4 transform translate-y-full transition-all duration-500 z-[100]">
-                    <div class="max-w-7xl mx-auto flex items-center justify-between">
-
-                        <!-- 1. Khu vực hiển thị Video/Ảnh -->
-                        <div class="flex items-center gap-4 w-1/3">
-                            <div class="relative w-24 h-14 bg-black rounded-lg overflow-hidden border border-cyan-400 group">
-                                <video id="main-hybrid-player" class="w-full h-full object-cover cursor-pointer" onclick="toggleFullscreen()"></video>
-                                <img id="player-poster" src="" class="absolute inset-0 w-full h-full object-cover hidden pointer-events-none">
-                                <!-- Nút phóng to nhanh hiện khi di chuột vào -->
-                                <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                    <span class="text-[10px] text-white">CLICK PHÓNG TO</span>
-                                </div>
-                            </div>
-                            <div class="overflow-hidden">
-                                <h4 id="player-title" class="text-white font-bold truncate text-sm">Tên bài hát</h4>
-                                <p id="player-status" class="text-cyan-400 text-[10px] uppercase">Đang phát...</p>
-                            </div>
-                        </div>
-
-                        <!-- 2. Bộ điều khiển trung tâm -->
-                        <div class="flex flex-col items-center gap-2 w-1/3">
-                            <div class="flex items-center gap-8">
-                                <!-- Nút Tạm dừng/Phát -->
-                                <button onclick="togglePlay()" class="bg-white text-black p-3 rounded-full hover:scale-110 transition-transform">
-                                    <div id="play-pause-icon">
-                                        <!-- Mặc định hiện icon Pause khi đang hát -->
-                                        <svg xmlns="http://w3.org" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                    </div>
-                                </button>
-
-                                <!-- Nút Phóng to chuyên dụng -->
-                                <button onclick="toggleFullscreen()" class="text-gray-400 hover:text-cyan-400 transition-colors">
-                                    <svg xmlns="http://w3.org" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <!-- 3. Nút Tắt hẳn -->
-                        <div class="w-1/3 text-right">
-                            <button onclick="closePlayer()" class="text-gray-500 hover:text-red-500 font-black text-xl px-4 transition-colors">✕</button>
                         </div>
                     </div>
                 </div>
+            <?php endforeach; ?>
+
+        <?php else: ?>
+            <div style="grid-column: span 4; text-align: center; padding: 100px; color: #333;">
+                <i class="fas fa-box-open" style="font-size: 50px; margin-bottom: 20px;"></i>
+                <p>Kho hàng đang trống, hãy kiểm tra lại kết nối Supabase!</p>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- 🧭 NÚT CHUYỂN TRANG CUỐI -->
+    <?php renderPagination($current_page); ?>
+
+
+    <!-- Thông báo mua hàng -->
+    <?php if (isset($thongbao))  "<div class='fixed bottom-5 right-5 p-4 rounded-2xl bg-black/80 border border-cyan-500 shadow-2xl'>$thongbao</div>"; ?>
+
+    <!-- Music Player Bar -->
+    <div id="music-player-bar" class="fixed bottom-0 left-0 w-full bg-black/95 backdrop-blur-md border-t border-cyan-500/50 p-4 transform translate-y-full transition-all duration-500 z-[100]">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+
+            <!-- 1. Khu vực hiển thị Video/Ảnh -->
+            <div class="flex items-center gap-4 w-1/3">
+                <div class="relative w-24 h-14 bg-black rounded-lg overflow-hidden border border-cyan-400 group">
+                    <video id="main-hybrid-player" class="w-full h-full object-cover cursor-pointer" onclick="toggleFullscreen()"></video>
+                    <img id="player-poster" src="" class="absolute inset-0 w-full h-full object-cover hidden pointer-events-none">
+                    <!-- Nút phóng to nhanh hiện khi di chuột vào -->
+                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                        <span class="text-[10px] text-white">CLICK PHÓNG TO</span>
+                    </div>
+                </div>
+                <div class="overflow-hidden">
+                    <h4 id="player-title" class="text-white font-bold truncate text-sm">Tên bài hát</h4>
+                    <p id="player-status" class="text-cyan-400 text-[10px] uppercase">Đang phát...</p>
+                </div>
+            </div>
+
+            <!-- 2. Bộ điều khiển trung tâm -->
+            <div class="flex flex-col items-center gap-2 w-1/3">
+                <div class="flex items-center gap-8">
+                    <!-- Nút Tạm dừng/Phát -->
+                    <button onclick="togglePlay()" class="bg-white text-black p-3 rounded-full hover:scale-110 transition-transform">
+                        <div id="play-pause-icon">
+                            <!-- Mặc định hiện icon Pause khi đang hát -->
+                            <svg xmlns="http://w3.org" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                    </button>
+
+                    <!-- Nút Phóng to chuyên dụng -->
+                    <button onclick="toggleFullscreen()" class="text-gray-400 hover:text-cyan-400 transition-colors">
+                        <svg xmlns="http://w3.org" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- 3. Nút Tắt hẳn -->
+            <div class="w-1/3 text-right">
+                <button onclick="closePlayer()" class="text-gray-500 hover:text-red-500 font-black text-xl px-4 transition-colors">✕</button>
+            </div>
+        </div>
+    </div>
     </div>
     <script>
         // Toàn bộ logic điều khiển nhạc nằm ở đây
