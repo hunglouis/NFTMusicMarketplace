@@ -2,15 +2,15 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
+require_once "filter_helper.php"; // 1. CHÈN THÊM VÀO ĐẦU FILE
 $data = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($data['token_id']) || !isset($data['new_owner'])) {
+if (!isset($data['item_id']) || !isset($data['new_owner'])) {
     echo json_encode(['status' => 'error', 'message' => 'Thiếu tham số truyền vào']);
     exit();
 }
 
-$tokenId = $data['token_id'];
+$itemId = $data['item_id'];
 $newOwner = $data['new_owner'];
 
 // Cấu hình Supabase của bạn
@@ -19,7 +19,7 @@ $supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 $tableName = "items";
 
 // Thực hiện lệnh PATCH (Update) lên Supabase để đổi owner_address
-$apiUrl = $supabaseUrl . "/rest/v1/" . $tableName . "?token_id=eq." . urlencode($tokenId);
+$apiUrl = $supabaseUrl . "/rest/v1/" . $tableName . "?item_id=eq." . urlencode($itemId);
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $apiUrl);
@@ -43,10 +43,9 @@ if ($httpCode >= 200 && $httpCode < 300) {
     // Chèn vào trước dòng echo json_encode(['status' => 'success']);
     include 'log_activity.php';
     // Lấy tên vật phẩm từ DB trước hoặc truyền từ JS sang (ví dụ tạm thời là $itemName)
-    saveActivity($tokenId, "Bản nhạc NFT", "Transfer", $_SESSION['user_wallet'], $newOwner, 0);
+    saveActivity($itemId, "Bản nhạc NFT", "Transfer", $_SESSION['user_wallet'], $newOwner, 0);
 
     echo json_encode(['status' => 'success', 'message' => 'Cập nhật database thành công']);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Lỗi kết nối Supabase, mã lỗi: ' . $httpCode]);
 }
-?>

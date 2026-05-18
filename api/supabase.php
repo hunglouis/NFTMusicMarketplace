@@ -1,7 +1,8 @@
 <?php
 require_once '/../../config.php';
-
-function supabaseRequest($endpoint, $method = "GET", $data = null) {
+require_once "filter_helper.php"; // 1. CHÈN THÊM VÀO ĐẦU FILE
+function supabaseRequest($endpoint, $method = "GET", $data = null)
+{
 
     $url = SUPABASE_URL . "/rest/v1/" . $endpoint;
 

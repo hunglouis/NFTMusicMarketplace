@@ -1,12 +1,13 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
+require_once "filter_helper.php"; // 1. CHÈN THÊM VÀO ĐẦU FILE
 
 // 1. Điền Key Alchemy của bạn (Lấy trên dashboard.alchemy.com)
-$apiKey = "xaC_d2_cBXfF74xndB750"; 
+$apiKey = "xaC_d2_cBXfF74xndB750";
 
 // 2. Điền địa chỉ ví Polygon của bạn
-$owner = "0x8429BC345266D03a433b25B8Fb6301274294D81E"; 
+$owner = "0x8429BC345266D03a433b25B8Fb6301274294D81E";
 
 $url = "https://polygon-mainnet.g.alchemy.com/nft/v2/$apiKey/getNFTs?owner=$owner";
 
@@ -17,4 +18,3 @@ $response = curl_exec($ch);
 curl_close($ch);
 
 echo $response;
-?>

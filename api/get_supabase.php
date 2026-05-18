@@ -1,14 +1,14 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-
+require_once "filter_helper.php"; // 1. CHÈN THÊM VÀO ĐẦU FILE
 // 1. Khai báo trực tiếp - Không dùng hàm để tránh lỗi Undefined variable
 $supabaseUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
-$apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw"; 
+$apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw";
 
 // 2. Cấu hình bảng dữ liệu
 $tableName = "items";
-$params = "select=id,name,image_url,itemCID,price&order=id.asc&limit=50";
+$params = "select=id,name,image_url,itemCID,price&order=id.asc&limit=50&is_hidden=eq.false";
 
 // 3. Xây dựng URL hoàn chỉnh
 $fullUrl = $supabaseUrl . "/rest/v1/" . $tableName . "?" . $params;
@@ -37,4 +37,3 @@ if (curl_errno($ch)) {
 }
 
 curl_close($ch);
-?>

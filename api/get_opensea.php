@@ -1,6 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
+require_once "filter_helper.php"; // 1. CHÈN THÊM VÀO ĐẦU FILE
 
 $wallet = "0x8429BC345266D03a433b25B8Fb6301274294D81E";
 
@@ -18,4 +19,3 @@ $options = [
 
 $context = stream_context_create($options);
 echo file_get_contents($url, false, $context);
-?>

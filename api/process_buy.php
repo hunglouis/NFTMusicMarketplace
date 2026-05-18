@@ -3,26 +3,27 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+require_once "filter_helper.php"; // 1. CHÈN THÊM VÀO ĐẦU FILE
 
 $json_input = file_get_contents('php://input');
 $data = json_decode($json_input, true);
 
 header('Content-Type: application/json');
 
-if (!isset($data['token_id']) || !isset($data['buyer_address'])) {
+if (!isset($data['item_id']) || !isset($data['buyer_address'])) {
     echo json_encode(['status' => 'error', 'message' => 'Thiếu tham số giao dịch']);
     exit();
 }
 
-$tokenId = $data['token_id'];
+$itemId = $data['item_id'];
 $buyerAddress = strtolower(trim($data['buyer_address']));
 
 // 1. CẤU HÌNH KẾT NỐI SUPABASE THẬT CỦA BẠN (Lấy từ file profile.php sang)
-$supabaseUrl = "supabase.co"; 
-$supabaseAnonKey = "your-anon-key"; 
+$supabaseUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
+$supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw";
 $tableName = "items";
 
-$apiUrl = $supabaseUrl . "/rest/v1/" . $tableName . "?token_id=eq." . urlencode($tokenId);
+$apiUrl = $supabaseUrl . "/rest/v1/" . $tableName . "?item_id=eq." . urlencode($itemId);
 
 // 2. THỰC HIỆN LỆNH PATCH ĐỂ CẬP NHẬT CHỦ SỞ HỮU MỚI VÀ GỠ BỎ TRẠNG THÁI BÁN
 $ch = curl_init();
@@ -49,11 +50,10 @@ if ($httpCode >= 200 && $httpCode < 300) {
     include 'log_activity.php';
     if (function_exists('saveActivity')) {
         // Ghi lại sự kiện giao dịch thành công (Sale)
-        saveActivity($tokenId, "Bản nhạc NFT", "Sale", $_SESSION['user_wallet'], $buyerAddress, $data['price'] ?? 0);
+        saveActivity($itemId, "Bản nhạc NFT", "Sale", $_SESSION['user_wallet'], $buyerAddress, $data['price'] ?? 0);
     }
     echo json_encode(['status' => 'success', 'message' => 'Giao dịch đổi chủ sở hữu thành công!']);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Lỗi cập nhật database, mã lỗi: ' . $httpCode]);
 }
 exit();
-?>

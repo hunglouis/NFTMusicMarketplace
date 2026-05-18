@@ -1,19 +1,59 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <title>CHÀO MỪNG ĐẾN VỚI MUSIC NFT STUDIO</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/js/web3.min.js"></script>
+    <script src="assets/js/wallet.js"></script>
+    <script src="assets/js/nft.js"></script>
+    <script src="assets/js/token.js"></script>
+    <script src="assets/js/app.js"></script>
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        body { background: #020617; color: #d4d4d8; padding-left: 3rem; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .welcome-card { background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(234, 179, 8, 0.1); border-radius: 40px; backdrop-filter: blur(15px); max-width: 800px; width: 90%; }
-        .gold-gradient { background: linear-gradient(to right, #eab308, #ca8a04); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .step-num { width: 30px; height: 30px; border: 1px solid #eab308; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #eab308; font-weight: bold; }
+        body {
+            background: #020617;
+            color: #d4d4d8;
+            padding-left: 3rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .welcome-card {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(234, 179, 8, 0.1);
+            border-radius: 40px;
+            backdrop-filter: blur(15px);
+            max-width: 800px;
+            width: 90%;
+        }
+
+        .gold-gradient {
+            background: linear-gradient(to right, #eab308, #ca8a04);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .step-num {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #eab308;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #eab308;
+            font-weight: bold;
+        }
     </style>
 </head>
+
 <body>
-    <?php if(file_exists('navbar.php')) include 'navbar.php'; ?>
+    <?php if (file_exists('navbar.php')) include 'navbar.php'; ?>
 
     <div class="welcome-card p-12 text-center shadow-2xl">
         <!-- BIỂU TƯỢNG -->
@@ -21,7 +61,10 @@
             <i class="fa-solid fa-dharmachakra text-6xl text-yellow-500/20 pulse absolute left-1/2 -translate-x-1/2 -top-10"></i>
             <i class="fa-solid fa-bolt-lightning text-4xl text-yellow-500 relative z-10"></i>
         </div>
-
+        <button onclick="enterGallery()" class="enter-btn">
+            🎵 Bước vào Không gian Nghệ thuật
+        </button>
+        <button id="btn-add">🦊 Thêm Token vào MetaMask</button>
         <h1 class="text-4xl font-black gold-gradient uppercase tracking-tighter mb-4">Chào mừng Nghệ sĩ gia nhập</h1>
         <p class="text-gray-500 text-sm italic mb-12">"Nơi mỗi sản vật trở thành một chương của lịch sử bất tử"</p>
 
@@ -54,5 +97,41 @@
             <p class="text-[10px] text-gray-500 leading-relaxed">Bắt đầu xem kệ hàng và sở hữu những sản vật quý giá.</p>
         </div>
     </div>
+    <script src="assets/js/galleryExperience.js"></script>
+    <script>
+        // Chép đoạn code vào trong thẻ script này
+        async function addTokenToMetaMask() {
+            try {
+                const wasAdded = await window.ethereum.request({
+                    method: 'wallet_watchAsset',
+                    params: {
+                        type: 'ERC20',
+                        options: {
+                            address: '0xBB99a71fDcC25B9AeFa25c8CfBD62C319c114FE1', // Sửa thành địa chỉ contract của bạn
+                            symbol: 'HLT', // Sửa thành ký hiệu viết hoa
+                            decimals: 18,
+                            image: 'https://gateway.pinata.cloud/ipfs/QmXuGxbHuBAmkYEmQmjoVudBpR7kroAHx5QZ9bJ39pCPjg', // Sửa thành link ảnh logo
+                        },
+                        type: 'ERC20',
+                        options: {
+                            address: '0xF4fd7dd41De318f8c7eA32505c2250BB09D75D94', // Sửa thành địa chỉ contract của bạn
+                            symbol: 'HLT', // Sửa thành ký hiệu viết hoa
+                            decimals: 18,
+                            image: 'https://gateway.pinata.cloud/ipfs/QmQq6QE5y5DNfXrwhDxhi1dATP1ge5EeUTDnkocZdswNYr', // Sửa thành link ảnh logo
+                        },
+                    },
+                });
+                if (wasAdded) {
+                    console.log('Token đã được thêm thành công vào MetaMask!');
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        // Kích hoạt hàm khi người dùng bấm nút
+        document.getElementById('btn-add').addEventListener('click', addTokenToMetaMask);
+    </script>
 </body>
+
 </html>

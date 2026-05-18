@@ -5,7 +5,10 @@
 // =====================
 $opensea_api_key = "b736ad1e23c74136b98079b71923bfcb"; // thay bằng API key OpenSea của bạn
 $supabase_url = "https://hmvvjjiiaelcsfqgxbxv.supabase.co";
-$supabase_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw"; // nên dùng service_role nếu bạn muốn insert mạnh
+$supabase_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw";
+
+// 🔗 CHÈN FILE HELPER DÙNG CHUNG VÀO ĐÂY
+require_once "filter_helper.php";
 
 // Danh sách contract Polygon
 $contracts = [
@@ -25,7 +28,8 @@ $creator_address_default = "0x8429BC345266D03a433b25B8Fb6301274294D81E";
 // =====================
 // 2) Helper gọi HTTP
 // =====================
-function http_get_json($url, $headers = []) {
+function http_get_json($url, $headers = [])
+{
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     if (!empty($headers)) curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -44,7 +48,8 @@ function http_get_json($url, $headers = []) {
     return $data_json;
 }
 
-function http_post_json($url, $body, $headers = []) {
+function http_post_json($url, $body, $headers = [])
+{
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
@@ -76,34 +81,39 @@ $options = [
         "method" => "GET",
         "header" => [
             "Accept: application/json",
-            "X-API-KEY:b736ad1e23c74136b98079b71923bfcb"
+            "X-API-KEY: b736ad1e23c74136b98079b71923bfcb"
         ]
     ]
 ];
 // 1. TẠO NGỮ CẢNH ĐỂ GỌI API
 $context = stream_context_create($options);
 
-// 2. THỰC SỰ ĐI LẤY DỮ LIỆU TỪ OPENSEA (Lệnh này cực kỳ quan trọng)
+// 2. THỰC SỰ ĐI LẤY DỮ LIỆU TỪ OPENSEA
 $response = file_get_contents($url, false, $context);
 
-// 3. GIẢI MÃ DỮ LIỆU (Dùng đúng tên biến $response ở trên)
+// 3. GIẢI MÃ DỮ LIỆU
 $data_json = json_decode($response, true);
+
+// Lấy danh sách ID bị ẩn từ Supabase về thông qua Helper để chặn hiển thị log báo lỗi/thành công
+$hiddenTokenIds = getSupabaseHiddenIds();
 
 // --- CHỈ GIỮ LẠI DUY NHẤT ĐOẠN NÀY ĐỂ ĐẨY HÀNG ---
 if (isset($data_json['nfts']) && is_array($data_json['nfts'])) {
     foreach ($data_json['nfts'] as $nft) {
-    
-    $itemData = [
-        "contract_address" => $nft['contract'],   // Sửa thành 'contract'
-        "item_id"          => $nft['identifier'],
-        "name"             => $nft['name'] ?? "Di sản #" . $nft['identifier'],
-        "image_url"        => $nft['image_url'],
-        "creator_address"  => $wallet,           // Phải có cái này nữa
-        "owner_address"    => $wallet,
-        "price"            => 0.1
-    ];
 
-        // Dùng cURL - Cách này mạnh mẽ và báo lỗi chính xác nhất
+        $tokenId = (int)$nft['identifier'];
+
+        $itemData = [
+            "contract_address" => $nft['contract'],
+            "item_id"          => $nft['identifier'],
+            "name"             => $nft['name'] ?? "Di sản #" . $nft['identifier'],
+            "image_url"        => $nft['image_url'],
+            "creator_address"  => $wallet,
+            "owner_address"    => $wallet,
+            "price"            => 0.1
+        ];
+
+        // 🟢 BƯỚC ĐỒNG BỘ NÀY VẪN CHO CHẠY ĐỂ LƯU VÀO SUPABASE TỰ ĐỘNG
         $ch = curl_init($supabase_url . "/rest/v1/items");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
@@ -119,12 +129,19 @@ if (isset($data_json['nfts']) && is_array($data_json['nfts'])) {
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
+        // 🛑 BỘ LỌC HIỂN THỊ: Nếu ID này nằm trong danh sách ẩn trên Supabase, 
+        // ta ngắt không cho in dòng chữ thông báo ra màn hình Frontend
+        if (in_array($tokenId, $hiddenTokenIds)) {
+            continue;
+        }
+
         if ($status == 201 || $status == 200) {
             echo "<span style='color: #00ffff;'>✅ ĐÃ VÀO KHO: " . $itemData['name'] . "</span><br>";
         } else {
-            // Nếu lỗi, nó sẽ hiện nguyên nhân tại đây
             echo "<span style='color: #ff4444;'>❌ LỖI THỰC SỰ: " . $res_post . " (Mã: $status)</span><br>";
         }
     }
 }
-?>
+
+// 🎯 NẾU TRANG NÀY TRẢ JSON VỀ CHO FRONTEND, BẠN CÓ THỂ GỌI THÊM HÀM NÀY:
+// outputCleanJson($response); 

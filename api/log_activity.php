@@ -1,6 +1,9 @@
 <?php
 // api/log_activity.php
-function saveActivity($tokenId, $itemName, $eventType, $fromAddress, $toAddress = null, $price = 0) {
+function saveActivity($itemId, $itemName, $eventType, $fromAddress, $toAddress = null, $price = 0)
+{
+    require_once "filter_helper.php"; // 1. CHÈN THÊM VÀO ĐẦU FILE   
+
     $supabaseUrl = "supabase.co"; // Thay URL thật của bạn
     $supabaseAnonKey = "your-anon-key"; // Thay Key thật của bạn
     $tableName = "activities";
@@ -8,7 +11,7 @@ function saveActivity($tokenId, $itemName, $eventType, $fromAddress, $toAddress 
     $apiUrl = $supabaseUrl . "/rest/v1/" . $tableName;
 
     $data = [
-        'token_id'     => strtolower(trim($tokenId)),
+        'item_id'     => strtolower(trim($itemId)),
         'item_name'    => $itemName,
         'event_type'   => $eventType,
         'from_address' => strtolower(trim($fromAddress)),
@@ -31,4 +34,3 @@ function saveActivity($tokenId, $itemName, $eventType, $fromAddress, $toAddress 
     curl_close($ch);
     return $response;
 }
-?>

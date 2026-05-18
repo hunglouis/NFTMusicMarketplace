@@ -1,12 +1,12 @@
 <?php
 $data = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($data['token_id']) || !isset($data['price'])) {
+if (!isset($data['item_id']) || !isset($data['price'])) {
     echo json_encode(['status' => 'error', 'message' => 'Thiếu tham số']);
     exit();
 }
-
-$tokenId = $data['token_id'];
+require_once "filter_helper.php"; // 1. CHÈN THÊM VÀO ĐẦU FILE
+$itemId = $data['item_id'];
 $price = $data['price'];
 $isListed = $data['is_listed'];
 
@@ -15,7 +15,7 @@ $supabaseUrl = "https://hmvvjjiiaelcsfqgxbxv.supabase.co"; // Thay URL thật
 $supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw"; // Thay Key thật
 $tableName = "items";
 
-$apiUrl = $supabaseUrl . "/rest/v1/" . $tableName . "?token_id=eq." . urlencode($tokenId);
+$apiUrl = $supabaseUrl . "/rest/v1/" . $tableName . "?item_id=eq." . urlencode($itemId);
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $apiUrl);
@@ -38,9 +38,8 @@ curl_close($ch);
 if ($httpCode >= 200 && $httpCode < 300) {
     include 'log_activity.php';
     $event = $isListed ? "List" : "Cancel";
-    saveActivity($tokenId, "Bản nhạc NFT", $event, $_SESSION['user_wallet'], null, $price);
+    saveActivity($itemId, "Bản nhạc NFT", $event, $_SESSION['user_wallet'], null, $price);
     echo json_encode(['status' => 'success']);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Lỗi kết nối database']);
 }
-?>

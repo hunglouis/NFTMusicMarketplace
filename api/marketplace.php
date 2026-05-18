@@ -1,6 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
+require_once "filter_helper.php"; // 1. CHÈN THÊM VÀO ĐẦU FILE
 
 // 🔑 config
 $alchemyKey = "xaC_d2_cBXfF74xndB750";
@@ -72,20 +73,19 @@ foreach ($alchemyData["ownedNfts"] as $nft) {
 
     // 🎯 price
     $price = $priceMap[$tokenId] ?? null;
-    
-   $result[] = [
-    "tokenId" => $tokenId,
-    "name" => $name,
-    "image" => $image,
-    "audio" => $audio,
-    "price" => $price,
-    "opensea_url" => "https://opensea.io/assets/matic/",
-    "contract" => $nft["contract"]["address"] . "/" . hexdec($nft["id"]["tokenId"])
-];
+
+    $result[] = [
+        "tokenId" => $tokenId,
+        "name" => $name,
+        "image" => $image,
+        "audio" => $audio,
+        "price" => $price,
+        "opensea_url" => "https://opensea.io/assets/matic/",
+        "contract" => $nft["contract"]["address"] . "/" . hexdec($nft["id"]["tokenId"])
+    ];
 }
 
 // =======================
 // 🔥 OUTPUT
 // =======================
 echo json_encode($result, JSON_PRETTY_PRINT);
-?>

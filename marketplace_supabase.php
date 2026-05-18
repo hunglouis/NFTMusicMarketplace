@@ -1,7 +1,8 @@
 <?php
 include 'config.php';
 session_start();
-function callSupabase($endpoint) {
+function callSupabase($endpoint)
+{
     $url = "https://hmvvjjiiaelcsfqgxbxv.supabase.co/rest/v1/" . $endpoint;
 
     $headers = [
@@ -25,19 +26,46 @@ $songs = callSupabase("hunglouis?price=gt.0&order=id.desc&limit=200");
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <title>MARKETPLACE - DI SẢN MẠNH HÙNG</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        body { background: #020617; color: #d4d4d8; padding-left: 5rem; padding-right: 2rem; min-height: 100vh; }
-        .gold-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(234, 179, 8, 0.1); transition: all 0.4s; }
-        .gold-card:hover { border-color: #eab308; transform: translateY(-5px); box-shadow: 0 0 20px rgba(234, 179, 8, 0.1); }
-        .gold-text { color: #eab308; }
-        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        body {
+            background: #020617;
+            color: #d4d4d8;
+            padding-left: 5rem;
+            padding-right: 2rem;
+            min-height: 100vh;
+        }
+
+        .gold-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(234, 179, 8, 0.1);
+            transition: all 0.4s;
+        }
+
+        .gold-card:hover {
+            border-color: #eab308;
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(234, 179, 8, 0.1);
+        }
+
+        .gold-text {
+            color: #eab308;
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
     </style>
 </head>
+
 <body class="p-8">
     <?php include 'navbar.php'; ?>
 
@@ -69,8 +97,11 @@ $songs = callSupabase("hunglouis?price=gt.0&order=id.desc&limit=200");
 
         async function loadMarketplace() {
             try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/hunglouis?select=*&order=id.desc`, {
-                    headers: { "apikey": ANON_KEY, "Authorization": `Bearer ${ANON_KEY}` }
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/items?select=*&order=id.asc&limit=50&is_hidden=eq.false`, {
+                    headers: {
+                        "apikey": ANON_KEY,
+                        "Authorization": `Bearer ${ANON_KEY}`
+                    }
                 });
                 const items = await res.json();
                 const grid = document.getElementById('marketplace-grid');
@@ -79,16 +110,16 @@ $songs = callSupabase("hunglouis?price=gt.0&order=id.desc&limit=200");
                 items.forEach(item => {
                     // Xử lý link IPFS để hiển thị (Dùng gateway công cộng)
                     let displayUrl = item.image_url.replace('ipfs://', 'https://pinata.cloud');
-                    
+
                     // Kiểm tra loại file để hiện icon tương ứng
                     let mediaContent = `<img src="${displayUrl}" class="w-full h-48 object-cover rounded-2xl mb-4" onerror="this.src='https://placehold.co'">`;
-                    
-                    if(displayUrl.toLowerCase().endsWith('.pdf')) {
+
+                    if (displayUrl.toLowerCase().endsWith('.pdf')) {
                         mediaContent = `<div class="w-full h-48 flex flex-col items-center justify-center bg-white/5 rounded-2xl mb-4 border border-white/5">
                                             <i class="fas fa-file-pdf text-4xl text-red-500 mb-2"></i>
                                             <span class="text-[8px] uppercase tracking-widest text-gray-500">Hồ sơ tài liệu</span>
                                         </div>`;
-                    } else if(displayUrl.toLowerCase().endsWith('.mp3')) {
+                    } else if (displayUrl.toLowerCase().endsWith('.mp3')) {
                         mediaContent = `<div class="w-full h-48 flex flex-col items-center justify-center bg-white/5 rounded-2xl mb-4 border border-white/5">
                                             <i class="fas fa-music text-4xl gold-text mb-4"></i>
                                             <audio controls class="h-8 w-4/5 scale-75 opacity-50 hover:opacity-100 transition-all">
@@ -119,5 +150,5 @@ $songs = callSupabase("hunglouis?price=gt.0&order=id.desc&limit=200");
         window.onload = loadMarketplace;
     </script>
 </body>
-</html>
 
+</html>
