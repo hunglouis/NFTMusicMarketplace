@@ -36,10 +36,11 @@ if (!is_array($market_items)) {
 <head>
     <meta charset="UTF-8">
     <title>TRUNG TÂM GIAO DỊCH NFT CÔNG KHAI | NFT TRANSACTION CENTER</title>
+    <script src="https://cdn.cloudflare.com" type="text/javascript"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="assets/style.css"> <!-- Sử dụng lại file CSS của bạn -->
     <!-- Nhúng thư viện Ethers.js ở đầu trang -->
-    <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.umd.min.js"></script>
 </head>
 
 <body class="p-5 md:p-10">
@@ -143,7 +144,7 @@ if (!is_array($market_items)) {
                                 <?php else: ?>
                                     <!-- Nếu người xem là khách vãng lai hoặc ví chưa mua bài hát này -->
                                     <button class="btn-buy-now"
-                                        onclick="executeBuyMusic('<?= htmlspecialchars($item['token_id'] ?? '0') ?>', '<?= htmlspecialchars($item['price'] ?? '0') ?>', '<?= htmlspecialchars($item['contract_address'] ?? '') ?>')"
+                                        onclick="executeBuyMusic('<?= htmlspecialchars($item['id'] ?? '0') ?>', '<?= htmlspecialchars($item['price'] ?? '0') ?>', '<?= htmlspecialchars($item['contract_address'] ?? '') ?>')"
                                         style="width: 100%; background-color: #2563eb; color: white; border: none; padding: 10px; font-weight: 600; border-radius: 8px; cursor: pointer; font-size: 14px;">
                                         🛒 Mua Ngay
                                     </button>
@@ -162,74 +163,192 @@ if (!is_array($market_items)) {
 
     <!-- JAVASCRIPT XỬ LÝ HÀM MUA TRỰC TIẾP ON-CHAIN -->
     <script>
-        // 1. Thêm tham số nftContractAddress vào hàm nhận diện
-        async function executeBuyMusic(tokenId, priceInEth, nftContractAddress) {
-            if (!window.ethereum) {
-                alert("Vui lòng cài đặt và kết nối ví MetaMask!");
-                return;
-            }
-
-            // Bẫy lỗi nếu dữ liệu địa chỉ hợp đồng của bài hát này trong database bị trống
-            if (!nftContractAddress || nftContractAddress.length < 40) {
-                alert("Lỗi: Bài hát này chưa được liên kết với địa chỉ Smart Contract trên Blockchain!");
-                return;
-            }
-
+        async function executeBuyMusic(id, priceInEth) {
             try {
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                const signer = provider.getSigner();
+                // 1. Kiểm tra ví MetaMask đã cài đặt chưa
+                if (!window.ethereum) {
+                    alert("Vui lòng cài đặt ví MetaMask!");
+                    return;
+                }
 
-                // 2. BIẾN ĐỘNG: Tự động lấy địa chỉ bộ sưu tập của chính bài hát đó từ Supabase truyền sang
-                const NFT_CONTRACT_ADDRESS = nftContractAddress;
+                // 2. Khởi tạo Provider theo chuẩn Ethers v6
+                const provider = new ethers.BrowserProvider(window.ethereum);
 
-                // 3. BIẾN CỐ ĐỊNH: Đây mới là địa chỉ hợp đồng NFTMarketplace bạn đã deploy trên Remix
-                const MARKETPLACE_ADDRESS = "0x624dce1e5da13ad6f45e897280d1a3f8b36b4af3";
+                // 3. 🌟 ĐIỂM CHÍ MẠNG: Lấy Signer để có quyền gửi giao dịch (Ký ví)
+                const signer = await provider.getSigner();
 
-                const valueInWei = ethers.utils.parseEther(priceInEth.toString());
-                alert(`Khởi tạo mua bản nhạc thuộc hợp đồng: ${NFT_CONTRACT_ADDRESS} - Token ID: #${tokenId}`);
+                // Thay các biến này bằng địa chỉ và ABI thật trong code của bạn nếu có tên khác
+                const contractAddress = 0x624dce1e5da13ad6f45e897280d1a3f8b36b4af3;
+                const contractABI = [{
+                    "inputs": [],
+                    "name": "ReentrancyGuardReentrantCall",
+                    "type": "error"
+                }, {
+                    "anonymous": false,
+                    "inputs": [{
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "nft",
+                        "type": "address"
+                    }, {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "tokenId",
+                        "type": "uint256"
+                    }],
+                    "name": "Cancelled",
+                    "type": "event"
+                }, {
+                    "anonymous": false,
+                    "inputs": [{
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "nft",
+                        "type": "address"
+                    }, {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "tokenId",
+                        "type": "uint256"
+                    }, {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "price",
+                        "type": "uint256"
+                    }, {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "seller",
+                        "type": "address"
+                    }],
+                    "name": "Listed",
+                    "type": "event"
+                }, {
+                    "anonymous": false,
+                    "inputs": [{
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "nft",
+                        "type": "address"
+                    }, {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "tokenId",
+                        "type": "uint256"
+                    }, {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "buyer",
+                        "type": "address"
+                    }, {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "price",
+                        "type": "uint256"
+                    }],
+                    "name": "Sold",
+                    "type": "event"
+                }, {
+                    "inputs": [{
+                        "internalType": "address",
+                        "name": "nftContract",
+                        "type": "address"
+                    }, {
+                        "internalType": "uint256",
+                        "name": "tokenId",
+                        "type": "uint256"
+                    }],
+                    "name": "buyItem",
+                    "outputs": [],
+                    "stateMutability": "payable",
+                    "type": "function"
+                }, {
+                    "inputs": [{
+                        "internalType": "address",
+                        "name": "nftContract",
+                        "type": "address"
+                    }, {
+                        "internalType": "uint256",
+                        "name": "tokenId",
+                        "type": "uint256"
+                    }],
+                    "name": "cancelListing",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                }, {
+                    "inputs": [{
+                        "internalType": "address",
+                        "name": "nftContract",
+                        "type": "address"
+                    }, {
+                        "internalType": "uint256",
+                        "name": "tokenId",
+                        "type": "uint256"
+                    }, {
+                        "internalType": "uint256",
+                        "name": "price",
+                        "type": "uint256"
+                    }],
+                    "name": "listItem",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                }, {
+                    "inputs": [{
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }, {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }],
+                    "name": "listings",
+                    "outputs": [{
+                        "internalType": "address",
+                        "name": "seller",
+                        "type": "address"
+                    }, {
+                        "internalType": "uint256",
+                        "name": "price",
+                        "type": "uint256"
+                    }, {
+                        "internalType": "bool",
+                        "name": "active",
+                        "type": "bool"
+                    }],
+                    "stateMutability": "view",
+                    "type": "function"
+                }];
 
-                const marketplaceABI = [
-                    "function buyItem(address nftContract, uint256 tokenId) external payable"
-                ];
-                const marketplaceContract = new ethers.Contract(MARKETPLACE_ADDRESS, marketplaceABI, signer);
+                // 4. 🌟 ĐIỂM CHÍ MẠNG: Truyền 'signer' vào vị trí thứ 3 (không truyền provider)
+                const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-                // Gọi hàm mua thực tế on-chain (Truyền đúng địa chỉ bộ sưu tập và Token ID vào)
-                const tx = await marketplaceContract.buyItem(NFT_CONTRACT_ADDRESS, tokenId, {
+                // 5. Đổi số tiền ETH sang Wei theo chuẩn Ethers v6 (bỏ chữ .utils)
+                const valueInWei = ethers.parseEther(priceInEth.toString());
+
+                console.log("Đang kích hoạt giao dịch mua với ID:", tokenId, "Số tiền:", priceInEth);
+
+                // 6. Gọi hàm mua từ Smart Contract của bạn (Thay 'buyMusic' bằng tên hàm thật trên Contract của bạn)
+                // Lưu ý cấu hình gửi tiền kèm theo { value: ... }
+                const tx = await contract.buyMusic(tokenId, {
                     value: valueInWei
                 });
 
-                alert("Giao dịch đang được xử lý on-chain... Vui lòng không đóng trình duyệt.");
-                await tx.wait();
+                alert("Giao dịch đã được gửi! Đang chờ xác nhận...");
 
-                // ... các đoạn fetch cập nhật database nội bộ phía dưới giữ nguyên ...
-
-
-                // --- CẬP NHẬT DATABASE SUPABASE ĐỔI CHỦ SỞ HỮU MỚI ---
-                // Sau khi mua thành công, owner_address biến thành ví của người mua, is_listed về false
-                // Thay thế đoạn fetch cũ sau khi giao dịch Blockchain thành công
-                const response = await fetch('api/process_buy.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        token_id: tokenId,
-                        buyer_address: buyerAddress,
-                        price: priceInEth
-                    })
-                });
-                const result = await response.json();
-                if (result.status === 'success') {
-                    alert("🎉 Chúc mừng! Giao dịch thành công, bạn đã là chủ sở hữu mới của bản nhạc!");
-                    window.location.reload();
-                }
-
+                // Chờ giao dịch hoàn tất trên Blockchain
+                const receipt = await tx.wait();
+                alert("Giao dịch thành công!");
+                location.reload();
 
             } catch (error) {
-                console.error("Lỗi giao dịch mua nhạc:", error);
+                console.error(error);
                 alert("Giao dịch thất bại! Chi tiết lỗi: " + (error.reason || error.message));
             }
         }
+
         let currentCard = null;
         let previewTimeout = null;
 

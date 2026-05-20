@@ -175,44 +175,42 @@ function renderPagination($current_page)
                                 </a>
                             </div>
 
-                            <!-- Thông tin -->
-                            <div class="flex-grow">
 
-                                <h3 class="text-lg font-bold text-white line-clamp-2 mb-2 leading-tight">
-                                    <?php $item['name'] ?: 'Tác phẩm chưa đặt tên'; ?>
-                                </h3>
-                                <!-- KHUNG NỘI DUNG DƯỚI ẢNH -->
-                                <div style="padding: 20px; background: rgba(0,0,0,0.2); border-radius: 0 0 20px 20px;">
+                            <h3 class="text-lg font-bold text-white line-clamp-2 mb-2 leading-tight">
+                                <?php $item['name'] ?: 'Tác phẩm chưa đặt tên'; ?>
+                            </h3>
+                            <!-- KHUNG NỘI DUNG DƯỚI ẢNH -->
+                            <div style="padding: 20px; background: rgba(0,0,0,0.2); border-radius: 0 0 20px 20px;">
 
-                                    <!-- Dòng Giá niêm yết -->
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                                        <span style="font-size: 11px; color: #555; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">Giá niêm yết</span>
-                                        <div style="display: flex; align-items: center; gap: 5px;">
-                                            <span style="color: #ffcc00; font-weight: 900; font-size: 20px; text-shadow: 0 0 10px rgba(255,204,0,0.3);">
-                                                <?php echo number_format($item['price'] ?? 0, 1); ?>
-                                            </span>
-                                            <span style="color: #00ffff; font-size: 12px; font-weight: bold;">MATIC</span>
-                                        </div>
+                                <!-- Dòng Giá niêm yết -->
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                    <span style="font-size: 11px; color: #555; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">Giá niêm yết</span>
+                                    <div style="display: flex; align-items: center; gap: 5px;">
+                                        <span style="color: #ffcc00; font-weight: 900; font-size: 20px; text-shadow: 0 0 10px rgba(255,204,0,0.3);">
+                                            <?php echo number_format($item['price'] ?? 0, 1); ?>
+                                        </span>
+                                        <span style="color: #00ffff; font-size: 12px; font-weight: bold;">MATIC</span>
                                     </div>
+                                </div>
 
-                                    <!-- Hàng nút bấm (Ép nằm ngang tăm tắp) -->
-                                    <div style="display: flex; gap: 10px; width: 100%;">
-                                        <!-- Nút Nghe/Xem thử -->
-                                        <button onclick="playMusic('<?php echo $item['image_url']; ?>', '<?php echo addslashes($item['name']); ?>', '<?php echo $item['image_url']; ?>')"
-                                            style="flex: 1; background: #008888; color: white; border: none; padding: 12px 5px; border-radius: 10px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 5px;">
-                                            <i class="fas fa-play-circle"></i> Nghe/Xem thử
-                                        </button>
+                                <!-- Hàng nút bấm (Ép nằm ngang tăm tắp) -->
+                                <div style="display: flex; gap: 10px; width: 100%;">
+                                    <!-- Nút Nghe/Xem thử -->
+                                    <button onclick="playMusic('<?php echo $item['image_url']; ?>', '<?php echo addslashes($item['name']); ?>', '<?php echo $item['image_url']; ?>')"
+                                        style="flex: 1; background: #008888; color: white; border: none; padding: 12px 5px; border-radius: 10px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                        <i class="fas fa-play-circle"></i> Nghe/Xem thử
+                                    </button>
 
-                                        <!-- Nút Sở hữu ngay -->
-                                        <a href="nft-details.php?id=<?php echo $item['id']; ?>"
-                                            style="flex: 1; background: #ffffff; color: #000; text-decoration: none; padding: 12px 5px; border-radius: 10px; font-size: 11px; font-weight: bold; transition: 0.3s; display: flex; align-items: center; justify-content: center; text-align: center;">
-                                            XEM NGAY
-                                        </a>
-                                    </div>
-
+                                    <!-- Nút Sở hữu ngay -->
+                                    <a href="nft-details.php?id=<?php echo $item['id']; ?>"
+                                        style="flex: 1; background: #ffffff; color: #000; text-decoration: none; padding: 12px 5px; border-radius: 10px; font-size: 11px; font-weight: bold; transition: 0.3s; display: flex; align-items: center; justify-content: center; text-align: center;">
+                                        XEM NGAY
+                                    </a>
                                 </div>
 
                             </div>
+
+
                         </div>
                     </div>
                 </div>
@@ -546,6 +544,19 @@ function renderPagination($current_page)
                 console.log("✅ Xác thực chính chủ thành công! Bạn đang sở hữu bản quyền NFT này, hệ thống mở khóa nghe trọn vẹn toàn bộ bài hát.");
             }
         }
+        grid.innerHTML += `
+                        <div class="gold-card p-5 rounded-[35px] flex flex-col">
+                            ${mediaContent}
+                            <div class="flex-1">
+                                <h3 class="text-white font-bold text-sm mb-1 uppercase tracking-tight truncate">${item.name || 'Tác phẩm vô danh'}</h3>
+                                <p class="text-gray-500 text-[10px] line-clamp-2 mb-4 italic h-8">${item.description || 'Không có mô tả di sản.'}</p>
+                            </div>
+                            <div class="flex justify-between items-center pt-4 border-t border-white/5">
+                                <span class="gold-text font-black text-sm">${item.price || '0.01'} <span class="text-[8px]">MATIC</span></span>
+                                <a href="nft_detail.php?id=${item.id}" class="text-[9px] uppercase font-black tracking-widest bg-white/5 px-4 py-2 rounded-full hover:bg-yellow-500 hover:text-black transition-all">Chi tiết</a>
+                            </div>
+                        </div>
+                    `;
 
         function stopPreview(cardElement) {
             if (currentCard === cardElement) {
