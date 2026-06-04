@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thử Nghiệm Music NFT - Hover to Play</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-zone {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .btn-wallet {
+            background-color: #f6851b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-wallet:hover {
+            background-color: #e27613;
+        }
+
+        /* Giao diện kệ hàng NFT */
+        .nft-grid {
+            display: flex;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .nft-card {
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            padding: 16px;
+            width: 220px;
+            text-align: center;
+            border: 2px solid #333;
+            transition: transform 0.2s, border-color 0.2s;
+            cursor: pointer;
+        }
+
+        /* Hiệu ứng khi di chuột qua card */
+        .nft-card:hover {
+            transform: translateY(-5px);
+            border-color: #1db954;
+            /* Màu xanh Spotify */
+        }
+
+        .nft-thumb {
+            width: 100%;
+            height: 200px;
+            background-color: #333;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .status-text {
+            font-size: 13px;
+            color: #b3b3b3;
+            margin-top: 10px;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header-zone">
+        <h2>KỆ HÀNG MUSIC NFT (DEMO HOVER)</h2>
+        <!-- Nút kết nối ví bắt buộc để trình duyệt cấp quyền phát âm thanh ban đầu -->
+        <button class="btn-wallet" id="connectWalletBtn" onclick="connectWallet()">🦊 Kết nối ví MetaMask</button>
+        <p id="walletAddressText" style="color: #1db954; margin-top: 10px;"></p>
+    </div>
+
+    <div class="nft-grid">
+        <!-- NFT BÀI HÁT SỐ 1 (Thay thế contract_address thực tế từ Supabase của bạn vào đây) -->
+        <div class="nft-card" data-contract="0x624dce1e5da13ad6f45e897280d1a3f8b36b4af3" data-token="1"
+            onmouseenter="startSecurePlay(this)" onmouseleave="stopSecurePlay(this)">
+            <div class="nft-thumb">🎵</div>
+            <h4>Ngày Tình Xa #1</h4>
+            <div class="status-text">Di chuột vào để nghe thử</div>
+        </div>
+
+        <!-- NFT BÀI HÁT SỐ 2 -->
+        <div class="nft-card" data-contract="0xd5Cae8a1a2Ed9D49569f5C0C2E51FAA7Df86cd89" data-token="5"
+            onmouseenter="startSecurePlay(this)" onmouseleave="stopSecurePlay(this)">
+            <div class="nft-thumb">📻</div>
+            <h4>Di Sản Di Động #5</h4>
+            <div class="status-text">Di chuột vào để nghe thử</div>
+        </div>
+    </div>
+
+    <script>
+        let userWalletAddress = '0x0000000000000000000000000000000000000000';
+        let currentAudio = null;
+
+        // 1. Hàm kết nối và lấy địa chỉ ví MetaMask
+        async function connectWallet() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    userWalletAddress = accounts[0];
+                    document.getElementById('walletAddressText').innerText = `Ví hiện tại: ${userWalletAddress}`;
+                    document.getElementById('connectWalletBtn').innerText = `🟢 Đã kết nối ví`;
+                } catch (error) {
+                    alert("Người dùng từ chối kết nối ví.");
+                }
+            } else {
+                alert("Vui lòng cài đặt ví MetaMask để thử nghiệm tính năng này!");
+            }
+        }
+
+        // 2. Xử lý khi DI CHUỘT VÀO (Hover In) -> Kích hoạt Luồng Stream Bảo Mật
+        async function startSecurePlay(element) {
+            const contractAddress = element.getAttribute('data-contract');
+            const tokenId = element.getAttribute('data-token');
+            const statusText = element.querySelector('.status-text');
+
+            statusText.innerText = "⚡ Đang check quyền...";
+            statusText.style.color = "#f6851b";
+
+            // Thay đổi URL này trùng với domain/port server Node.js của bạn (ví dụ: http://localhost:3000)
+            const SERVER_API_URL = `/api/secure-audio/${contractAddress}/${tokenId}`;
+
+            try {
+                const response = await fetch(SERVER_API_URL, {
+                    method: 'GET',
+                    headers: {
+                        'x-user-wallet': userWalletAddress // Đẩy địa chỉ ví lên để backend đối chiếu với Supabase & Blockchain
+                    }
+                });
+
+                if (!response.ok) throw new Error('Không thể tải luồng nhạc');
+
+                // BIỆN PHÁP CHỐNG TẢI LÉN: Ép trình duyệt đọc luồng dữ liệu nhị phân trực tiếp vào RAM thành một Blob tạm
+                const audioBlob = await response.blob();
+                const secureBlobUrl = URL.createObjectURL(audioBlob);
+
+                // Khởi tạo trình phát ngầm từ Blob bảo mật
+                currentAudio = new Audio(secureBlobUrl);
+                statusText.innerText = "🔊 Đang phát an toàn...";
+                statusText.style.color = "#1db954";
+
+                await currentAudio.play();
+
+            } catch (error) {
+                statusText.innerText = "❌ Lỗi hệ thống phát";
+                statusText.style.color = "#ff4d4d";
+                console.error(error);
+            }
+        }
+
+        // 3. Xử lý khi RỜI CHUỘT RA (Hover Out) -> Ngắt luồng, xóa dấu vết file
+        function stopSecurePlay(element) {
+            const statusText = element.querySelector('.status-text');
+            statusText.innerText = "Di chuột vào để nghe thử";
+            statusText.style.color = "#b3b3b3";
+
+            if (currentAudio) {
+                currentAudio.pause();
+                // HỦY BỎ LINK BLOB NGAY LẬP TỨC: Người dùng cố copy link blob F12 ra tab mới sẽ bị báo lỗi 404
+                URL.revokeObjectURL(currentAudio.src);
+                currentAudio = null;
+            }
+        }
+    </script>
+</body>
+
+</html>

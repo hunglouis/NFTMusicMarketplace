@@ -6,6 +6,7 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <script src="https://cdn.jsdelivr.net"></script>
     <meta charset="UTF-8">
@@ -13,28 +14,38 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        body { 
-    background: radial-gradient(circle at top left, #1e1b4b, #020617); 
-    color: #d4d4d8; 
-    /* Chỉnh lại để cân bằng 2 bên */
-    padding-left: 5rem; 
-    padding-right: 2rem; 
-    min-height: 100vh;
-}
+        body {
+            background: radial-gradient(circle at top left, #1e1b4b, #020617);
+            color: #d4d4d8;
+            /* Chỉnh lại để cân bằng 2 bên */
+            padding-left: 5rem;
+            padding-right: 2rem;
+            min-height: 100vh;
+        }
 
         /* Màu vàng đồng đặc trưng */
-        .gold-text { color: #eab308; }
-        .gold-border { border-color: rgba(234, 179, 8, 0.3); }
-        .gold-gradient { background: linear-gradient(to right, #eab308, #ca8a04); }
-        .glass-gold { 
-            background: rgba(255, 255, 255, 0.02); 
-            backdrop-filter: blur(10px); 
-            border: 1px solid rgba(234, 179, 8, 0.1); 
+        .gold-text {
+            color: #eab308;
+        }
+
+        .gold-border {
+            border-color: rgba(234, 179, 8, 0.3);
+        }
+
+        .gold-gradient {
+            background: linear-gradient(to right, #eab308, #ca8a04);
+        }
+
+        .glass-gold {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(234, 179, 8, 0.1);
         }
     </style>
 </head>
+
 <body class="p-5 md:p-10">
-     <?php if(file_exists('navbar.php')) include 'navbar.php'; ?>
+    <?php if (file_exists('navbar.php')) include 'navbar.php'; ?>
 
     <div class="max-w-4xl mx-auto">
         <!-- TIÊU ĐỀ STUDIO -->
@@ -46,83 +57,91 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
         </header>
 
         <div class="grid grid-cols-1 gap-12">
-            
+
             <!-- PHẦN 1: TUYÊN NGÔN DI SẢN (BẢN VUN BỒI) -->
-<section class="glass-gold p-8 rounded-[40px] shadow-2xl relative overflow-hidden mb-12">
-    <div class="absolute top-0 right-0 p-6 opacity-5">
-        <i class="fa-solid fa-scroll text-8xl gold-text"></i>
-    </div>
+            <section class="glass-gold p-8 rounded-[40px] shadow-2xl relative overflow-hidden mb-12">
+                <div class="absolute top-0 right-0 p-6 opacity-5">
+                    <i class="fa-solid fa-scroll text-8xl gold-text"></i>
+                </div>
 
-    <h3 class="gold-text text-xs font-black uppercase tracking-[0.3em] mb-8 flex items-center gap-2">
-        <i class="fa-solid fa-scale-balanced"></i> I. Tuyên Ngôn & Giao Ước Di Sản
-    </h3>
+                <h3 class="gold-text text-xs font-black uppercase tracking-[0.3em] mb-8 flex items-center gap-2">
+                    <i class="fa-solid fa-scale-balanced"></i> I. Tuyên Ngôn & Giao Ước Di Sản
+                </h3>
 
-    <div class="space-y-6 italic font-serif text-gray-200 text-sm leading-relaxed border-l-2 border-yellow-500/30 pl-6">
-        <p>"Chúng tôi tin rằng mọi tạo tác và sản vật, khi được gửi gắm bằng cả tâm tình, đều mang trong mình giá trị di sản. Không chỉ có âm nhạc hay hội họa, mà từng kỷ vật, từng ký ức cá nhân đều xứng đáng được bảo tồn vĩnh cửu."</p>
-        
-        <p>"Bằng việc khởi sinh NFT này, tôi - chủ sở hữu hợp pháp <span id="artist-wallet-detail" class="text-yellow-500 font-mono">[Đang chờ ví...]</span> - chính thức xác lập vị thế di sản cho sản vật của mình. Tôi cam kết thực thi quyền sở hữu với đạo đức sáng tạo cao nhất, bảo đảm tính minh bạch để kết nối quá khứ, hiện tại và những thế hệ mai sau qua tiêu chuẩn cộng đồng ERC-721 và ERC-2981."</p>
-    </div>
+                <div class="space-y-6 italic font-serif text-gray-200 text-sm leading-relaxed border-l-2 border-yellow-500/30 pl-6">
+                    <p>"Chúng tôi tin rằng mọi tạo tác và sản vật, khi được gửi gắm bằng cả tâm tình, đều mang trong mình giá trị di sản. Không chỉ có âm nhạc hay hội họa, mà từng kỷ vật, từng ký ức cá nhân đều xứng đáng được bảo tồn vĩnh cửu."</p>
 
-    <div class="mt-10 flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
-        <input type="checkbox" id="agreement" class="w-5 h-5 accent-yellow-600 cursor-pointer">
-        <label for="agreement" class="text-[11px] text-gray-400 font-bold uppercase tracking-wider cursor-pointer">
-            Tôi xác nhận đã thấu hiểu và cam kết thực hiện đúng giao ước.
-        </label>
-    </div>
-</section>
+                    <p>"Bằng việc khởi sinh NFT này, tôi - chủ sở hữu hợp pháp <span id="artist-wallet-detail" class="text-yellow-500 font-mono">[Đang chờ ví...]</span> - chính thức xác lập vị thế di sản cho sản vật của mình. Tôi cam kết thực thi quyền sở hữu với đạo đức sáng tạo cao nhất, bảo đảm tính minh bạch để kết nối quá khứ, hiện tại và những thế hệ mai sau qua tiêu chuẩn cộng đồng ERC-721 và ERC-2981."</p>
+                </div>
 
+                <div class="mt-10 flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
+                    <input type="checkbox" id="agreement" class="w-5 h-5 accent-yellow-600 cursor-pointer">
+                    <label for="agreement" class="text-[11px] text-gray-400 font-bold uppercase tracking-wider cursor-pointer">
+                        Tôi xác nhận đã thấu hiểu và cam kết thực hiện đúng giao ước.
+                    </label>
+                </div>
+            </section>
 
-                        <!-- II. THÔNG TIN TÁC PHẨM - BẢN HIỆN RÕ CỬA NẠP -->
-<section class="glass-gold p-8 rounded-[40px] mt-10 space-y-10 border border-yellow-500/10">
-    <h3 class="gold-text text-sm font-black uppercase tracking-widest flex items-center gap-2">
-        <i class="fa-solid fa-wand-magic-sparkles"></i> II. Thông Tin Tác Phẩm
-    </h3>
-    
-    <!-- 1. CỬA NẠP SẢN VẬT (TO VÀ RÕ) -->
-    <div onclick="createNewCollectionOnWeb(); document.getElementById('file-input').click();" 
-         style="cursor: pointer; border: 2px dashed rgba(234, 179, 8, 0.2); background: rgba(255,255,255,0.02);"
-         class="w-full h-40 rounded-[30px] flex flex-col items-center justify-center group hover:bg-yellow-500/5 transition-all">
-        
-        <i class="fa-solid fa-cloud-arrow-up text-3xl text-gray-600 group-hover:text-yellow-500 mb-3"></i>
-        <p id="file-status" class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] group-hover:text-white">
-            Nhấn vào đây để chọn Sản vật (MV/Ảnh/Hồ sơ)
-        </p>
-        <!-- Thẻ chọn file ẩn -->
-        <input type="file" id="file-input" class="hidden" onchange="handleFileSelect(this)">
-    </div>
+            <div>
+                <h1>Music Marketplace</h1>
+                <div onclick="UploadMusicModal()" class="cursor-pointer">
+                    <i class="fa-solid fa-plus-circle text-2xl text-yellow-500"></i>
+                    <p class="text-[11px] text-gray-400 font-bold uppercase tracking-wider mt-2">Upload Music</p>
+                </div>
+            </div>
 
-    <!-- 2. KHUNG NHẬP LIỆU (3 CỘT NGANG) -->
-    <div style="display: flex; gap: 20px; align-items: flex-start;">
-        <div style="flex: 2;">
-            <label style="display: block; font-size: 9px; color: #71717a; font-weight: 900; text-transform: uppercase; margin-bottom: 8px;">Tên Tác Phẩm</label>
-            <input type="text" id="nft-name" placeholder="Cánh Hoa Phiêu Bồng (1994)" 
-                   style="width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(234, 179, 8, 0.2); padding: 14px; border-radius: 12px; color: white; outline: none; box-sizing: border-box;">
-        </div>
-        <div style="flex: 1;">
-            <label style="display: block; font-size: 9px; color: #71717a; font-weight: 900; text-transform: uppercase; margin-bottom: 8px;">Giá (MATIC)</label>
-            <input type="number" id="nft-price" placeholder="0.1" 
-                   style="width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(234, 179, 8, 0.2); padding: 14px; border-radius: 12px; color: white; outline: none; box-sizing: border-box;">
-        </div>
-        <div style="flex: 1;">
-            <label style="display: block; font-size: 9px; color: #71717a; font-weight: 900; text-transform: uppercase; margin-bottom: 8px;">Tác quyền %</label>
-            <input type="number" id="nft-royalty" value="10" 
-                   style="width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(234, 179, 8, 0.2); padding: 14px; border-radius: 12px; color: #eab308; font-weight: bold; outline: none; box-sizing: border-box;">
-        </div>
-    </div>
+            <!-- II. THÔNG TIN TÁC PHẨM - BẢN HIỆN RÕ CỬA NẠP -->
+            <section class="glass-gold p-8 rounded-[40px] mt-10 space-y-10 border border-yellow-500/10">
+                <h3 class="gold-text text-sm font-black uppercase tracking-widest flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> II. Thông Tin Tác Phẩm
+                </h3>
 
-    <!-- 3. THƯ NGỎ -->
-    <div style="width: 100%;">
-        <label style="display: block; font-size: 9px; color: #71717a; font-weight: 900; text-transform: uppercase; margin-bottom: 8px;">Thư Ngỏ / Mô Tả Di Sản</label>
-        <textarea id="nft-desc" rows="4" placeholder="Kể câu chuyện về hoàn cảnh ra đời..." 
-                  style="width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(234, 179, 8, 0.2); padding: 15px; border-radius: 12px; color: white; outline: none; resize: none; box-sizing: border-box;"></textarea>
-    </div>
+                <!-- 1. CỬA NẠP SẢN VẬT (TO VÀ RÕ) -->
+                <div onclick="createNewCollectionOnWeb(); document.getElementById('file-input').click();"
+                    style="cursor: pointer; border: 2px dashed rgba(234, 179, 8, 0.2); background: rgba(255,255,255,0.02);"
+                    class="w-full h-40 rounded-[30px] flex flex-col items-center justify-center group hover:bg-yellow-500/5 transition-all">
 
-    <!-- NÚT MINT SẼ ĐƯỢC ĐIỀU KHIỂN BỞI JAVASCRIPT -->
-    <button id="mint-button" disabled 
-            style="width: 100%; padding: 20px; border-radius: 15px; background: #18181b; color: #3f3f46; font-weight: 900; text-transform: uppercase; letter-spacing: 4px; border: 1px solid rgba(255,255,255,0.05); cursor: not-allowed; transition: all 0.5s;">
-        Khởi sinh Di Sản (Mint NFT)
-    </button>
-</section>
+                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-gray-600 group-hover:text-yellow-500 mb-3"></i>
+                    <p id="file-status" class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] group-hover:text-white">
+                        Nhấn vào đây để chọn Sản vật (MV/Ảnh/Hồ sơ)
+                    </p>
+                    <!-- Thẻ chọn file ẩn -->
+                    <input type="file" id="file-input" class="hidden" onchange="handleFileSelect(this)">
+                </div>
+
+                <!-- 2. KHUNG NHẬP LIỆU (3 CỘT NGANG) -->
+                <div style="display: flex; gap: 20px; align-items: flex-start;">
+                    <div style="flex: 2;">
+                        <label style="display: block; font-size: 9px; color: #71717a; font-weight: 900; text-transform: uppercase; margin-bottom: 8px;">Tên Tác Phẩm</label>
+                        <input type="text" id="nft-name" placeholder="Cánh Hoa Phiêu Bồng (1994)"
+                            style="width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(234, 179, 8, 0.2); padding: 14px; border-radius: 12px; color: white; outline: none; box-sizing: border-box;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="display: block; font-size: 9px; color: #71717a; font-weight: 900; text-transform: uppercase; margin-bottom: 8px;">Giá (MATIC)</label>
+                        <input type="number" id="nft-price" placeholder="0.1"
+                            style="width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(234, 179, 8, 0.2); padding: 14px; border-radius: 12px; color: white; outline: none; box-sizing: border-box;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="display: block; font-size: 9px; color: #71717a; font-weight: 900; text-transform: uppercase; margin-bottom: 8px;">Tác quyền %</label>
+                        <input type="number" id="nft-royalty" value="10"
+                            style="width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(234, 179, 8, 0.2); padding: 14px; border-radius: 12px; color: #eab308; font-weight: bold; outline: none; box-sizing: border-box;">
+                    </div>
+                </div>
+
+                <!-- 3. THƯ NGỎ -->
+                <div style="width: 100%;">
+                    <label style="display: block; font-size: 9px; color: #71717a; font-weight: 900; text-transform: uppercase; margin-bottom: 8px;">Thư Ngỏ / Mô Tả Di Sản</label>
+                    <textarea id="nft-desc" rows="4" placeholder="Kể câu chuyện về hoàn cảnh ra đời..."
+                        style="width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(234, 179, 8, 0.2); padding: 15px; border-radius: 12px; color: white; outline: none; resize: none; box-sizing: border-box;"></textarea>
+                </div>
+
+                <!-- NÚT MINT SẼ ĐƯỢC ĐIỀU KHIỂN BỞI JAVASCRIPT -->
+                <button id="mint-button" disabled
+                    style="width: 100%; padding: 20px; border-radius: 15px; background: #18181b; color: #3f3f46; font-weight: 900; text-transform: uppercase; letter-spacing: 4px; border: 1px solid rgba(255,255,255,0.05); cursor: not-allowed; transition: all 0.5s;">
+                    Khởi sinh Di Sản (Mint NFT)
+                </button>
+
+            </section>
 
         </div>
         <footer class="mt-20 text-center text-[10px] text-gray-600 uppercase tracking-widest">
@@ -130,247 +149,322 @@ $user = $_SESSION['user'] ?? 'Nghệ sĩ Mạnh Hùng';
         </footer>
     </div>
 
-<script>
-    // 1. Chìa khóa kho di sản
-    const PINATA_JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJkYmU0YWZlMi04ZTNkLTQzODItYmI4MC03NmEyNjYxZjUwNDciLCJlbWFpbCI6Imh1bmdsb3Vpcy5tYW5oaHVuZ0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJGUkExIn0seyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJOWUMxIn1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiYmM2MGZmMjQzNzYyMWYxODY3YzgiLCJzY29wZWRLZXlTZWNyZXQiOiJmN2Y0NDc2MTk0ZmI3ZmVhZTRkOGFmYzlkNTIzMGI5NDU3MjZkNWMwNDQ3ODFmOGYzZThiYzA3NTZiMGNmN2YzIiwiZXhwIjoxODA1OTUxMjIyfQ.KoZ-lqftq5bv-GDyjvoyHVvcf5h52K9RKYCIv6pBUGI";
-        
-    // HÀM XỬ LÝ KHI CHỌN FILE (DỨT ĐIỂM LỖI ĐỎ)
-    function handleFileSelect(input) {
-    if (input.files && input.files[0]) {
-        const fileName = input.files[0].name;
-        // Nếu bạn có thẻ hiện tên file thì nó sẽ hiện, nếu không cũng không sao
-        const status = document.getElementById('file-status');
-        if (status) {
-            status.innerText = "ĐÃ CHỌN: " + fileName;
-            status.style.color = "#eab308";
-        }
-        console.log("Đã chọn sản vật: " + fileName);
-    }
-}
+    <script>
+        // 1. Chìa khóa kho di sản
+        const PINATA_JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJkYmU0YWZlMi04ZTNkLTQzODItYmI4MC03NmEyNjYxZjUwNDciLCJlbWFpbCI6Imh1bmdsb3Vpcy5tYW5oaHVuZ0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJGUkExIn0seyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJOWUMxIn1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiYmM2MGZmMjQzNzYyMWYxODY3YzgiLCJzY29wZWRLZXlTZWNyZXQiOiJmN2Y0NDc2MTk0ZmI3ZmVhZTRkOGFmYzlkNTIzMGI5NDU3MjZkNWMwNDQ3ODFmOGYzZThiYzA3NTZiMGNmN2YzIiwiZXhwIjoxODA1OTUxMjIyfQ.KoZ-lqftq5bv-GDyjvoyHVvcf5h52K9RKYCIv6pBUGI";
 
-
-    // 2. Tự động hiện địa chỉ ví vào Bản Giao Ước
-    async function showWallet() {
-        if (window.ethereum) {
-            const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-            if (accounts.length > 0) {
-                document.getElementById('artist-wallet-detail').innerText = accounts[0];
+        // HÀM XỬ LÝ KHI CHỌN FILE (DỨT ĐIỂM LỖI ĐỎ)
+        function handleFileSelect(input) {
+            if (input.files && input.files[0]) {
+                const fileName = input.files[0].name;
+                // Nếu bạn có thẻ hiện tên file thì nó sẽ hiện, nếu không cũng không sao
+                const status = document.getElementById('file-status');
+                if (status) {
+                    status.innerText = "ĐÃ CHỌN: " + fileName;
+                    status.style.color = "#eab308";
+                }
+                console.log("Đã chọn sản vật: " + fileName);
             }
         }
-    }
-    window.addEventListener('load', showWallet);
-// Lấy địa chỉ hợp đồng con từ URL (được truyền từ dashboard.php sang)
-const urlParams = new URLSearchParams(window.location.search);
-const CURRENT_COLLECTION = urlParams.get('contract'); 
 
-async function mint() {
-    if (!CURRENT_COLLECTION) {
-        alert("Lỗi: Không tìm thấy địa chỉ bộ sưu tập riêng!");
-        return;
-    }
 
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const signer = await provider.getSigner();
-    
-    // ABI tối giản để thực hiện lệnh Mint
-    const abi = ["function mint(address to, uint256 tokenId) public"];
-    const contract = new ethers.Contract(CURRENT_COLLECTION, abi, signer);
+        // 2. Tự động hiện địa chỉ ví vào Bản Giao Ước
+        async function showWallet() {
+            if (window.ethereum) {
+                const accounts = await window.ethereum.request({
+                    method: 'eth_accounts'
+                });
+                if (accounts.length > 0) {
+                    document.getElementById('artist-wallet-detail').innerText = accounts[0];
+                }
+            }
+        }
+        window.addEventListener('load', showWallet);
+        // Lấy địa chỉ hợp đồng con từ URL (được truyền từ dashboard.php sang)
+        const urlParams = new URLSearchParams(window.location.search);
+        const CURRENT_COLLECTION = urlParams.get('contract');
 
-    try {
-        const userAddress = await signer.getAddress();
-        const tokenId = Math.floor(Date.now() / 1000); // Dùng thời gian làm ID để không trùng
+        async function mint() {
+            if (!CURRENT_COLLECTION) {
+                alert("Lỗi: Không tìm thấy địa chỉ bộ sưu tập riêng!");
+                return;
+            }
 
-        console.log("Đang khởi sinh di sản tại:", CURRENT_COLLECTION);
-        const tx = await contract.mint(userAddress, tokenId);
-        
-        // Hiển thị trạng thái đang xử lý trên nút bấm
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const signer = await provider.getSigner();
+
+            // ABI tối giản để thực hiện lệnh Mint
+            const abi = ["function mint(address to, uint256 tokenId) public"];
+            const contract = new ethers.Contract(CURRENT_COLLECTION, abi, signer);
+
+            try {
+                const userAddress = await signer.getAddress();
+                const tokenId = Math.floor(Date.now() / 1000); // Dùng thời gian làm ID để không trùng
+
+                console.log("Đang khởi sinh di sản tại:", CURRENT_COLLECTION);
+                const tx = await contract.mint(userAddress, tokenId);
+
+                // Hiển thị trạng thái đang xử lý trên nút bấm
+                const btn = document.getElementById('mint-button');
+                btn.innerText = "ĐANG GHI DẤU DI SẢN...";
+
+                await tx.wait();
+                alert("Khởi sinh di sản thành công!");
+                window.location.href = "marketplace.php"; // Chuyển về chợ sau khi xong
+            } catch (error) {
+                console.error(error);
+                alert("Giao dịch thất bại!");
+            }
+        }
+
+        // 3. Logic làm rực sáng nút Vàng
+        const agree = document.getElementById('agreement');
         const btn = document.getElementById('mint-button');
-        btn.innerText = "ĐANG GHI DẤU DI SẢN...";
-        
-        await tx.wait();
-        alert("Khởi sinh di sản thành công!");
-        window.location.href = "marketplace.php"; // Chuyển về chợ sau khi xong
-    } catch (error) {
-        console.error(error);
-        alert("Giao dịch thất bại!");
-    }
-}
+        // Thêm dòng này dưới đoạn logic nút Vàng của bạn
+        btn.addEventListener('click', mint);
 
-    // 3. Logic làm rực sáng nút Vàng
-    const agree = document.getElementById('agreement');
-    const btn = document.getElementById('mint-button');
-            // Thêm dòng này dưới đoạn logic nút Vàng của bạn
-            btn.addEventListener('click', mint);
-
-    agree.addEventListener('change', function() {
-        if (this.checked) {
-            btn.disabled = false;
-            btn.style.background = 'linear-gradient(to right, #eab308, #ca8a04)';
-            btn.style.color = '#000';
-            btn.style.boxShadow = '0 0 30px rgba(234, 179, 8, 0.4)';
-            btn.innerText = "KHỞI SINH DI SẢN NGAY";
-        } else {
-            btn.disabled = true;
-            btn.style.background = '#18181b';
-            btn.style.color = '#3f3f46';
-            btn.style.boxShadow = 'none';
-            btn.innerText = "KHỞI SINH DI SẢN (MINT NFT)";
-        }
-    });
-
-    // 4. Lệnh thực thi: Đẩy Pinata
-    btn.onclick = async () => {
-        const fileInput = document.getElementById('file-input');
-        if (!fileInput.files[0]) return alert("Nghệ sĩ vui lòng chọn Sản vật!");
-
-        btn.innerText = "⏳ ĐANG ĐƯA DI SẢN LÊN KHO...";
-        btn.disabled = true;
-
-        const formData = new FormData();
-        formData.append('file', fileInput.files[0]);
-
-        try {
-            // A. Đẩy lên Pinata
-            const res = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
-                method: 'POST',
-                headers: { 'Authorization': 'Bearer ' + PINATA_JWT },
-                body: formData
-            });
-            const data = await res.json();
-            
-            if (data.IpfsHash) {
-                const autoCID = res.data.IpfsHash;
-                btn.innerText = "✅ ĐÃ LƯU KHO - ĐANG NIÊM YẾT...";
-
-                // B. Lưu sang Supabase
-            
-                const nftData = {
-                    name: document.getElementById('nft-name').value,
-                    price: document.getElementById('nft-price').value,
-                    image_url: "ipfs://" + data.IpfsHash,
-                    description: document.getElementById('nft-desc').value,
-                    wallet_address: document.getElementById('artist-wallet-detail').innerText // Lấy ví Mạnh Hùng
-                }}
-
-               // 1. Khởi tạo kết nối trực tiếp
-               
-            URL = `https://hmvvjjiiaelcsfqgxbxv.supabase.co` 
-            ANON_KEY =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ-kuw
-
-    const autoCID = res.data.IpfsHash;
-    console.log("Mã CID nhận được:", autoCID);
-    setStatus('✅ Đã có CID! Đang lưu vào Supabase...');
-
-    // ... (phần lưu Supabase tiếp theo) ...
-	// --- ĐOẠN NÀY LÀ PHẦN ĐẨY LÊN SUPABASE ---
-    const { error } = await supabase.from('hunglouis').insert([{ 
-          name: nftData.name, 
-          description: nftData.desc,
-          hunglouis_id: autoCID, // Lưu mã CID vừa nhận được vào đây
-          image_url: `https://Gateway.pinata.cloud/ipfs/` + autoCID, // Tạo link xem luôn
-          artist: nftData.artist,
-          created_at: new Date()
-        }]);
-
-    if (error) {
-        console.error("Lỗi Supabase:", error);
-        throw error;
-    }
-
-    setStatus('🎉 THÀNH CÔNG! NFT đã lên kệ Supabase.');
-    fetchNFTs(); // Tự động làm mới danh sách hiển thị phía dưới
-    // ------------------------------------------
-  } catch (err) {
-  // Sửa dòng này để hiện lỗi cụ thể thay vì [object Object]
-  setStatus('❌ Lỗi: ' + (err.response?.error || err.message));
-  console.log("Chi tiết lỗi:", err.response?.data);
-  }
-};
-
-// 1. HÀM HIỆN VÍ (Chạy ngay khi mở trang)
-async function identifyArtist() {
-    if (window.ethereum) {
-        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-        (accounts.length > 0) 
-            const walletSpan = document.getElementById('artist-wallet-detail');
-            if (walletSpan) walletSpan.innerText = accounts[0];
-        }
-    }
-
-
-// 2. TẤT CẢ LOGIC NẰM TRONG NÀY ĐỂ TRÁNH LỖI XUNG ĐỘT
-document.addEventListener('DOMContentLoaded', function() {
-    identifyArtist();
-
-    const agree = document.getElementById('agreement');
-    const btn = document.getElementById('mint-button');
-
-    // LOGIC LÀM SÁNG NÚT VÀNG
-    if (agree && btn) {
         agree.addEventListener('change', function() {
             if (this.checked) {
                 btn.disabled = false;
                 btn.style.background = 'linear-gradient(to right, #eab308, #ca8a04)';
                 btn.style.color = '#000';
-                btn.innerText = "KHỞI SINH DI SẢN NGAY";
                 btn.style.boxShadow = '0 0 30px rgba(234, 179, 8, 0.4)';
+                btn.innerText = "KHỞI SINH DI SẢN NGAY";
             } else {
                 btn.disabled = true;
                 btn.style.background = '#18181b';
                 btn.style.color = '#3f3f46';
+                btn.style.boxShadow = 'none';
                 btn.innerText = "KHỞI SINH DI SẢN (MINT NFT)";
             }
         });
-    }
-});
 
-// 3. HÀM CHỌN FILE
-function handleFileSelect(input) {
-    if (input.files && input.files[0]) {
-        const status = document.getElementById('file-status');
-        if (status) status.innerText = "ĐÃ CHỌN: " + input.files[0].name;
-    }
-}
+        // 4. Lệnh thực thi: Đẩy Pinata
+        btn.onclick = async () => {
+            const fileInput = document.getElementById('file-input');
+            if (!fileInput.files[0]) return alert("Nghệ sĩ vui lòng chọn Sản vật!");
 
-</script>
-<!-- Tải thư viện Ethers.js từ CDN (rất nhanh và nhẹ) -->
-<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+            btn.innerText = "⏳ ĐANG ĐƯA DI SẢN LÊN KHO...";
+            btn.disabled = true;
 
-<script>
-async function createNewCollectionOnWeb() {
-    if (typeof window.ethereum === 'undefined') {
-        alert("Vui lòng cài đặt MetaMask!");
-        return;
-    }
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
 
-    const FACTORY_ADDRESS = "0x96BBA5cCC21236f869A0D3F05720F607220eE33F";
-    const ABI = [ 	{ 		"inputs": [ 			{ 				"internalType": "address", 				"name": "_implementation", 				"type": "address" 			} 		], 		"stateMutability": "nonpayable", 		"type": "constructor" 	}, 	{ 		"inputs": [], 		"name": "FailedDeployment", 		"type": "error" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "uint256", 				"name": "balance", 				"type": "uint256" 			}, 			{ 				"internalType": "uint256", 				"name": "needed", 				"type": "uint256" 			} 		], 		"name": "InsufficientBalance", 		"type": "error" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "string", 				"name": "name", 				"type": "string" 			}, 			{ 				"internalType": "string", 				"name": "symbol", 				"type": "string" 			} 		], 		"name": "createNewCollection", 		"outputs": [ 			{ 				"internalType": "address", 				"name": "", 				"type": "address" 			} 		], 		"stateMutability": "nonpayable", 		"type": "function" 	}, 	{ 		"inputs": [ 			{ 				"internalType": "uint256", 				"name": "", 				"type": "uint256" 			} 		], 		"name": "deployedCollections", 		"outputs": [ 			{ 				"internalType": "address", 				"name": "", 				"type": "address" 			} 		], 		"stateMutability": "view", 		"type": "function" 	}, 	{ 		"inputs": [], 		"name": "implementation", 		"outputs": [ 			{ 				"internalType": "address", 				"name": "", 				"type": "address" 			} 		], 		"stateMutability": "view", 		"type": "function" 	} ];
+            try {
+                // A. Đẩy lên Pinata
+                const res = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + PINATA_JWT
+                    },
+                    body: formData
+                });
+                const data = await res.json();
 
-    try {
-        const provider = new ethers.BrowserProvider(window.ethereum);
-        const signer = await provider.getSigner();
-        const factoryContract = new ethers.Contract(FACTORY_ADDRESS, ABI, signer);
+                if (data.IpfsHash) {
+                    const autoCID = res.data.IpfsHash;
+                    btn.innerText = "✅ ĐÃ LƯU KHO - ĐANG NIÊM YẾT...";
 
-        // Lấy tên và ký hiệu từ Form PHP của bạn
-        const name = "Music Collection của tôi"; 
-        const symbol = "MC1";
+                    // B. Lưu sang Supabase
 
-        console.log("Đang mở MetaMask để xác nhận...");
-        const tx = await factoryContract.createNewCollection(name, symbol);
-        
-        alert("Đang triển khai hợp đồng, vui lòng chờ giây lát...");
-        const receipt = await tx.wait();
+                    const nftData = {
+                        name: document.getElementById('nft-name').value,
+                        price: document.getElementById('nft-price').value,
+                        image_url: "ipfs://" + data.IpfsHash,
+                        description: document.getElementById('nft-desc').value,
+                        wallet_address: document.getElementById('artist-wallet-detail').innerText // Lấy ví Mạnh Hùng
+                    }
+                }
 
-        alert("Thành công! Địa chỉ hợp đồng mới đã được tạo.");
-        console.log("Giao dịch:", receipt.hash);
-        
-        // Sau khi xong, bạn có thể dùng AJAX để gửi địa chỉ này về lưu vào Database PHP (MySQL/Supabase)
-    } catch (error) {
-        console.error("Lỗi:", error);
-        alert("Người dùng đã hủy hoặc giao dịch thất bại.");
-    }
-}
-</script>
+                // 1. Khởi tạo kết nối trực tiếp
+
+                URL = `https://hmvvjjiiaelcsfqgxbxv.supabase.co`
+                ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtdnZqamlpYWVsY3NmcWd4Ynh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDg4MzcsImV4cCI6MjA4OTkyNDgzN30.zCpflfgSmBwpwe62P7cr1Ppf5dMUMjh782EhZeZ - kuw
+
+                const autoCID = res.data.IpfsHash;
+                console.log("Mã CID nhận được:", autoCID);
+                setStatus('✅ Đã có CID! Đang lưu vào Supabase...');
+
+                // ... (phần lưu Supabase tiếp theo) ...
+                // --- ĐOẠN NÀY LÀ PHẦN ĐẨY LÊN SUPABASE ---
+                const {
+                    error
+                } = await supabase.from('items').insert([{
+                    name: nftData.name,
+                    description: nftData.desc,
+                    hunglouis_id: autoCID, // Lưu mã CID vừa nhận được vào đây
+                    image_url: `https://Gateway.pinata.cloud/ipfs/` + autoCID, // Tạo link xem luôn
+                    artist: nftData.artist,
+                    created_at: new Date()
+                }]);
+
+                if (error) {
+                    console.error("Lỗi Supabase:", error);
+                    throw error;
+                }
+
+                setStatus('🎉 THÀNH CÔNG! NFT đã lên kệ Supabase.');
+                fetchNFTs(); // Tự động làm mới danh sách hiển thị phía dưới
+                // ------------------------------------------
+            } catch (err) {
+                // Sửa dòng này để hiện lỗi cụ thể thay vì [object Object]
+                setStatus('❌ Lỗi: ' + (err.response?.error || err.message));
+                console.log("Chi tiết lỗi:", err.response?.data);
+            }
+        };
+
+        // 1. HÀM HIỆN VÍ (Chạy ngay khi mở trang)
+        async function identifyArtist() {
+            if (window.ethereum) {
+                const accounts = await window.ethereum.request({
+                    method: 'eth_accounts'
+                });
+                (accounts.length > 0)
+                const walletSpan = document.getElementById('artist-wallet-detail');
+                if (walletSpan) walletSpan.innerText = accounts[0];
+            }
+        }
+
+
+        // 2. TẤT CẢ LOGIC NẰM TRONG NÀY ĐỂ TRÁNH LỖI XUNG ĐỘT
+        document.addEventListener('DOMContentLoaded', function() {
+            identifyArtist();
+
+            const agree = document.getElementById('agreement');
+            const btn = document.getElementById('mint-button');
+
+            // LOGIC LÀM SÁNG NÚT VÀNG
+            if (agree && btn) {
+                agree.addEventListener('change', function() {
+                    if (this.checked) {
+                        btn.disabled = false;
+                        btn.style.background = 'linear-gradient(to right, #eab308, #ca8a04)';
+                        btn.style.color = '#000';
+                        btn.innerText = "KHỞI SINH DI SẢN NGAY";
+                        btn.style.boxShadow = '0 0 30px rgba(234, 179, 8, 0.4)';
+                    } else {
+                        btn.disabled = true;
+                        btn.style.background = '#18181b';
+                        btn.style.color = '#3f3f46';
+                        btn.innerText = "KHỞI SINH DI SẢN (MINT NFT)";
+                    }
+                });
+            }
+        });
+
+        // 3. HÀM CHỌN FILE
+        function handleFileSelect(input) {
+            if (input.files && input.files[0]) {
+                const status = document.getElementById('file-status');
+                if (status) status.innerText = "ĐÃ CHỌN: " + input.files[0].name;
+            }
+        }
+    </script>
+    <!-- Tải thư viện Ethers.js từ CDN (rất nhanh và nhẹ) -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+    <script>
+        async function createNewCollectionOnWeb() {
+            if (typeof window.ethereum === 'undefined') {
+                alert("Vui lòng cài đặt MetaMask!");
+                return;
+            }
+
+            const FACTORY_ADDRESS = "0x96BBA5cCC21236f869A0D3F05720F607220eE33F";
+            const ABI = [{
+                "inputs": [{
+                    "internalType": "address",
+                    "name": "_implementation",
+                    "type": "address"
+                }],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            }, {
+                "inputs": [],
+                "name": "FailedDeployment",
+                "type": "error"
+            }, {
+                "inputs": [{
+                    "internalType": "uint256",
+                    "name": "balance",
+                    "type": "uint256"
+                }, {
+                    "internalType": "uint256",
+                    "name": "needed",
+                    "type": "uint256"
+                }],
+                "name": "InsufficientBalance",
+                "type": "error"
+            }, {
+                "inputs": [{
+                    "internalType": "string",
+                    "name": "name",
+                    "type": "string"
+                }, {
+                    "internalType": "string",
+                    "name": "symbol",
+                    "type": "string"
+                }],
+                "name": "createNewCollection",
+                "outputs": [{
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            }, {
+                "inputs": [{
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }],
+                "name": "deployedCollections",
+                "outputs": [{
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }],
+                "stateMutability": "view",
+                "type": "function"
+            }, {
+                "inputs": [],
+                "name": "implementation",
+                "outputs": [{
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }],
+                "stateMutability": "view",
+                "type": "function"
+            }];
+
+            try {
+                const provider = new ethers.BrowserProvider(window.ethereum);
+                const signer = await provider.getSigner();
+                const factoryContract = new ethers.Contract(FACTORY_ADDRESS, ABI, signer);
+
+                // Lấy tên và ký hiệu từ Form PHP của bạn
+                const name = "Music Collection của tôi";
+                const symbol = "MC1";
+
+                console.log("Đang mở MetaMask để xác nhận...");
+                const tx = await factoryContract.createNewCollection(name, symbol);
+
+                alert("Đang triển khai hợp đồng, vui lòng chờ giây lát...");
+                const receipt = await tx.wait();
+
+                alert("Thành công! Địa chỉ hợp đồng mới đã được tạo.");
+                console.log("Giao dịch:", receipt.hash);
+
+                // Sau khi xong, bạn có thể dùng AJAX để gửi địa chỉ này về lưu vào Database PHP (MySQL/Supabase)
+            } catch (error) {
+                console.error("Lỗi:", error);
+                alert("Người dùng đã hủy hoặc giao dịch thất bại.");
+            }
+        }
+    </script>
 
 </body>
+
 </html>
