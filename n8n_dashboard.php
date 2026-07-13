@@ -62,7 +62,7 @@
     <button onclick="sendToN8n()">Kích hoạt n8n chạy AI</button>
     <script>
         async function sendToN8n() {
-            const n8nWebhookUrl = `https://YOUR-STATIC-DOMAIN.ngrok-free.app/webhook/webhook-discord-auto`;
+            const n8nWebhookUrl = `https://unaddressed-yaretzi-nonneural.ngrok-free.dev/webhook/webhook-discord-auto`;
             const data = {
                 chu_de: document.getElementById('topic').value,
                 hashtags: document.getElementById('hashtags').value
