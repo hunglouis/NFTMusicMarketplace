@@ -204,7 +204,7 @@
             <span class="menu-text font-bold uppercase">OpenSea</span>
         </a>
 		
-		<a href="https://web3.okx.com/vi/explorer/sepolia/" class="flex items-center gap-3 px-2 py-3 text-gray-500 hover:text-yellow-500 transition-all">
+		<a href="https://web3.okx.com/vi/explorer/sepolia/token/0x0d602ac298348079132da39fa4e8a23a307fb3bb?address=0x8429bc345266d03a433b25b8fb6301274294d81e" class="flex items-center gap-3 px-2 py-3 text-gray-500 hover:text-yellow-500 transition-all">
             <i class="fa-solid fa-circle-nodes min-w-[1.2rem] text-center text-sm"></i>
             <span class="menu-text font-bold uppercase">OKX_WEB3</span>
         </a>
