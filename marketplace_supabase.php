@@ -109,7 +109,13 @@ $songs = callSupabase("hunglouis?price=gt.0&order=id.desc&limit=200");
 
                 items.forEach(item => {
                     // Xử lý link IPFS để hiển thị (Dùng gateway công cộng)
-                    let displayUrl = item.image_url.replace('ipfs://', 'https://pinata.cloud');
+                    // Fallback nếu image_url bị null/undefined
+					let displayUrl = (item.image_url || '').replace('ipfs://', 'https://pinata.cloud');
+
+					// Nếu rỗng, dùng ảnh mặc định luôn thay vì để trống
+					if (!displayUrl) {
+						displayUrl = 'https://placehold.co/400x300?text=No+Image';
+					}
 
                     // Kiểm tra loại file để hiện icon tương ứng
                     let mediaContent = `<img src="${displayUrl}" class="w-full h-48 object-cover rounded-2xl mb-4" onerror="this.src='https://placehold.co'">`;
