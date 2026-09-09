@@ -110,7 +110,7 @@ $songs = callSupabase("hunglouis?price=gt.0&order=id.desc&limit=200");
                 items.forEach(item => {
                     // Xử lý link IPFS để hiển thị (Dùng gateway công cộng)
                     // Fallback nếu image_url bị null/undefined
-					let displayUrl = (item.image_url || '').replace('ipfs://', 'https://pinata.cloud');
+					let displayUrl = (item.metadata_url || '').replace('ipfs://', 'https://pinata.cloud');
 
 					// Nếu rỗng, dùng ảnh mặc định luôn thay vì để trống
 					if (!displayUrl) {
