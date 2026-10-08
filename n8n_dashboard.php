@@ -53,7 +53,8 @@
     <h2>🤖 Tạo Bài Đăng Tự Động</h2>
     <div class="form-group">
         <label for="topic">Chủ đề bài viết:</label>
-        <input type="text" id="topic" placeholder="Ví dụ: Lợi ích của học JavaScript...">
+        <textarea class="form-control" name="chude" id="chude" rows="6" placeholder="Nhập hoặc dán toàn bộ nội dung chủ đề, kịch bản, và các đường link tại đây..." style="resize: vertical; min-height: 120px; font-size: 14px; line-height: 1.6;"></textarea>
+
     </div>
     <div class="form-group">
         <label for="hashtags">Hashtags mong muốn:</label>
